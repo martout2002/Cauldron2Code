@@ -227,7 +227,7 @@ function calculateBundleSize(config: ScaffoldConfig): string {
 function calculateGenerationTime(config: ScaffoldConfig): string {
   let time = 5; // Base time in seconds
 
-  if (config.framework === 'monorepo') time += 8;
+  if (config.projectStructure === 'fullstack-monorepo') time += 8; // Monorepo
   if (config.auth !== 'none') time += 3;
   if (config.database !== 'none') time += 4;
   if (config.aiTemplate && config.aiTemplate !== 'none') time += 5;
@@ -240,7 +240,22 @@ function calculateGenerationTime(config: ScaffoldConfig): string {
 
 function generateTechSummary(config: ScaffoldConfig): TechSummaryItemProps[] {
   const summary: TechSummaryItemProps[] = [
-    { category: 'Framework', value: config.framework },
+    { 
+      category: 'Frontend Framework', 
+      value: config.frontendFramework === 'nextjs' ? 'Next.js' : config.frontendFramework 
+    },
+    { 
+      category: 'Backend Framework', 
+      value: config.backendFramework === 'nextjs-api' ? 'Next.js API' : config.backendFramework 
+    },
+    { 
+      category: 'Build Tool', 
+      value: config.buildTool 
+    },
+    { 
+      category: 'Project Structure', 
+      value: config.projectStructure.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+    },
     { category: 'Authentication', value: config.auth },
     { category: 'Database', value: config.database },
     { category: 'API Layer', value: config.api },
@@ -248,7 +263,7 @@ function generateTechSummary(config: ScaffoldConfig): TechSummaryItemProps[] {
     { category: 'Color Scheme', value: config.colorScheme },
   ];
 
-  if (config.nextjsRouter) {
+  if (config.nextjsRouter && config.frontendFramework === 'nextjs') {
     summary.splice(1, 0, {
       category: 'Next.js Router',
       value: config.nextjsRouter,
@@ -278,22 +293,56 @@ function generateFileList(config: ScaffoldConfig): string[] {
     '.env.example',
   ];
 
-  // Framework-specific files
-  if (config.framework === 'next' || config.framework === 'monorepo') {
+  // Project structure-specific files
+  if (config.projectStructure === 'nextjs-only') {
     files.push(
       'next.config.ts',
       'app/layout.tsx',
       'app/page.tsx',
-      'app/globals.css'
+      'app/globals.css',
+      'app/api/hello/route.ts',
+      'app/api/users/route.ts'
+    );
+  } else if (config.projectStructure === 'react-spa') {
+    files.push(
+      'src/App.tsx',
+      'src/main.tsx',
+      'src/components/index.ts',
+      'index.html'
+    );
+    if (config.buildTool === 'vite' || config.buildTool === 'auto') {
+      files.push('vite.config.ts');
+    } else if (config.buildTool === 'webpack') {
+      files.push('webpack.config.js');
+    }
+  } else if (config.projectStructure === 'fullstack-monorepo') {
+    files.push(
+      'turbo.json',
+      'apps/web/package.json',
+      'apps/web/next.config.ts',
+      'apps/web/app/layout.tsx',
+      'apps/web/app/page.tsx',
+      'apps/api/package.json',
+      'apps/api/src/server.ts',
+      'apps/api/src/routes/index.ts',
+      'packages/shared-types/package.json'
+    );
+  } else if (config.projectStructure === 'express-api-only') {
+    files.push(
+      'src/server.ts',
+      'src/routes/index.ts',
+      'src/controllers/index.ts',
+      'src/middleware/index.ts'
     );
   }
 
-  if (config.framework === 'express' || config.framework === 'monorepo') {
-    files.push('server.ts', 'routes/index.ts');
-  }
-
-  if (config.framework === 'monorepo') {
-    files.push('turbo.json', 'apps/web/package.json', 'apps/api/package.json');
+  // Frontend framework-specific files (for non-Next.js)
+  if (config.frontendFramework === 'vue' && config.projectStructure === 'react-spa') {
+    files.push('src/App.vue', 'src/main.ts');
+  } else if (config.frontendFramework === 'angular' && config.projectStructure === 'react-spa') {
+    files.push('src/app/app.component.ts', 'src/main.ts', 'angular.json');
+  } else if (config.frontendFramework === 'svelte' && config.projectStructure === 'react-spa') {
+    files.push('src/App.svelte', 'src/main.ts');
   }
 
   // Styling files

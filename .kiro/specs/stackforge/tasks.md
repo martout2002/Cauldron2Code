@@ -16,16 +16,20 @@
 
 - [x] 3. Build configuration UI components
   - [x] 3.1 Create ConfigurationWizard main component
-    - Implement Zustand store for configuration state
-    - Create wizard layout with sections for each config category
+    - Implement Zustand store for configuration state with new framework structure
+    - Create wizard layout with four primary framework selection categories
     - Add form state management with React Hook Form
-    - _Requirements: 1.1, 1.4_
+    - Implement auto-adjustment logic (e.g., disable Next.js API routes when React is selected)
+    - _Requirements: 1.1, 1.8, 1.10_
   
   - [x] 3.2 Create TechStackToggle component
-    - Build toggle/dropdown controls for technology options
-    - Add tooltip system with technology explanations
+    - Build radio/toggle controls for Frontend Framework selection (Next.js, React, Vue, Angular, Svelte)
+    - Build radio/toggle controls for Backend Framework selection (None, Express, Fastify, NestJS)
+    - Build radio/toggle controls for Build Tool selection (Auto, Vite, Webpack)
+    - Build radio/toggle controls for Project Structure selection (Next.js only, React SPA, Full-stack monorepo, Express API only)
+    - Add tooltip system with technology explanations for each option
     - Implement visual feedback for selections
-    - _Requirements: 1.1, 1.5_
+    - _Requirements: 1.2, 1.3, 1.4, 1.5, 1.9_
   
   - [x] 3.3 Create ColorSchemeSelector component
     - Build visual color scheme picker with preview cards
@@ -48,10 +52,13 @@
 
 - [x] 4. Implement validation engine
   - [x] 4.1 Create validation rule definitions
-    - Define all validation rules (auth-database, vercel-express, etc.)
+    - Define framework compatibility rules (nextjs-api-requires-nextjs, nextjs-only-structure, etc.)
+    - Define architecture rules (react-spa-no-backend, express-api-only-no-frontend, etc.)
+    - Define deployment rules (vercel-express, vercel-nextjs-recommended, etc.)
+    - Define all other validation rules (auth-database, ai-api-key, etc.)
     - Implement rule checking functions
-    - Create severity classification logic
-    - _Requirements: 1.2, 1.3, 7.3_
+    - Create severity classification logic (error, warning, info)
+    - _Requirements: 1.6, 1.7, 1.10_
   
   - [x] 4.2 Build real-time validation system
     - Implement validation engine that runs on config changes
@@ -67,17 +74,19 @@
 
 - [x] 5. Build scaffold generation engine
   - [x] 5.1 Create template system foundation
-    - Implement template file structure definitions
+    - Implement template file structure definitions for each project structure type
     - Create string interpolation engine for templates
-    - Build file path generation logic
-    - _Requirements: 2.1, 2.4_
+    - Build file path generation logic based on project structure
+    - _Requirements: 2.1, 2.4, 1.11_
   
   - [x] 5.2 Implement base project templates
-    - Create Next.js project template
-    - Create Express API template (for monorepo)
-    - Create monorepo structure with Turborepo config
-    - Generate package.json with correct dependencies
-    - _Requirements: 2.1, 2.4, 2.7_
+    - Create Next.js only template (with app/api directory for API routes)
+    - Create React SPA template (frontend only with Vite or Webpack)
+    - Create Full-stack monorepo template (apps/web + apps/api with Turborepo)
+    - Create Express API only template (backend only, no frontend)
+    - Create Vue, Angular, and Svelte templates
+    - Generate package.json with correct dependencies based on selections
+    - _Requirements: 2.1, 2.4, 2.7, 1.11_
   
   - [x] 5.3 Implement color scheme application
     - Create CSS variable generation for each theme

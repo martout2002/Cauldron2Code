@@ -61,13 +61,27 @@ export class GitOperationsService {
     const features: string[] = [];
 
     // Framework
-    if (config.framework === 'next') {
+    if (config.frontendFramework === 'nextjs') {
       technologies.push('Next.js 15');
-    } else if (config.framework === 'express') {
+    } else if (config.frontendFramework === 'react') {
+      technologies.push('React');
+    } else if (config.frontendFramework === 'vue') {
+      technologies.push('Vue');
+    } else if (config.frontendFramework === 'angular') {
+      technologies.push('Angular');
+    } else if (config.frontendFramework === 'svelte') {
+      technologies.push('Svelte');
+    }
+    
+    if (config.backendFramework === 'express') {
       technologies.push('Express.js');
-    } else if (config.framework === 'monorepo') {
-      technologies.push('Next.js 15');
-      technologies.push('Express.js');
+    } else if (config.backendFramework === 'fastify') {
+      technologies.push('Fastify');
+    } else if (config.backendFramework === 'nestjs') {
+      technologies.push('NestJS');
+    }
+    
+    if (config.projectStructure === 'fullstack-monorepo') {
       features.push('Turborepo monorepo structure');
     }
 

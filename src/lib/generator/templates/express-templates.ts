@@ -1,9 +1,9 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 
 /**
  * Generate Express server entry point
  */
-export function generateExpressIndex(config: ScaffoldConfig): string {
+export function generateExpressIndex(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
 
   return `import express from 'express';
@@ -108,7 +108,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
 /**
  * Generate Express API index for monorepo
  */
-export function generateMonorepoExpressIndex(config: ScaffoldConfig): string {
+export function generateMonorepoExpressIndex(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
 
   return `import express from 'express';

@@ -1,9 +1,9 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 
 /**
  * Generate chatbot API route with streaming support
  */
-export function generateChatbotApiRoute(config: ScaffoldConfig): string {
+export function generateChatbotApiRoute(config: ScaffoldConfigWithFramework): string {
   const isMonorepo = config.framework === 'monorepo';
   const importPath = isMonorepo ? '@anthropic-ai/sdk' : '@anthropic-ai/sdk';
 
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 /**
  * Generate chatbot UI component
  */
-export function generateChatbotPage(_config: ScaffoldConfig): string {
+export function generateChatbotPage(_config: ScaffoldConfigWithFramework): string {
   return `'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -246,7 +246,7 @@ export default function ChatPage() {
  * Generate document analyzer API route
  */
 export function generateDocumentAnalyzerApiRoute(
-  _config: ScaffoldConfig
+  _config: ScaffoldConfigWithFramework
 ): string {
   return `import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest } from 'next/server';
@@ -307,7 +307,7 @@ export async function POST(req: NextRequest) {
 /**
  * Generate document analyzer UI component
  */
-export function generateDocumentAnalyzerPage(_config: ScaffoldConfig): string {
+export function generateDocumentAnalyzerPage(_config: ScaffoldConfigWithFramework): string {
   return `'use client';
 
 import { useState } from 'react';
@@ -465,7 +465,7 @@ export default function DocumentAnalyzerPage() {
  * Generate semantic search API route
  */
 export function generateSemanticSearchApiRoute(
-  _config: ScaffoldConfig
+  _config: ScaffoldConfigWithFramework
 ): string {
   return `import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest } from 'next/server';
@@ -584,7 +584,7 @@ export async function POST(req: NextRequest) {
 /**
  * Generate semantic search UI component
  */
-export function generateSemanticSearchPage(_config: ScaffoldConfig): string {
+export function generateSemanticSearchPage(_config: ScaffoldConfigWithFramework): string {
   return `'use client';
 
 import { useState } from 'react';
@@ -722,7 +722,7 @@ export default function SemanticSearchPage() {
 /**
  * Generate code assistant API route
  */
-export function generateCodeAssistantApiRoute(_config: ScaffoldConfig): string {
+export function generateCodeAssistantApiRoute(_config: ScaffoldConfigWithFramework): string {
   return `import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest } from 'next/server';
 
@@ -787,7 +787,7 @@ export async function POST(req: NextRequest) {
 /**
  * Generate code assistant UI component
  */
-export function generateCodeAssistantPage(_config: ScaffoldConfig): string {
+export function generateCodeAssistantPage(_config: ScaffoldConfigWithFramework): string {
   return `'use client';
 
 import { useState } from 'react';
@@ -967,7 +967,7 @@ export default function CodeAssistantPage() {
 /**
  * Generate image generator API route
  */
-export function generateImageGeneratorApiRoute(_config: ScaffoldConfig): string {
+export function generateImageGeneratorApiRoute(_config: ScaffoldConfigWithFramework): string {
   return `import { NextRequest } from 'next/server';
 
 // Note: Anthropic doesn't provide image generation directly.
@@ -1005,7 +1005,7 @@ export async function POST(req: NextRequest) {
 /**
  * Generate image generator UI component
  */
-export function generateImageGeneratorPage(_config: ScaffoldConfig): string {
+export function generateImageGeneratorPage(_config: ScaffoldConfigWithFramework): string {
   return `'use client';
 
 import { useState } from 'react';

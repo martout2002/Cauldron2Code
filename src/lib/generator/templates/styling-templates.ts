@@ -1,10 +1,10 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 import { COLOR_SCHEMES } from '@/lib/color-schemes';
 
 /**
  * Generate globals.css with color scheme variables
  */
-export function generateGlobalsCss(config: ScaffoldConfig): string {
+export function generateGlobalsCss(config: ScaffoldConfigWithFramework): string {
   const scheme = COLOR_SCHEMES[config.colorScheme];
   if (!scheme) {
     throw new Error(`Color scheme '${config.colorScheme}' not found`);
@@ -110,7 +110,7 @@ body {
 /**
  * Generate Tailwind config with theme colors
  */
-export function generateTailwindConfig(config: ScaffoldConfig): string {
+export function generateTailwindConfig(config: ScaffoldConfigWithFramework): string {
   const scheme = COLOR_SCHEMES[config.colorScheme];
   if (!scheme) {
     throw new Error(`Color scheme '${config.colorScheme}' not found`);
@@ -185,7 +185,7 @@ export function generatePostCssConfig(): string {
 /**
  * Generate shadcn/ui components.json config
  */
-export function generateComponentsJson(config: ScaffoldConfig): string {
+export function generateComponentsJson(config: ScaffoldConfigWithFramework): string {
   const isMonorepo = config.framework === 'monorepo';
   const basePath = isMonorepo ? 'apps/web' : '.';
 
@@ -214,7 +214,7 @@ export function generateComponentsJson(config: ScaffoldConfig): string {
 /**
  * Generate styled-components theme
  */
-export function generateStyledComponentsTheme(config: ScaffoldConfig): string {
+export function generateStyledComponentsTheme(config: ScaffoldConfigWithFramework): string {
   const scheme = COLOR_SCHEMES[config.colorScheme];
   if (!scheme) {
     throw new Error(`Color scheme '${config.colorScheme}' not found`);
@@ -253,7 +253,7 @@ export type Theme = typeof theme;
 /**
  * Generate styled-components global styles
  */
-export function generateStyledComponentsGlobalStyles(config: ScaffoldConfig): string {
+export function generateStyledComponentsGlobalStyles(config: ScaffoldConfigWithFramework): string {
   const scheme = COLOR_SCHEMES[config.colorScheme];
   if (!scheme) {
     throw new Error(`Color scheme '${config.colorScheme}' not found`);
@@ -1206,7 +1206,7 @@ export { Input };
 /**
  * Generate shadcn component usage example page
  */
-export function generateShadcnUsageExample(_config: ScaffoldConfig): string {
+export function generateShadcnUsageExample(_config: ScaffoldConfigWithFramework): string {
   return `import { Button } from '@/components/ui/button';
 import {
   Card,

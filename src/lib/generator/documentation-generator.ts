@@ -1,13 +1,13 @@
-import { ScaffoldConfig, DocumentationSection } from '@/types';
+import { ScaffoldConfigWithFramework, DocumentationSection } from '@/types';
 
 /**
  * Documentation Generator
  * Generates comprehensive documentation based on scaffold configuration
  */
 export class DocumentationGenerator {
-  private config: ScaffoldConfig;
+  private config: ScaffoldConfigWithFramework;
 
-  constructor(config: ScaffoldConfig) {
+  constructor(config: ScaffoldConfigWithFramework) {
     this.config = config;
   }
 

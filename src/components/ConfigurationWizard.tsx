@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useConfigStore } from '@/lib/store/config-store';
 import { scaffoldConfigSchema, type ScaffoldConfig } from '@/types';
-import { getAITemplates, isFrameworkCompatibleWithAI } from '@/lib/constants/ai-templates';
+import { getAITemplates } from '@/lib/constants/ai-templates';
 import { AITemplateCard } from '@/components/AITemplateCard';
 import { Tooltip } from '@/components/Tooltip';
 
@@ -32,26 +32,26 @@ export function ConfigurationWizard() {
   };
 
   // Memoize and optimize field change handler
-  const handleFieldChange = useCallback((
-    field: keyof ScaffoldConfig,
-    value: ScaffoldConfig[keyof ScaffoldConfig],
+  const handleFieldChange = useCallback(<K extends keyof ScaffoldConfig>(
+    field: K,
+    value: ScaffoldConfig[K],
   ) => {
     // Use transition to make updates non-blocking
     startTransition(() => {
-      // If framework is changing to Express and AI template is selected, clear it
-      if (field === 'framework' && value === 'express') {
+      // If frontend is changing to non-Next.js and AI template is selected, clear it
+      if (field === 'frontendFramework' && value !== 'nextjs') {
         if (config.aiTemplate !== 'none' && config.aiTemplate !== undefined) {
           updateConfig({ 
             [field]: value,
             aiTemplate: 'none'
-          });
+          } as Partial<ScaffoldConfig>);
           // Also disable AI features toggle
           setAiEnabled(false);
           return;
         }
       }
       
-      updateConfig({ [field]: value });
+      updateConfig({ [field]: value } as Partial<ScaffoldConfig>);
     });
   }, [config.aiTemplate, updateConfig]);
 
@@ -107,63 +107,173 @@ export function ConfigurationWizard() {
           </div>
         </section>
 
-        {/* Framework Section */}
+        {/* Frontend Framework Section */}
         <section className="bg-white rounded-lg border p-4 md:p-6 hover-lift transition-shadow hover:shadow-md fade-in">
-          <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Framework</h2>
-          <div className="space-y-3 md:space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Framework Type</label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3" role="radiogroup" aria-label="Framework selection">
-                {(['next', 'express', 'monorepo'] as const).map((fw) => (
+          <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Frontend Framework</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 md:gap-3" role="radiogroup" aria-label="Frontend framework selection">
+            {(['nextjs', 'react', 'vue', 'angular', 'svelte'] as const).map((fw) => (
+              <label
+                key={fw}
+                className={`flex flex-col items-center justify-center p-3 md:p-4 border-2 rounded-lg cursor-pointer transition-all touch-manipulation ${
+                  formValues.frontendFramework === fw
+                    ? 'border-purple-500 bg-purple-50'
+                    : 'border-gray-200 hover:border-gray-300 active:border-gray-400'
+                }`}
+              >
+                <input
+                  type="radio"
+                  value={fw}
+                  {...register('frontendFramework')}
+                  onChange={(e) => handleFieldChange('frontendFramework', e.target.value as ScaffoldConfig['frontendFramework'])}
+                  className="sr-only"
+                  aria-label={fw}
+                  aria-checked={formValues.frontendFramework === fw}
+                />
+                <span className="font-medium text-sm md:text-base capitalize">
+                  {fw === 'nextjs' ? 'Next.js' : fw}
+                </span>
+                {fw === 'nextjs' && (
+                  <span className="text-xs text-purple-600 mt-1">Recommended</span>
+                )}
+              </label>
+            ))}
+          </div>
+
+          {/* Next.js Router Selection */}
+          {formValues.frontendFramework === 'nextjs' && (
+            <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
+              <label className="block text-sm font-medium mb-2">Next.js Router</label>
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
+                {(['app', 'pages'] as const).map((router) => (
                   <label
-                    key={fw}
+                    key={router}
                     className={`flex items-center justify-center p-3 md:p-4 border-2 rounded-lg cursor-pointer transition-all touch-manipulation ${
-                      formValues.framework === fw
+                      formValues.nextjsRouter === router
                         ? 'border-purple-500 bg-purple-50'
                         : 'border-gray-200 hover:border-gray-300 active:border-gray-400'
                     }`}
                   >
                     <input
                       type="radio"
-                      value={fw}
-                      {...register('framework')}
-                      onChange={(e) => handleFieldChange('framework', e.target.value)}
+                      value={router}
+                      {...register('nextjsRouter')}
+                      onChange={(e) => handleFieldChange('nextjsRouter', e.target.value as 'app' | 'pages')}
                       className="sr-only"
-                      aria-label={`${fw} framework`}
-                      aria-checked={formValues.framework === fw}
                     />
-                    <span className="font-medium text-sm md:text-base capitalize">{fw}</span>
+                    <span className="font-medium text-sm md:text-base capitalize">{router} Router</span>
                   </label>
                 ))}
               </div>
             </div>
+          )}
+        </section>
 
-            {formValues.framework === 'next' && (
-              <div>
-                <label className="block text-sm font-medium mb-2">Next.js Router</label>
-                <div className="grid grid-cols-2 gap-2 md:gap-3">
-                  {(['app', 'pages'] as const).map((router) => (
-                    <label
-                      key={router}
-                      className={`flex items-center justify-center p-3 md:p-4 border-2 rounded-lg cursor-pointer transition-all touch-manipulation ${
-                        formValues.nextjsRouter === router
-                          ? 'border-purple-500 bg-purple-50'
-                          : 'border-gray-200 hover:border-gray-300 active:border-gray-400'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        value={router}
-                        {...register('nextjsRouter')}
-                        onChange={(e) => handleFieldChange('nextjsRouter', e.target.value)}
-                        className="sr-only"
-                      />
-                      <span className="font-medium text-sm md:text-base capitalize">{router} Router</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
+        {/* Backend Framework Section */}
+        <section className="bg-white rounded-lg border p-4 md:p-6 hover-lift transition-shadow hover:shadow-md fade-in">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Backend Framework</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 md:gap-3" role="radiogroup" aria-label="Backend framework selection">
+            {(['none', 'nextjs-api', 'express', 'fastify', 'nestjs'] as const).map((bk) => {
+              const isDisabled = bk === 'nextjs-api' && formValues.frontendFramework !== 'nextjs';
+              return (
+                <label
+                  key={bk}
+                  className={`flex flex-col items-center justify-center p-3 md:p-4 border-2 rounded-lg transition-all touch-manipulation ${
+                    isDisabled
+                      ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
+                      : formValues.backendFramework === bk
+                      ? 'border-purple-500 bg-purple-50 cursor-pointer'
+                      : 'border-gray-200 hover:border-gray-300 active:border-gray-400 cursor-pointer'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    value={bk}
+                    {...register('backendFramework')}
+                    onChange={(e) => handleFieldChange('backendFramework', e.target.value as ScaffoldConfig['backendFramework'])}
+                    className="sr-only"
+                    disabled={isDisabled}
+                    aria-label={bk}
+                    aria-checked={formValues.backendFramework === bk}
+                  />
+                  <span className="font-medium text-sm md:text-base capitalize">
+                    {bk === 'none' ? 'None' : bk === 'nextjs-api' ? 'Next.js API' : bk}
+                  </span>
+                  {bk === 'nextjs-api' && (
+                    <span className="text-xs text-gray-500 mt-1">Requires Next.js</span>
+                  )}
+                </label>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Build Tool Section */}
+        <section className="bg-white rounded-lg border p-4 md:p-6 hover-lift transition-shadow hover:shadow-md fade-in">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Build Tool</h2>
+          <div className="grid grid-cols-3 gap-2 md:gap-3" role="radiogroup" aria-label="Build tool selection">
+            {(['auto', 'vite', 'webpack'] as const).map((tool) => (
+              <label
+                key={tool}
+                className={`flex flex-col items-center justify-center p-3 md:p-4 border-2 rounded-lg cursor-pointer transition-all touch-manipulation ${
+                  formValues.buildTool === tool
+                    ? 'border-purple-500 bg-purple-50'
+                    : 'border-gray-200 hover:border-gray-300 active:border-gray-400'
+                }`}
+              >
+                <input
+                  type="radio"
+                  value={tool}
+                  {...register('buildTool')}
+                  onChange={(e) => handleFieldChange('buildTool', e.target.value as ScaffoldConfig['buildTool'])}
+                  className="sr-only"
+                  aria-label={tool}
+                  aria-checked={formValues.buildTool === tool}
+                />
+                <span className="font-medium text-sm md:text-base capitalize">{tool}</span>
+                {tool === 'auto' && (
+                  <span className="text-xs text-purple-600 mt-1">Recommended</span>
+                )}
+              </label>
+            ))}
+          </div>
+        </section>
+
+        {/* Project Structure Section */}
+        <section className="bg-white rounded-lg border p-4 md:p-6 hover-lift transition-shadow hover:shadow-md fade-in">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Project Structure</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3" role="radiogroup" aria-label="Project structure selection">
+            {(['nextjs-only', 'react-spa', 'fullstack-monorepo', 'express-api-only'] as const).map((structure) => (
+              <label
+                key={structure}
+                className={`flex flex-col items-start p-3 md:p-4 border-2 rounded-lg cursor-pointer transition-all touch-manipulation ${
+                  formValues.projectStructure === structure
+                    ? 'border-purple-500 bg-purple-50'
+                    : 'border-gray-200 hover:border-gray-300 active:border-gray-400'
+                }`}
+              >
+                <input
+                  type="radio"
+                  value={structure}
+                  {...register('projectStructure')}
+                  onChange={(e) => handleFieldChange('projectStructure', e.target.value as ScaffoldConfig['projectStructure'])}
+                  className="sr-only"
+                  aria-label={structure}
+                  aria-checked={formValues.projectStructure === structure}
+                />
+                <span className="font-medium text-sm md:text-base">
+                  {structure === 'nextjs-only' && 'Next.js Only'}
+                  {structure === 'react-spa' && 'React SPA'}
+                  {structure === 'fullstack-monorepo' && 'Full-stack Monorepo'}
+                  {structure === 'express-api-only' && 'Express API Only'}
+                </span>
+                <span className="text-xs text-gray-600 mt-1">
+                  {structure === 'nextjs-only' && 'Frontend + API routes'}
+                  {structure === 'react-spa' && 'Frontend only'}
+                  {structure === 'fullstack-monorepo' && 'Next.js + Express'}
+                  {structure === 'express-api-only' && 'Backend only'}
+                </span>
+              </label>
+            ))}
           </div>
         </section>
 
@@ -184,7 +294,7 @@ export function ConfigurationWizard() {
                   type="radio"
                   value={authOption}
                   {...register('auth')}
-                  onChange={(e) => handleFieldChange('auth', e.target.value)}
+                  onChange={(e) => handleFieldChange('auth', e.target.value as ScaffoldConfig['auth'])}
                   className="sr-only"
                   aria-label={`${authOption} authentication`}
                   aria-checked={formValues.auth === authOption}
@@ -220,7 +330,7 @@ export function ConfigurationWizard() {
                   type="radio"
                   value={dbOption}
                   {...register('database')}
-                  onChange={(e) => handleFieldChange('database', e.target.value)}
+                  onChange={(e) => handleFieldChange('database', e.target.value as ScaffoldConfig['database'])}
                   className="sr-only"
                 />
                 <span className="font-medium text-xs md:text-sm">{dbOption}</span>
@@ -246,7 +356,7 @@ export function ConfigurationWizard() {
                   type="radio"
                   value={apiOption}
                   {...register('api')}
-                  onChange={(e) => handleFieldChange('api', e.target.value)}
+                  onChange={(e) => handleFieldChange('api', e.target.value as ScaffoldConfig['api'])}
                   className="sr-only"
                 />
                 <span className="font-medium text-xs md:text-sm">{apiOption}</span>
@@ -272,7 +382,7 @@ export function ConfigurationWizard() {
           </p>
 
           {/* Framework Compatibility Warning */}
-          {formValues.framework === 'express' && (
+          {formValues.frontendFramework !== 'nextjs' && (
             <div className="mb-4 bg-red-50 border-2 border-red-200 rounded-lg p-3 md:p-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="flex items-start gap-2">
                 <span className="text-red-600 text-lg">⚠️</span>
@@ -281,7 +391,7 @@ export function ConfigurationWizard() {
                     Framework Incompatibility
                   </h4>
                   <p className="text-sm text-red-800">
-                    AI templates require Next.js or Monorepo framework. Please select Next.js or Monorepo to enable AI features.
+                    AI templates require Next.js frontend. Please select Next.js to enable AI features.
                   </p>
                 </div>
               </div>
@@ -291,14 +401,14 @@ export function ConfigurationWizard() {
           {/* Enable/Disable Toggle */}
           <div className="mb-4">
             <label className={`flex items-center space-x-3 p-3 rounded-lg border-2 transition-all duration-300 ${
-              formValues.framework === 'express'
+              formValues.frontendFramework !== 'nextjs'
                 ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
                 : 'border-gray-200 hover:border-purple-300 hover:shadow-sm cursor-pointer touch-manipulation'
             }`}>
               <input
                 type="checkbox"
                 checked={aiEnabled}
-                disabled={formValues.framework === 'express'}
+                disabled={formValues.frontendFramework !== 'nextjs'}
                 onChange={(e) => {
                   const enabled = e.target.checked;
                   setAiEnabled(enabled);
@@ -330,7 +440,7 @@ export function ConfigurationWizard() {
                 aria-label="AI template selection"
               >
                 {getAITemplates().map((template) => {
-                  const isCompatible = isFrameworkCompatibleWithAI(formValues.framework);
+                  const isCompatible = formValues.frontendFramework === 'nextjs';
                   const isSelected = formValues.aiTemplate === template.id;
                   
                   return (
@@ -455,7 +565,7 @@ export function ConfigurationWizard() {
                         type="radio"
                         value={styleOption}
                         {...register('styling')}
-                        onChange={(e) => handleFieldChange('styling', e.target.value)}
+                        onChange={(e) => handleFieldChange('styling', e.target.value as ScaffoldConfig['styling'])}
                         className="sr-only"
                       />
                       <span className="font-medium text-xs md:text-sm">{styleOption}</span>

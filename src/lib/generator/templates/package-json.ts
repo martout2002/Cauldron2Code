@@ -1,4 +1,4 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 
 /**
  * Generate package.json for different project types
@@ -10,7 +10,7 @@ import { ScaffoldConfig } from '@/types';
  * 3. Keeping dependencies updated with security patches
  * 4. Using tools like Dependabot or Renovate for automated updates
  */
-export function generatePackageJson(config: ScaffoldConfig): string {
+export function generatePackageJson(config: ScaffoldConfigWithFramework): string {
   if (config.framework === 'monorepo') {
     return generateMonorepoPackageJson(config);
   } else if (config.framework === 'next') {
@@ -23,7 +23,7 @@ export function generatePackageJson(config: ScaffoldConfig): string {
 /**
  * Generate monorepo root package.json
  */
-function generateMonorepoPackageJson(config: ScaffoldConfig): string {
+function generateMonorepoPackageJson(config: ScaffoldConfigWithFramework): string {
   const pkg = {
     name: config.projectName,
     version: '0.1.0',
@@ -67,7 +67,7 @@ function generateMonorepoPackageJson(config: ScaffoldConfig): string {
 /**
  * Generate Next.js package.json
  */
-function generateNextJsPackageJson(config: ScaffoldConfig): string {
+function generateNextJsPackageJson(config: ScaffoldConfigWithFramework): string {
   const dependencies: Record<string, string> = {
     react: '^18.2.0',
     'react-dom': '^18.2.0',
@@ -194,7 +194,7 @@ function generateNextJsPackageJson(config: ScaffoldConfig): string {
 /**
  * Generate Express package.json
  */
-function generateExpressPackageJson(config: ScaffoldConfig): string {
+function generateExpressPackageJson(config: ScaffoldConfigWithFramework): string {
   const dependencies: Record<string, string> = {
     express: '^4.18.0',
     cors: '^2.8.0',
@@ -271,7 +271,7 @@ function generateExpressPackageJson(config: ScaffoldConfig): string {
 /**
  * Generate web app package.json for monorepo
  */
-export function generateWebAppPackageJson(config: ScaffoldConfig): string {
+export function generateWebAppPackageJson(config: ScaffoldConfigWithFramework): string {
   const dependencies: Record<string, string> = {
     react: '^18.2.0',
     'react-dom': '^18.2.0',
@@ -349,7 +349,7 @@ export function generateWebAppPackageJson(config: ScaffoldConfig): string {
 /**
  * Generate API app package.json for monorepo
  */
-export function generateApiAppPackageJson(config: ScaffoldConfig): string {
+export function generateApiAppPackageJson(config: ScaffoldConfigWithFramework): string {
   const dependencies: Record<string, string> = {
     express: '^4.18.0',
     cors: '^2.8.0',

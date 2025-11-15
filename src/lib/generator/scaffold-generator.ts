@@ -1,4 +1,4 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 import { TemplateEngine } from './template-engine';
 import { DocumentationGenerator } from './documentation-generator';
 import { getDirectoryStructure } from './file-structure';
@@ -15,6 +15,8 @@ import {
   generateSharedTypesPackageJson,
   generateSharedTypesIndex,
   generateConfigPackageJson,
+  generateHelloApiRoute,
+  generateUsersApiRoute,
 } from './templates/nextjs-templates';
 import {
   generateExpressIndex,
@@ -184,10 +186,10 @@ class TemplateCache {
 export class ScaffoldGenerator {
   private templateEngine: TemplateEngine;
   private documentationGenerator: DocumentationGenerator;
-  private config: ScaffoldConfig;
+  private config: ScaffoldConfigWithFramework;
   private templateCache: TemplateCache;
 
-  constructor(config: ScaffoldConfig) {
+  constructor(config: ScaffoldConfigWithFramework) {
     this.config = config;
     this.templateEngine = new TemplateEngine();
     this.documentationGenerator = new DocumentationGenerator(config);
@@ -602,17 +604,31 @@ bun.lock
   }
 
   /**
-   * Generate project-specific files based on framework
+   * Generate project-specific files based on project structure
    */
   private generateProjectFiles(_context: any): GeneratedFile[] {
     const files: GeneratedFile[] = [];
 
-    if (this.config.framework === 'monorepo') {
+    // Use projectStructure to determine which files to generate
+    const projectStructure = this.config.projectStructure;
+
+    if (projectStructure === 'fullstack-monorepo') {
       files.push(...this.generateMonorepoFiles());
-    } else if (this.config.framework === 'next') {
+    } else if (projectStructure === 'nextjs-only') {
       files.push(...this.generateNextJsFiles());
-    } else if (this.config.framework === 'express') {
+    } else if (projectStructure === 'react-spa') {
+      files.push(...this.generateReactSpaFiles());
+    } else if (projectStructure === 'express-api-only') {
       files.push(...this.generateExpressFiles());
+    } else {
+      // Fallback to legacy framework field for backward compatibility
+      if (this.config.framework === 'monorepo') {
+        files.push(...this.generateMonorepoFiles());
+      } else if (this.config.framework === 'next') {
+        files.push(...this.generateNextJsFiles());
+      } else if (this.config.framework === 'express') {
+        files.push(...this.generateExpressFiles());
+      }
     }
 
     return files;
@@ -847,6 +863,19 @@ bun.lock
       content: generateNextJsHomePage(this.config),
     });
 
+    // API route examples (only for nextjs-only structure)
+    if (this.config.projectStructure === 'nextjs-only') {
+      files.push({
+        path: 'src/app/api/hello/route.ts',
+        content: generateHelloApiRoute(),
+      });
+
+      files.push({
+        path: 'src/app/api/users/route.ts',
+        content: generateUsersApiRoute(),
+      });
+    }
+
     // Styling files
     files.push({
       path: 'src/app/globals.css',
@@ -1010,11 +1039,184 @@ bun.lock
   }
 
   /**
+   * Generate React SPA files (frontend only)
+   */
+  private generateReactSpaFiles(): GeneratedFile[] {
+    const files: GeneratedFile[] = [];
+
+    // package.json
+    files.push({
+      path: 'package.json',
+      content: generatePackageJson(this.config),
+    });
+
+    // Vite config (if Vite is selected or auto)
+    const buildTool = this.config.buildTool === 'auto' ? 'vite' : this.config.buildTool;
+    if (buildTool === 'vite') {
+      files.push({
+        path: 'vite.config.ts',
+        content: this.generateViteConfig(),
+      });
+    }
+
+    // Main entry files
+    files.push({
+      path: 'src/main.tsx',
+      content: this.generateReactMain(),
+    });
+
+    files.push({
+      path: 'src/App.tsx',
+      content: this.generateReactApp(),
+    });
+
+    // Index HTML
+    files.push({
+      path: 'index.html',
+      content: this.generateIndexHtml(),
+    });
+
+    // Styling files
+    if (this.config.styling === 'tailwind') {
+      files.push({
+        path: 'src/index.css',
+        content: generateGlobalsCss(this.config),
+      });
+
+      files.push({
+        path: 'tailwind.config.ts',
+        content: generateTailwindConfig(this.config),
+      });
+
+      files.push({
+        path: 'postcss.config.mjs',
+        content: generatePostCssConfig(),
+      });
+    }
+
+    return files;
+  }
+
+  /**
+   * Generate Vite config for React SPA
+   */
+  private generateViteConfig(): string {
+    return `import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  server: {
+    port: 3000,
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+  },
+});
+`;
+  }
+
+  /**
+   * Generate React main.tsx entry file
+   */
+  private generateReactMain(): string {
+    return `import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+${this.config.styling === 'tailwind' ? "import './index.css';" : ''}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+`;
+  }
+
+  /**
+   * Generate React App.tsx component
+   */
+  private generateReactApp(): string {
+    return `import React from 'react';
+
+function App() {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-8">
+      <div className="max-w-4xl w-full">
+        <h1 className="text-4xl font-bold mb-4">
+          Welcome to ${this.config.projectName}
+        </h1>
+        <p className="text-lg mb-8">
+          ${this.config.description}
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-6 border rounded-lg">
+            <h2 className="text-xl font-semibold mb-2">Frontend Framework</h2>
+            <p>${this.config.frontendFramework}</p>
+          </div>
+          <div className="p-6 border rounded-lg">
+            <h2 className="text-xl font-semibold mb-2">Build Tool</h2>
+            <p>${this.config.buildTool}</p>
+          </div>
+          <div className="p-6 border rounded-lg">
+            <h2 className="text-xl font-semibold mb-2">Styling</h2>
+            <p>${this.config.styling}</p>
+          </div>
+          <div className="p-6 border rounded-lg">
+            <h2 className="text-xl font-semibold mb-2">Project Structure</h2>
+            <p>${this.config.projectStructure}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+`;
+  }
+
+  /**
+   * Generate index.html for React SPA
+   */
+  private generateIndexHtml(): string {
+    return `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${this.config.projectName}</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+`;
+  }
+
+  /**
    * Generate AI template files based on selected template
+   * Skip for Express API only and React SPA (no backend/frontend respectively)
    */
   private generateAITemplateFiles(): GeneratedFile[] {
     const files: GeneratedFile[] = [];
-    const isMonorepo = this.config.framework === 'monorepo';
+    
+    // Skip AI templates for Express API only (no frontend) and React SPA (no backend)
+    const projectStructure = this.config.projectStructure;
+    if (projectStructure === 'express-api-only' || projectStructure === 'react-spa') {
+      return files;
+    }
+
+    const isMonorepo = projectStructure === 'fullstack-monorepo';
     const basePath = isMonorepo ? 'apps/web/src' : 'src';
 
     switch (this.config.aiTemplate) {
@@ -1079,10 +1281,18 @@ bun.lock
 
   /**
    * Generate authentication files based on selected auth provider
+   * Skip for Express API only (no frontend)
    */
   private generateAuthFiles(): GeneratedFile[] {
     const files: GeneratedFile[] = [];
-    const isMonorepo = this.config.framework === 'monorepo';
+    
+    // Skip auth files for Express API only (no frontend)
+    const projectStructure = this.config.projectStructure;
+    if (projectStructure === 'express-api-only') {
+      return files;
+    }
+
+    const isMonorepo = projectStructure === 'fullstack-monorepo';
     const basePath = isMonorepo ? 'apps/web/src' : 'src';
 
     switch (this.config.auth) {
@@ -1185,7 +1395,8 @@ bun.lock
    */
   private generateDatabaseFiles(): GeneratedFile[] {
     const files: GeneratedFile[] = [];
-    const isMonorepo = this.config.framework === 'monorepo';
+    const projectStructure = this.config.projectStructure;
+    const isMonorepo = projectStructure === 'fullstack-monorepo';
     const basePath = isMonorepo ? 'apps/web/src' : 'src';
 
     if (this.config.database === 'prisma-postgres') {
@@ -1294,10 +1505,18 @@ bun.lock
 
   /**
    * Generate API layer files based on selected API type
+   * Skip for React SPA (no backend)
    */
   private generateApiLayerFiles(): GeneratedFile[] {
     const files: GeneratedFile[] = [];
-    const isMonorepo = this.config.framework === 'monorepo';
+    
+    // Skip API layer for React SPA (no backend)
+    const projectStructure = this.config.projectStructure;
+    if (projectStructure === 'react-spa') {
+      return files;
+    }
+
+    const isMonorepo = projectStructure === 'fullstack-monorepo';
     const basePath = isMonorepo ? 'apps/web/src' : 'src';
 
     switch (this.config.api) {

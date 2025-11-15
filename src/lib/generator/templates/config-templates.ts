@@ -1,9 +1,9 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 
 /**
  * Generate ESLint configuration
  */
-export function generateEslintConfig(config: ScaffoldConfig): string {
+export function generateEslintConfig(config: ScaffoldConfigWithFramework): string {
   const isNextJs = config.framework === 'next' || config.framework === 'monorepo';
 
   if (isNextJs) {
@@ -80,7 +80,7 @@ export function generateExpressTsConfig(): string {
 /**
  * Generate Vercel deployment configuration
  */
-export function generateVercelConfig(config: ScaffoldConfig): string {
+export function generateVercelConfig(config: ScaffoldConfigWithFramework): string {
   const vercelConfig: any = {
     buildCommand: config.framework === 'monorepo' ? 'turbo run build --filter=web' : 'npm run build',
     outputDirectory: config.framework === 'monorepo' ? 'apps/web/.next' : '.next',
@@ -131,7 +131,7 @@ export function generateVercelConfig(config: ScaffoldConfig): string {
 /**
  * Generate Dockerfile with security best practices
  */
-export function generateDockerfile(config: ScaffoldConfig): string {
+export function generateDockerfile(config: ScaffoldConfigWithFramework): string {
   if (config.framework === 'monorepo') {
     return `# ============================================
 # Multi-stage Dockerfile for Monorepo
@@ -321,7 +321,7 @@ CMD ["npm", "start"]
 /**
  * Generate docker-compose.yml
  */
-export function generateDockerCompose(config: ScaffoldConfig): string {
+export function generateDockerCompose(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
   const hasRedis = config.extras.redis;
 
@@ -396,7 +396,7 @@ volumes:
 /**
  * Generate Railway configuration
  */
-export function generateRailwayConfig(config: ScaffoldConfig): string {
+export function generateRailwayConfig(config: ScaffoldConfigWithFramework): string {
   const railwayConfig = {
     $schema: 'https://railway.app/railway.schema.json',
     build: {
@@ -416,7 +416,7 @@ export function generateRailwayConfig(config: ScaffoldConfig): string {
 /**
  * Generate GitHub Actions workflow
  */
-export function generateGithubActionsWorkflow(config: ScaffoldConfig): string {
+export function generateGithubActionsWorkflow(config: ScaffoldConfigWithFramework): string {
   return `name: CI/CD
 
 on:
@@ -565,7 +565,7 @@ temp
 /**
  * Generate EC2 deployment script
  */
-export function generateEC2DeployScript(config: ScaffoldConfig): string {
+export function generateEC2DeployScript(config: ScaffoldConfigWithFramework): string {
   const appName = config.projectName;
 
   return `#!/bin/bash
@@ -622,7 +622,7 @@ echo "Deployment completed successfully!"
 /**
  * Generate systemd service configuration for EC2
  */
-export function generateSystemdService(config: ScaffoldConfig): string {
+export function generateSystemdService(config: ScaffoldConfigWithFramework): string {
   const appName = config.projectName;
   const port = config.framework === 'express' ? '4000' : '3000';
   const workingDir = `/var/www/${appName}`;
@@ -656,7 +656,7 @@ WantedBy=multi-user.target
 /**
  * Generate nginx reverse proxy configuration for EC2
  */
-export function generateNginxConfig(config: ScaffoldConfig): string {
+export function generateNginxConfig(config: ScaffoldConfigWithFramework): string {
   const appName = config.projectName;
   const port = config.framework === 'express' ? '4000' : '3000';
 
@@ -728,7 +728,7 @@ server {
 /**
  * Generate EC2 setup instructions script
  */
-export function generateEC2SetupScript(config: ScaffoldConfig): string {
+export function generateEC2SetupScript(config: ScaffoldConfigWithFramework): string {
   const appName = config.projectName;
 
   return `#!/bin/bash

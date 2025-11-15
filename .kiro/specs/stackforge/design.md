@@ -61,8 +61,13 @@ interface ScaffoldConfig {
   projectName: string;
   description: string;
   
-  // Framework choices
-  framework: 'next' | 'express' | 'monorepo';
+  // Framework choices (new structure)
+  frontendFramework: 'nextjs' | 'react' | 'vue' | 'angular' | 'svelte';
+  backendFramework: 'none' | 'nextjs-api' | 'express' | 'fastify' | 'nestjs';
+  buildTool: 'auto' | 'vite' | 'webpack';
+  projectStructure: 'nextjs-only' | 'react-spa' | 'fullstack-monorepo' | 'express-api-only';
+  
+  // Next.js specific (if applicable)
   nextjsRouter?: 'app' | 'pages';
   
   // Authentication
@@ -139,6 +144,146 @@ interface DocumentationSection {
   applicableWhen: (config: ScaffoldConfig) => boolean;
   subsections?: DocumentationSection[];
 }
+```
+
+## Framework Selection Logic
+
+### Selection Categories
+
+The framework selection is organized into four logical categories that guide users through architectural decisions:
+
+#### 1. Frontend Framework/Library
+- **Next.js** (React framework - recommended): Full-featured React framework with routing, SSR, and API routes
+- **React** (library only): Just React, user adds routing and build setup
+- **Vue**: Progressive JavaScript framework
+- **Angular**: Full-featured TypeScript framework
+- **Svelte**: Compiler-based framework
+
+#### 2. Backend Framework
+- **None (using Next.js API routes)**: Only available when Next.js is selected as frontend
+- **Express**: Minimal and flexible Node.js framework
+- **Fastify**: Fast and low overhead web framework
+- **NestJS**: Progressive Node.js framework with TypeScript
+
+#### 3. Build Tool
+- **Auto (recommended)**: Automatically selects best tool (Vite for React/Vue/Svelte, Next.js bundler for Next.js, Webpack for Angular)
+- **Vite**: Fast, modern build tool
+- **Webpack**: Mature, highly configurable bundler
+
+#### 4. Project Structure
+- **Next.js only**: Frontend + API routes in single Next.js app
+- **React SPA**: Frontend-only single page application
+- **Full-stack monorepo**: Separate frontend and backend apps in monorepo structure
+- **Express API only**: Backend-only API service (no frontend)
+
+### Compatibility Rules
+
+```typescript
+const FRAMEWORK_COMPATIBILITY_RULES = [
+  {
+    condition: (config) => config.frontendFramework !== 'nextjs' && config.backendFramework === 'nextjs-api',
+    error: 'Next.js API routes require Next.js as the frontend framework',
+    autoFix: () => ({ backendFramework: 'none' })
+  },
+  {
+    condition: (config) => config.projectStructure === 'nextjs-only' && config.frontendFramework !== 'nextjs',
+    error: 'Next.js only structure requires Next.js as frontend framework',
+    autoFix: () => ({ projectStructure: 'react-spa' })
+  },
+  {
+    condition: (config) => config.projectStructure === 'express-api-only' && config.frontendFramework !== 'none',
+    warning: 'Express API only structure will not include frontend code',
+  },
+  {
+    condition: (config) => config.projectStructure === 'react-spa' && config.backendFramework !== 'none',
+    warning: 'React SPA structure will not include backend code. Consider Full-stack monorepo.',
+  },
+  {
+    condition: (config) => config.buildTool === 'webpack' && config.frontendFramework === 'svelte',
+    warning: 'Vite is recommended for Svelte projects for better performance',
+  }
+];
+```
+
+### Generated File Structures
+
+#### Next.js Only (frontend + API routes)
+```
+project-name/
+├── app/
+│   ├── api/                  # API routes directory
+│   │   ├── hello/
+│   │   │   └── route.ts
+│   │   └── users/
+│   │       └── route.ts
+│   ├── page.tsx
+│   ├── layout.tsx
+│   └── globals.css
+├── components/
+├── lib/
+├── public/
+├── package.json
+├── next.config.ts
+├── tsconfig.json
+└── README.md
+```
+
+#### React SPA (frontend only)
+```
+project-name/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── hooks/
+│   ├── utils/
+│   ├── App.tsx
+│   └── main.tsx
+├── public/
+├── package.json
+├── vite.config.ts           # If Vite selected
+├── tsconfig.json
+└── README.md
+```
+
+#### Full-stack Monorepo (Next.js + Express)
+```
+project-name/
+├── apps/
+│   ├── web/                 # Next.js frontend
+│   │   ├── app/
+│   │   ├── components/
+│   │   ├── package.json
+│   │   └── next.config.ts
+│   └── api/                 # Express backend
+│       ├── src/
+│       │   ├── routes/
+│       │   ├── controllers/
+│       │   ├── middleware/
+│       │   └── server.ts
+│       └── package.json
+├── packages/
+│   ├── shared-types/        # Shared TypeScript types
+│   ├── ui/                  # Shared components (optional)
+│   └── config/              # Shared configs
+├── turbo.json
+├── package.json
+└── README.md
+```
+
+#### Express API Only (no frontend)
+```
+project-name/
+├── src/
+│   ├── routes/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── utils/
+│   └── server.ts
+├── tests/
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
 ## Component Structure
@@ -692,11 +837,44 @@ export async function POST(req: Request) {
 
 ```typescript
 const VALIDATION_RULES: ValidationRule[] = [
+  // Framework compatibility rules
+  {
+    id: 'nextjs-api-requires-nextjs',
+    message: 'Next.js API routes require Next.js as the frontend framework.',
+    severity: 'error',
+    check: (cfg) => cfg.backendFramework === 'nextjs-api' && cfg.frontendFramework !== 'nextjs'
+  },
+  {
+    id: 'nextjs-only-structure',
+    message: 'Next.js only structure requires Next.js as frontend framework.',
+    severity: 'error',
+    check: (cfg) => cfg.projectStructure === 'nextjs-only' && cfg.frontendFramework !== 'nextjs'
+  },
+  {
+    id: 'express-api-only-no-frontend',
+    message: 'Express API only structure will not include frontend code.',
+    severity: 'warning',
+    check: (cfg) => cfg.projectStructure === 'express-api-only' && cfg.frontendFramework !== 'none'
+  },
+  {
+    id: 'react-spa-no-backend',
+    message: 'React SPA structure will not include backend code. Consider Full-stack monorepo if you need a backend.',
+    severity: 'warning',
+    check: (cfg) => cfg.projectStructure === 'react-spa' && cfg.backendFramework !== 'none'
+  },
+  {
+    id: 'webpack-svelte-warning',
+    message: 'Vite is recommended for Svelte projects for better performance and developer experience.',
+    severity: 'warning',
+    check: (cfg) => cfg.buildTool === 'webpack' && cfg.frontendFramework === 'svelte'
+  },
+  
+  // API and architecture rules
   {
     id: 'trpc-monorepo',
-    message: 'tRPC works best with monorepo or Next.js. Consider using REST for Express-only.',
+    message: 'tRPC works best with monorepo or Next.js. Consider using REST for standalone Express.',
     severity: 'warning',
-    check: (cfg) => cfg.api === 'trpc' && cfg.framework === 'express'
+    check: (cfg) => cfg.api === 'trpc' && cfg.projectStructure === 'express-api-only'
   },
   {
     id: 'auth-database',
@@ -704,12 +882,22 @@ const VALIDATION_RULES: ValidationRule[] = [
     severity: 'error',
     check: (cfg) => cfg.auth !== 'none' && cfg.database === 'none'
   },
+  
+  // Deployment rules
   {
     id: 'vercel-express',
-    message: 'Express apps cannot deploy to Vercel. Consider Render or EC2.',
+    message: 'Standalone Express apps cannot deploy to Vercel. Consider Render, Railway, or EC2.',
     severity: 'error',
-    check: (cfg) => cfg.framework === 'express' && cfg.deployment.includes('vercel')
+    check: (cfg) => cfg.projectStructure === 'express-api-only' && cfg.deployment.includes('vercel')
   },
+  {
+    id: 'vercel-nextjs-recommended',
+    message: 'Vercel is the recommended deployment platform for Next.js applications.',
+    severity: 'info',
+    check: (cfg) => cfg.frontendFramework === 'nextjs' && !cfg.deployment.includes('vercel')
+  },
+  
+  // AI and services
   {
     id: 'ai-api-key',
     message: 'AI templates require an Anthropic API key. You\'ll need to add ANTHROPIC_API_KEY to your environment.',

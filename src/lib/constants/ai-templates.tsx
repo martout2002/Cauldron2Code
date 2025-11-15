@@ -229,9 +229,9 @@ export const getAIProviderById = (
  * Check if a framework is compatible with AI templates
  */
 export const isFrameworkCompatibleWithAI = (
-  framework: 'next' | 'express' | 'monorepo'
+  frontend: 'next' | 'none'
 ): boolean => {
-  return framework === 'next' || framework === 'monorepo';
+  return frontend === 'next';
 };
 
 /**

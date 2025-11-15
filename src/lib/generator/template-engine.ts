@@ -1,4 +1,4 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 
 /**
  * Template variable context for string interpolation
@@ -16,7 +16,7 @@ export interface TemplateContext {
 export interface FileTemplate {
   path: string;
   content: string;
-  condition?: (config: ScaffoldConfig) => boolean;
+  condition?: (config: ScaffoldConfigWithFramework) => boolean;
 }
 
 /**
@@ -24,7 +24,7 @@ export interface FileTemplate {
  */
 export interface DirectoryStructure {
   path: string;
-  condition?: (config: ScaffoldConfig) => boolean;
+  condition?: (config: ScaffoldConfigWithFramework) => boolean;
 }
 
 /**
@@ -62,7 +62,7 @@ export class TemplateEngine {
    * @param config - Scaffold configuration
    * @returns Template context object
    */
-  createContext(config: ScaffoldConfig): TemplateContext {
+  createContext(config: ScaffoldConfigWithFramework): TemplateContext {
     return {
       projectName: config.projectName,
       description: config.description,

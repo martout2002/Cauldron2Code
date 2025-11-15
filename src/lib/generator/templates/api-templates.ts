@@ -1,9 +1,9 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 
 /**
  * Generate fetch-based REST API client
  */
-export function generateFetchApiClient(config: ScaffoldConfig): string {
+export function generateFetchApiClient(config: ScaffoldConfigWithFramework): string {
   const isMonorepo = config.framework === 'monorepo';
   const apiUrl = isMonorepo
     ? "process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'"
@@ -198,7 +198,7 @@ export async function del<T>(
 /**
  * Generate axios-based REST API client
  */
-export function generateAxiosApiClient(config: ScaffoldConfig): string {
+export function generateAxiosApiClient(config: ScaffoldConfigWithFramework): string {
   const isMonorepo = config.framework === 'monorepo';
   const apiUrl = isMonorepo
     ? "process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'"
@@ -332,7 +332,7 @@ export default api;
 /**
  * Generate REST API route examples for Next.js
  */
-export function generateRestApiRouteExamples(config: ScaffoldConfig): string {
+export function generateRestApiRouteExamples(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
 
   return `import { NextRequest, NextResponse } from 'next/server';
@@ -451,7 +451,7 @@ export async function POST(request: NextRequest) {
 /**
  * Generate REST API route for single resource
  */
-export function generateRestApiSingleResourceRoute(config: ScaffoldConfig): string {
+export function generateRestApiSingleResourceRoute(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
 
   return `import { NextRequest, NextResponse } from 'next/server';
@@ -610,7 +610,7 @@ export async function DELETE(
 /**
  * Generate tRPC router configuration
  */
-export function generateTrpcRouter(config: ScaffoldConfig): string {
+export function generateTrpcRouter(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
 
   return `import { initTRPC, TRPCError } from '@trpc/server';
@@ -799,7 +799,7 @@ export { handler as GET, handler as POST };
 /**
  * Generate tRPC client setup
  */
-export function generateTrpcClient(config: ScaffoldConfig): string {
+export function generateTrpcClient(config: ScaffoldConfigWithFramework): string {
   const isMonorepo = config.framework === 'monorepo';
   const apiUrl = isMonorepo
     ? "process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'"
@@ -925,7 +925,7 @@ export default function UsersPage() {
 /**
  * Generate GraphQL schema
  */
-export function generateGraphQLSchema(config: ScaffoldConfig): string {
+export function generateGraphQLSchema(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
 
   return `import { gql } from 'graphql-tag';
@@ -1130,7 +1130,7 @@ export { handler as GET, handler as POST };
 /**
  * Generate Apollo Client setup
  */
-export function generateApolloClient(config: ScaffoldConfig): string {
+export function generateApolloClient(config: ScaffoldConfigWithFramework): string {
   const isMonorepo = config.framework === 'monorepo';
   const apiUrl = isMonorepo
     ? "process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'"

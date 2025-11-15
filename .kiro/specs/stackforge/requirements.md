@@ -10,6 +10,10 @@ StackForge is an interactive web application that generates custom full-stack pr
 - **Configuration UI**: The interactive interface where users select technology options
 - **Tech Stack**: The collection of technologies (frameworks, databases, deployment targets, etc.) selected by the user
 - **Scaffold**: The generated project structure including code files, configuration files, and dependencies
+- **Frontend Framework**: The primary UI framework or library (Next.js, React, Vue, Angular, Svelte)
+- **Backend Framework**: The server-side framework for API routes (Next.js API routes, Express, Fastify, NestJS)
+- **Build Tool**: The bundler and development tool (Vite, Webpack, or auto-selected based on framework)
+- **Project Structure**: The overall architecture pattern (Next.js only, React SPA, Full-stack monorepo, Express API only)
 - **Monorepo**: A repository structure containing multiple related packages or applications
 - **AI Template**: Pre-configured code patterns for common AI use cases (chatbot, document analyzer, etc.)
 - **Deployment Target**: The platform where the generated application will be hosted (Vercel, EC2, etc.)
@@ -23,21 +27,31 @@ StackForge is an interactive web application that generates custom full-stack pr
 
 ### Requirement 1: Interactive Technology Selection
 
-**User Story:** As a developer starting a new project, I want to select my preferred technologies through an interactive UI, so that I can quickly scaffold a project matching my exact needs.
+**User Story:** As a developer starting a new project, I want to select my preferred technologies through an interactive UI with clear categories, so that I can quickly scaffold a project matching my exact needs.
 
 #### Acceptance Criteria
 
-1.1 WHEN the user navigates to the configuration screen, THE Configuration UI SHALL display toggle or dropdown controls for all available technology choices.
+1.1 WHEN the user navigates to the configuration screen, THE Configuration UI SHALL display four primary framework selection categories: Frontend Framework, Backend Framework, Build Tool, and Project Structure.
 
-1.2 WHILE the user modifies technology selections, THE StackForge System SHALL validate compatibility between selected options within 100 milliseconds.
+1.2 WHEN the user views the Frontend Framework category, THE Configuration UI SHALL display options for Next.js (recommended), React, Vue, Angular, and Svelte.
 
-1.3 IF incompatible technology options are selected, THEN THE Configuration UI SHALL display a warning message that explains the specific conflict and suggests resolution options.
+1.3 WHEN the user views the Backend Framework category, THE Configuration UI SHALL display options for None (using Next.js API routes), Express, Fastify, and NestJS.
 
-1.4 WHEN the user completes their configuration, THE Configuration UI SHALL provide a preview summary of all selected technologies before generation begins.
+1.4 WHEN the user views the Build Tool category, THE Configuration UI SHALL display options for Auto (recommended), Vite, and Webpack.
 
-1.5 THE Configuration UI SHALL provide tooltip explanations for each technology choice.
+1.5 WHEN the user views the Project Structure category, THE Configuration UI SHALL display options for Next.js only (frontend + API routes), React SPA (frontend only), Full-stack monorepo (Next.js + Express), and Express API only (no frontend).
 
-1.6 THE Configuration UI SHALL limit the total number of configuration options to 20 or fewer to maintain usability.
+1.6 WHILE the user modifies technology selections, THE StackForge System SHALL validate compatibility between selected options within 100 milliseconds.
+
+1.7 IF incompatible technology options are selected, THEN THE Configuration UI SHALL display a warning message that explains the specific conflict and suggests resolution options.
+
+1.8 WHEN the user completes their configuration, THE Configuration UI SHALL provide a preview summary of all selected technologies before generation begins.
+
+1.9 THE Configuration UI SHALL provide tooltip explanations for each technology choice.
+
+1.10 WHERE the user selects a Frontend Framework other than Next.js, THE Configuration UI SHALL automatically adjust the Backend Framework options to exclude "None (Next.js API routes)".
+
+1.11 WHERE the user selects "Next.js only" as Project Structure, THE Scaffold SHALL include an api directory within the app folder for API routes.
 
 ### Requirement 2: Scaffold Generation and Delivery
 

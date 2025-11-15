@@ -5,6 +5,49 @@ import { ValidationRule } from '@/types';
  * Based on design document requirements and known technology conflicts
  */
 export const VALIDATION_RULES: ValidationRule[] = [
+  // Framework compatibility rules (new four-category structure)
+  {
+    id: 'nextjs-api-requires-nextjs',
+    message:
+      'Next.js API routes require Next.js as the frontend framework.',
+    severity: 'error',
+    check: (config) =>
+      config.backendFramework === 'nextjs-api' && config.frontendFramework !== 'nextjs',
+  },
+  {
+    id: 'nextjs-only-structure',
+    message:
+      'Next.js only structure requires Next.js as frontend framework.',
+    severity: 'error',
+    check: (config) =>
+      config.projectStructure === 'nextjs-only' && config.frontendFramework !== 'nextjs',
+  },
+  {
+    id: 'express-api-only-no-frontend',
+    message:
+      'Express API only structure will not include frontend code.',
+    severity: 'warning',
+    check: (config) =>
+      config.projectStructure === 'express-api-only',
+  },
+  {
+    id: 'react-spa-no-backend',
+    message:
+      'React SPA structure will not include backend code. Consider Full-stack monorepo if you need a backend.',
+    severity: 'warning',
+    check: (config) =>
+      config.projectStructure === 'react-spa' && config.backendFramework !== 'none',
+  },
+  {
+    id: 'webpack-svelte-warning',
+    message:
+      'Vite is recommended for Svelte projects for better performance and developer experience.',
+    severity: 'warning',
+    check: (config) =>
+      config.buildTool === 'webpack' && config.frontendFramework === 'svelte',
+  },
+  
+  // Authentication and database rules
   {
     id: 'auth-database',
     message:
@@ -12,30 +55,35 @@ export const VALIDATION_RULES: ValidationRule[] = [
     severity: 'error',
     check: (config) => config.auth !== 'none' && config.database === 'none',
   },
+  
+  // Deployment rules
   {
     id: 'vercel-express',
     message:
-      'Express apps cannot deploy to Vercel. Consider Render, Railway, or EC2.',
+      'Standalone Express apps cannot deploy to Vercel. Consider Render, Railway, or EC2.',
     severity: 'error',
     check: (config) =>
-      config.framework === 'express' && config.deployment.includes('vercel'),
+      config.projectStructure === 'express-api-only' && config.deployment.includes('vercel'),
   },
+  
+  // API and architecture rules
   {
     id: 'trpc-monorepo',
     message:
-      'tRPC works best with monorepo or Next.js. Consider using REST for Express-only.',
+      'tRPC works best with monorepo or Next.js. Consider using REST for standalone Express.',
     severity: 'warning',
-    check: (config) => config.api === 'trpc' && config.framework === 'express',
+    check: (config) =>
+      config.api === 'trpc' && config.projectStructure === 'express-api-only',
   },
   {
     id: 'ai-framework-compatibility',
     message:
-      'AI templates require Next.js or Monorepo framework. Please select Next.js or Monorepo to use AI features.',
+      'AI templates require Next.js frontend. Please select Next.js to use AI features.',
     severity: 'error',
     check: (config) =>
       config.aiTemplate !== 'none' &&
       config.aiTemplate !== undefined &&
-      config.framework === 'express',
+      config.frontendFramework !== 'nextjs',
   },
   {
     id: 'ai-api-key',
@@ -59,7 +107,7 @@ export const VALIDATION_RULES: ValidationRule[] = [
       'Next.js framework requires a router selection (App Router or Pages Router).',
     severity: 'error',
     check: (config) =>
-      (config.framework === 'next' || config.framework === 'monorepo') &&
+      config.frontendFramework === 'nextjs' &&
       !config.nextjsRouter,
   },
   {

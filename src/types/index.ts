@@ -9,8 +9,13 @@ export interface ScaffoldConfig {
   projectName: string;
   description: string;
 
-  // Framework choices
-  framework: 'next' | 'express' | 'monorepo';
+  // Framework choices (new four-category structure)
+  frontendFramework: 'nextjs' | 'react' | 'vue' | 'angular' | 'svelte';
+  backendFramework: 'none' | 'nextjs-api' | 'express' | 'fastify' | 'nestjs';
+  buildTool: 'auto' | 'vite' | 'webpack';
+  projectStructure: 'nextjs-only' | 'react-spa' | 'fullstack-monorepo' | 'express-api-only';
+  
+  // Next.js specific (if applicable)
   nextjsRouter?: 'app' | 'pages';
 
   // Authentication
@@ -118,9 +123,18 @@ export const scaffoldConfigSchema = z.object({
     .min(1, 'Description is required')
     .max(200, 'Description must be 200 characters or less'),
 
-  // Framework choices
-  framework: z.enum(['next', 'express', 'monorepo'], {
-    message: 'Invalid framework selection',
+  // Framework choices (new four-category structure)
+  frontendFramework: z.enum(['nextjs', 'react', 'vue', 'angular', 'svelte'], {
+    message: 'Invalid frontend framework selection',
+  }),
+  backendFramework: z.enum(['none', 'nextjs-api', 'express', 'fastify', 'nestjs'], {
+    message: 'Invalid backend framework selection',
+  }),
+  buildTool: z.enum(['auto', 'vite', 'webpack'], {
+    message: 'Invalid build tool selection',
+  }),
+  projectStructure: z.enum(['nextjs-only', 'react-spa', 'fullstack-monorepo', 'express-api-only'], {
+    message: 'Invalid project structure selection',
   }),
   nextjsRouter: z.enum(['app', 'pages']).optional(),
 
@@ -210,4 +224,50 @@ export interface ValidationWarning {
   field: string;
   message: string;
   ruleId: string;
+}
+
+// ============================================================================
+// Helper Functions & Backward Compatibility
+// ============================================================================
+
+/**
+ * Determine the legacy framework value based on new framework selections
+ * Used for backward compatibility with existing generator code
+ */
+export function getFrameworkType(config: ScaffoldConfig): 'next' | 'express' | 'monorepo' {
+  const { frontendFramework, backendFramework, projectStructure } = config;
+  
+  // Use projectStructure as primary indicator
+  if (projectStructure === 'fullstack-monorepo') return 'monorepo';
+  if (projectStructure === 'nextjs-only') return 'next';
+  if (projectStructure === 'express-api-only') return 'express';
+  
+  // Fallback to framework combinations
+  const hasNext = frontendFramework === 'nextjs';
+  const hasExpress = backendFramework === 'express' || backendFramework === 'fastify' || backendFramework === 'nestjs';
+  
+  if (hasNext && hasExpress) return 'monorepo';
+  if (hasNext) return 'next';
+  if (hasExpress) return 'express';
+  
+  // Default to next if nothing selected
+  return 'next';
+}
+
+/**
+ * Extended config type with legacy framework property for backward compatibility
+ * This allows existing generator code to work without changes
+ */
+export type ScaffoldConfigWithFramework = ScaffoldConfig & {
+  framework: 'next' | 'express' | 'monorepo';
+};
+
+/**
+ * Add the legacy framework property to config for backward compatibility
+ */
+export function addFrameworkProperty(config: ScaffoldConfig): ScaffoldConfigWithFramework {
+  return {
+    ...config,
+    framework: getFrameworkType(config),
+  };
 }

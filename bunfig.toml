@@ -1,7 +1,7 @@
 # Bun configuration - use bun for all package management
 [install]
 # Use bun for installing packages
-auto = "bun"
+auto = "fallback"
 # Prefer bun.lockb over package-lock.json or yarn.lock
 lockfile = true
 # Save exact versions in package.json

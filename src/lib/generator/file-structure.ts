@@ -1,71 +1,127 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfig, ScaffoldConfigWithFramework } from '@/types';
 import { DirectoryStructure } from './template-engine';
+
+/**
+ * Get Next.js only structure (frontend + API routes in single Next.js app)
+ */
+export function getNextJsOnlyStructure(): DirectoryStructure[] {
+  return [
+    { path: 'src' },
+    { path: 'src/app' },
+    { path: 'src/app/api' }, // API routes directory
+    { path: 'src/components' },
+    { path: 'src/lib' },
+    { path: 'public' },
+  ];
+}
+
+/**
+ * Get React SPA structure (frontend only)
+ */
+export function getReactSpaStructure(): DirectoryStructure[] {
+  return [
+    { path: 'src' },
+    { path: 'src/components' },
+    { path: 'src/pages' },
+    { path: 'src/hooks' },
+    { path: 'src/utils' },
+    { path: 'src/lib' },
+    { path: 'public' },
+  ];
+}
+
+/**
+ * Get Full-stack monorepo structure (apps/web + apps/api)
+ */
+export function getFullStackMonorepoStructure(): DirectoryStructure[] {
+  return [
+    { path: 'apps' },
+    { path: 'apps/web' },
+    { path: 'apps/web/src' },
+    { path: 'apps/web/src/app' },
+    { path: 'apps/web/src/components' },
+    { path: 'apps/web/src/lib' },
+    { path: 'apps/web/public' },
+    { path: 'apps/api' },
+    { path: 'apps/api/src' },
+    { path: 'apps/api/src/routes' },
+    { path: 'apps/api/src/middleware' },
+    { path: 'packages' },
+    { path: 'packages/shared-types' },
+    { path: 'packages/shared-types/src' },
+    { path: 'packages/config' },
+    { path: 'docs' },
+  ];
+}
+
+/**
+ * Get Express API only structure (backend only, no frontend)
+ */
+export function getExpressApiOnlyStructure(): DirectoryStructure[] {
+  return [
+    { path: 'src' },
+    { path: 'src/routes' },
+    { path: 'src/controllers' },
+    { path: 'src/middleware' },
+    { path: 'src/models' },
+    { path: 'src/utils' },
+    { path: 'src/lib' },
+  ];
+}
 
 /**
  * Generate directory structure based on configuration
  */
 export function getDirectoryStructure(
-  config: ScaffoldConfig
+  config: ScaffoldConfig | ScaffoldConfigWithFramework
 ): DirectoryStructure[] {
   const dirs: DirectoryStructure[] = [];
 
-  if (config.framework === 'monorepo') {
-    // Monorepo structure
-    dirs.push(
-      { path: 'apps' },
-      { path: 'apps/web' },
-      { path: 'apps/web/src' },
-      { path: 'apps/web/src/app' },
-      { path: 'apps/web/src/components' },
-      { path: 'apps/web/src/lib' },
-      { path: 'apps/web/public' },
-      { path: 'apps/api', condition: (cfg) => cfg.framework === 'monorepo' },
-      { path: 'apps/api/src', condition: (cfg) => cfg.framework === 'monorepo' },
-      {
-        path: 'apps/api/src/routes',
-        condition: (cfg) => cfg.framework === 'monorepo',
-      },
-      { path: 'packages' },
-      { path: 'packages/shared-types' },
-      { path: 'packages/shared-types/src' },
-      { path: 'packages/config' },
-      { path: 'docs' }
-    );
-  } else if (config.framework === 'next') {
-    // Next.js standalone structure
-    dirs.push(
-      { path: 'src' },
-      { path: 'src/app' },
-      { path: 'src/components' },
-      { path: 'src/lib' },
-      { path: 'public' }
-    );
-  } else if (config.framework === 'express') {
-    // Express standalone structure
-    dirs.push(
-      { path: 'src' },
-      { path: 'src/routes' },
-      { path: 'src/middleware' },
-      { path: 'src/lib' }
-    );
+  // Use projectStructure to determine base structure
+  const projectStructure = config.projectStructure;
+  
+  if (projectStructure === 'fullstack-monorepo') {
+    dirs.push(...getFullStackMonorepoStructure());
+  } else if (projectStructure === 'nextjs-only') {
+    dirs.push(...getNextJsOnlyStructure());
+  } else if (projectStructure === 'react-spa') {
+    dirs.push(...getReactSpaStructure());
+  } else if (projectStructure === 'express-api-only') {
+    dirs.push(...getExpressApiOnlyStructure());
+  } else {
+    // Fallback to legacy framework field if projectStructure is not set
+    const framework = 'framework' in config ? config.framework : 'next';
+    
+    if (framework === 'monorepo') {
+      dirs.push(...getFullStackMonorepoStructure());
+    } else if (framework === 'next') {
+      dirs.push(...getNextJsOnlyStructure());
+    } else if (framework === 'express') {
+      dirs.push(...getExpressApiOnlyStructure());
+    }
   }
 
-  // Add auth-specific directories
-  if (config.auth === 'nextauth') {
-    const basePath = config.framework === 'monorepo' ? 'apps/web/src' : 'src';
-    dirs.push(
-      { path: `${basePath}/app/api/auth/[...nextauth]` },
-      { path: `${basePath}/app/auth/signin` },
-      { path: `${basePath}/app/auth/error` }
-    );
-  } else if (config.auth === 'clerk') {
-    const basePath = config.framework === 'monorepo' ? 'apps/web/src' : 'src';
-    dirs.push(
-      { path: `${basePath}/app/sign-in/[[...sign-in]]` },
-      { path: `${basePath}/app/sign-up/[[...sign-up]]` }
-    );
-  } else if (config.auth === 'supabase') {
-    dirs.push({ path: 'supabase' }, { path: 'supabase/migrations' });
+  // Determine base path based on project structure
+  const isMonorepo = projectStructure === 'fullstack-monorepo';
+  const isExpressOnly = projectStructure === 'express-api-only';
+  const basePath = isMonorepo ? 'apps/web/src' : 'src';
+
+  // Add auth-specific directories (only for projects with frontend)
+  if (!isExpressOnly) {
+    if (config.auth === 'nextauth') {
+      dirs.push(
+        { path: `${basePath}/app/api/auth/[...nextauth]` },
+        { path: `${basePath}/app/auth/signin` },
+        { path: `${basePath}/app/auth/error` }
+      );
+    } else if (config.auth === 'clerk') {
+      dirs.push(
+        { path: `${basePath}/app/sign-in/[[...sign-in]]` },
+        { path: `${basePath}/app/sign-up/[[...sign-up]]` }
+      );
+    } else if (config.auth === 'supabase') {
+      dirs.push({ path: 'supabase' }, { path: 'supabase/migrations' });
+    }
   }
 
   // Add database-specific directories
@@ -73,74 +129,39 @@ export function getDirectoryStructure(
     dirs.push({ path: 'prisma' }, { path: 'scripts' });
   } else if (config.database === 'drizzle-postgres') {
     dirs.push({ path: 'drizzle' }, { path: 'scripts' });
-    const basePath = config.framework === 'monorepo' ? 'apps/web/src' : 'src';
     dirs.push({ path: `${basePath}/lib/db` });
   } else if (config.database === 'supabase' && config.auth !== 'supabase') {
     dirs.push({ path: 'supabase' }, { path: 'supabase/migrations' });
   }
 
-  // Add AI template directories
-  if (config.aiTemplate && config.aiTemplate !== 'none') {
-    if (config.framework === 'monorepo') {
-      dirs.push({ path: 'apps/web/src/app/api' });
-      
-      // Add specific directories based on AI template
-      if (config.aiTemplate === 'chatbot') {
-        dirs.push(
-          { path: 'apps/web/src/app/api/chat' },
-          { path: 'apps/web/src/app/chat' }
-        );
-      } else if (config.aiTemplate === 'document-analyzer') {
-        dirs.push(
-          { path: 'apps/web/src/app/api/analyze' },
-          { path: 'apps/web/src/app/analyze' }
-        );
-      } else if (config.aiTemplate === 'semantic-search') {
-        dirs.push(
-          { path: 'apps/web/src/app/api/search' },
-          { path: 'apps/web/src/app/search' }
-        );
-      } else if (config.aiTemplate === 'code-assistant') {
-        dirs.push(
-          { path: 'apps/web/src/app/api/code-assistant' },
-          { path: 'apps/web/src/app/code-assistant' }
-        );
-      } else if (config.aiTemplate === 'image-generator') {
-        dirs.push(
-          { path: 'apps/web/src/app/api/generate-image' },
-          { path: 'apps/web/src/app/generate-image' }
-        );
-      }
-    } else if (config.framework === 'next') {
-      dirs.push({ path: 'src/app/api' });
-      
-      // Add specific directories based on AI template
-      if (config.aiTemplate === 'chatbot') {
-        dirs.push(
-          { path: 'src/app/api/chat' },
-          { path: 'src/app/chat' }
-        );
-      } else if (config.aiTemplate === 'document-analyzer') {
-        dirs.push(
-          { path: 'src/app/api/analyze' },
-          { path: 'src/app/analyze' }
-        );
-      } else if (config.aiTemplate === 'semantic-search') {
-        dirs.push(
-          { path: 'src/app/api/search' },
-          { path: 'src/app/search' }
-        );
-      } else if (config.aiTemplate === 'code-assistant') {
-        dirs.push(
-          { path: 'src/app/api/code-assistant' },
-          { path: 'src/app/code-assistant' }
-        );
-      } else if (config.aiTemplate === 'image-generator') {
-        dirs.push(
-          { path: 'src/app/api/generate-image' },
-          { path: 'src/app/generate-image' }
-        );
-      }
+  // Add AI template directories (only for projects with frontend)
+  if (!isExpressOnly && config.aiTemplate && config.aiTemplate !== 'none') {
+    // Add specific directories based on AI template
+    if (config.aiTemplate === 'chatbot') {
+      dirs.push(
+        { path: `${basePath}/app/api/chat` },
+        { path: `${basePath}/app/chat` }
+      );
+    } else if (config.aiTemplate === 'document-analyzer') {
+      dirs.push(
+        { path: `${basePath}/app/api/analyze` },
+        { path: `${basePath}/app/analyze` }
+      );
+    } else if (config.aiTemplate === 'semantic-search') {
+      dirs.push(
+        { path: `${basePath}/app/api/search` },
+        { path: `${basePath}/app/search` }
+      );
+    } else if (config.aiTemplate === 'code-assistant') {
+      dirs.push(
+        { path: `${basePath}/app/api/code-assistant` },
+        { path: `${basePath}/app/code-assistant` }
+      );
+    } else if (config.aiTemplate === 'image-generator') {
+      dirs.push(
+        { path: `${basePath}/app/api/generate-image` },
+        { path: `${basePath}/app/generate-image` }
+      );
     }
   }
 
@@ -164,13 +185,15 @@ export function getDirectoryStructure(
  * Generate file path based on framework and file type
  */
 export function getFilePath(
-  config: ScaffoldConfig,
+  config: ScaffoldConfig | ScaffoldConfigWithFramework,
   fileType: string,
   fileName: string
 ): string {
-  const isMonorepo = config.framework === 'monorepo';
-  const isNext = config.framework === 'next' || isMonorepo;
-  const isExpress = config.framework === 'express';
+  const projectStructure = config.projectStructure;
+  const isMonorepo = projectStructure === 'fullstack-monorepo';
+  const isNextOnly = projectStructure === 'nextjs-only';
+  const isReactSpa = projectStructure === 'react-spa';
+  const isExpressOnly = projectStructure === 'express-api-only';
 
   switch (fileType) {
     case 'root':
@@ -179,15 +202,17 @@ export function getFilePath(
     case 'app':
       if (isMonorepo) {
         return `apps/web/src/app/${fileName}`;
-      } else if (isNext) {
+      } else if (isNextOnly) {
         return `src/app/${fileName}`;
+      } else if (isReactSpa) {
+        return `src/${fileName}`;
       }
       return fileName;
 
     case 'component':
       if (isMonorepo) {
         return `apps/web/src/components/${fileName}`;
-      } else if (isNext) {
+      } else if (isNextOnly || isReactSpa) {
         return `src/components/${fileName}`;
       }
       return `src/components/${fileName}`;
@@ -195,7 +220,7 @@ export function getFilePath(
     case 'lib':
       if (isMonorepo) {
         return `apps/web/src/lib/${fileName}`;
-      } else if (isNext) {
+      } else if (isNextOnly || isReactSpa) {
         return `src/lib/${fileName}`;
       }
       return `src/lib/${fileName}`;
@@ -203,15 +228,17 @@ export function getFilePath(
     case 'api-route':
       if (isMonorepo) {
         return `apps/api/src/routes/${fileName}`;
-      } else if (isExpress) {
+      } else if (isExpressOnly) {
         return `src/routes/${fileName}`;
+      } else if (isNextOnly) {
+        return `src/app/api/${fileName}`;
       }
       return `src/app/api/${fileName}`;
 
     case 'public':
       if (isMonorepo) {
         return `apps/web/public/${fileName}`;
-      } else if (isNext) {
+      } else if (isNextOnly || isReactSpa) {
         return `public/${fileName}`;
       }
       return `public/${fileName}`;

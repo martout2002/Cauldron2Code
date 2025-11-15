@@ -15,7 +15,9 @@ const MAX_CACHE_SIZE = 50;
  */
 function getCacheKey(config: ScaffoldConfig): string {
   const relevantFields = {
-    framework: config.framework,
+    frontendFramework: config.frontendFramework,
+    backendFramework: config.backendFramework,
+    projectStructure: config.projectStructure,
     auth: config.auth,
     database: config.database,
     api: config.api,

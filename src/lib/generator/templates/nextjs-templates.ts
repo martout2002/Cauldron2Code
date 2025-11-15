@@ -1,9 +1,9 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 
 /**
  * Generate Next.js app layout with optimized font loading
  */
-export function generateNextJsLayout(config: ScaffoldConfig): string {
+export function generateNextJsLayout(config: ScaffoldConfigWithFramework): string {
   const isClerk = config.auth === 'clerk';
 
   return `import type { Metadata } from 'next';
@@ -42,7 +42,7 @@ export default function RootLayout({
 /**
  * Generate Next.js home page
  */
-export function generateNextJsHomePage(config: ScaffoldConfig): string {
+export function generateNextJsHomePage(config: ScaffoldConfigWithFramework): string {
   return `export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
@@ -81,7 +81,7 @@ export function generateNextJsHomePage(config: ScaffoldConfig): string {
 /**
  * Generate Next.js config with bundle optimizations
  */
-export function generateNextConfig(config: ScaffoldConfig): string {
+export function generateNextConfig(config: ScaffoldConfigWithFramework): string {
   const hasStyledComponents = config.styling === 'styled-components';
   
   return `import type { NextConfig } from 'next';
@@ -156,7 +156,7 @@ export default nextConfig;
 /**
  * Generate turbo.json for monorepo
  */
-export function generateTurboConfig(_config: ScaffoldConfig): string {
+export function generateTurboConfig(_config: ScaffoldConfigWithFramework): string {
   const turboConfig = {
     $schema: 'https://turbo.build/schema.json',
     globalDependencies: ['**/.env.*local'],
@@ -231,4 +231,70 @@ export function generateConfigPackageJson(): string {
   };
 
   return JSON.stringify(pkg, null, 2);
+}
+
+/**
+ * Generate app/api/hello/route.ts example API route
+ * Only generated when projectStructure is 'nextjs-only'
+ */
+export function generateHelloApiRoute(): string {
+  return `import { NextResponse } from 'next/server';
+
+export async function GET() {
+  return NextResponse.json({
+    message: 'Hello from Next.js API Routes!',
+    timestamp: new Date().toISOString(),
+  });
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  
+  return NextResponse.json({
+    message: 'Data received',
+    data: body,
+    timestamp: new Date().toISOString(),
+  });
+}
+`;
+}
+
+/**
+ * Generate app/api/users/route.ts example API route
+ * Only generated when projectStructure is 'nextjs-only'
+ */
+export function generateUsersApiRoute(): string {
+  return `import { NextResponse } from 'next/server';
+
+// Mock data for demonstration
+const users = [
+  { id: 1, name: 'Alice Johnson', email: 'alice@example.com' },
+  { id: 2, name: 'Bob Smith', email: 'bob@example.com' },
+  { id: 3, name: 'Charlie Brown', email: 'charlie@example.com' },
+];
+
+export async function GET() {
+  return NextResponse.json({
+    users,
+    total: users.length,
+  });
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  
+  const newUser = {
+    id: users.length + 1,
+    name: body.name,
+    email: body.email,
+  };
+  
+  users.push(newUser);
+  
+  return NextResponse.json({
+    message: 'User created successfully',
+    user: newUser,
+  }, { status: 201 });
+}
+`;
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { scaffoldConfigSchema } from '@/types';
+import { scaffoldConfigSchema, addFrameworkProperty } from '@/types';
 import { validateConfig } from '@/lib/validation';
 import { ScaffoldGenerator } from '@/lib/generator/scaffold-generator';
 import {
@@ -153,11 +153,14 @@ async function generateScaffoldAsync(
 
     let result;
     try {
-      const generator = new ScaffoldGenerator(config);
+      // Add framework property for backward compatibility with generator
+      const configWithFramework = addFrameworkProperty(config);
+      const generator = new ScaffoldGenerator(configWithFramework);
       result = await generator.generate();
     } catch (error) {
+      const configWithFramework = addFrameworkProperty(config);
       errorLogger.log('generating-files', error as Error, {
-        framework: config.framework,
+        framework: configWithFramework.framework,
         totalSelections: Object.keys(config).length,
       });
       throw new Error(

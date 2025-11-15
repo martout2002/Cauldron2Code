@@ -1,9 +1,9 @@
-import { ScaffoldConfig } from '@/types';
+import { ScaffoldConfigWithFramework } from '@/types';
 
 /**
  * Generate NextAuth configuration file with security best practices
  */
-export function generateNextAuthConfig(config: ScaffoldConfig): string {
+export function generateNextAuthConfig(config: ScaffoldConfigWithFramework): string {
   return `import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 /**
  * Generate NextAuth sign-in page
  */
-export function generateNextAuthSignInPage(config: ScaffoldConfig): string {
+export function generateNextAuthSignInPage(config: ScaffoldConfigWithFramework): string {
   return `'use client';
 
 import { signIn } from 'next-auth/react';
@@ -148,7 +148,7 @@ export default function SignInPage() {
 /**
  * Generate NextAuth error page
  */
-export function generateNextAuthErrorPage(config: ScaffoldConfig): string {
+export function generateNextAuthErrorPage(config: ScaffoldConfigWithFramework): string {
   return `'use client';
 
 import { useSearchParams } from 'next/navigation';
@@ -603,7 +603,7 @@ export const config = {
 /**
  * Generate Clerk user button component
  */
-export function generateClerkUserButton(config: ScaffoldConfig): string {
+export function generateClerkUserButton(config: ScaffoldConfigWithFramework): string {
   return `'use client';
 
 import { UserButton, useUser } from '@clerk/nextjs';
@@ -662,7 +662,7 @@ export default function SignUpPage() {
 /**
  * Generate Prisma schema file
  */
-export function generatePrismaSchema(config: ScaffoldConfig): string {
+export function generatePrismaSchema(config: ScaffoldConfigWithFramework): string {
   const hasNextAuth = config.auth === 'nextauth';
 
   return `// This is your Prisma schema file,
@@ -946,7 +946,7 @@ echo "Migrations completed successfully!"
 /**
  * Generate Drizzle schema definitions
  */
-export function generateDrizzleSchema(config: ScaffoldConfig): string {
+export function generateDrizzleSchema(config: ScaffoldConfigWithFramework): string {
   const hasNextAuth = config.auth === 'nextauth';
 
   return `import { pgTable, text, timestamp, boolean, integer, uuid, primaryKey } from 'drizzle-orm/pg-core';
