@@ -364,9 +364,6 @@ export class GitOperationsService {
    * Update a reference (branch) to point to a new commit
    */
   async updateReference(ref: string, sha: string, force: boolean = false): Promise<GitReference> {
-    // Ensure ref has proper format
-    const formattedRef = ref.startsWith('refs/') ? ref : `refs/${ref}`;
-
     const response = await fetch(
       `https://api.github.com/repos/${this.owner}/${this.repo}/git/refs/${ref}`,
       {
