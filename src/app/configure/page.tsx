@@ -5,6 +5,7 @@ import { ValidationAlert } from '@/components/ValidationAlert';
 import { PreviewPanel } from '@/components/PreviewPanel';
 import { ColorSchemeSelector } from '@/components/ColorSchemeSelector';
 import { GenerateButton } from '@/components/GenerateButton';
+import { GitHubAuthButton } from '@/components/GitHubAuthButton';
 import { ToastContainer } from '@/components/Toast';
 import { useConfigStore } from '@/lib/store/config-store';
 import { useValidation } from '@/lib/validation/useValidation';
@@ -48,6 +49,19 @@ export default function ConfigurePage() {
                 errors={validationResult.errors}
                 warnings={validationResult.warnings}
               />
+            </div>
+            
+            {/* GitHub Integration */}
+            <div className="mt-6 md:mt-8">
+              <div className="bg-white rounded-lg border p-4 md:p-6">
+                <h2 className="text-lg md:text-xl font-semibold mb-2">
+                  GitHub Integration
+                </h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  Sign in with GitHub to create repositories directly from StackForge
+                </p>
+                <GitHubAuthButton />
+              </div>
             </div>
             
             {/* Generate Button - Connected to validation and generation API */}
