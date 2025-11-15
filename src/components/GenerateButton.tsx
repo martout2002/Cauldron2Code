@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { AlertCircle, Download, Loader2, Github } from 'lucide-react';
 import { ScaffoldConfig, ValidationResult } from '@/types';
 import { validateForGeneration } from '@/lib/validation/validation-handler';
-import { GenerationProgress } from './GenerationProgress';
 import { DownloadButton } from './DownloadButton';
 import { CreateRepoModal } from './CreateRepoModal';
 import { GitHubPushProgress } from './GitHubPushProgress';
@@ -49,7 +48,6 @@ export function GenerateButton({
   className = '',
 }: GenerateButtonProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generationId, setGenerationId] = useState<string | null>(null);
   const [downloadId, setDownloadId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -213,7 +211,12 @@ export function GenerateButton({
         throw new Error(data.error || 'generation_failed');
       }
 
-      setGenerationId(data.generationId);
+      // Set download ID directly from response
+      setDownloadId(data.downloadId);
+      setIsGenerating(false);
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (err) {
       let errorType = 'generation_failed';
       
@@ -225,37 +228,11 @@ export function GenerateButton({
       
       setError(errorType);
       setIsGenerating(false);
+      if (onError) {
+        onError(errorType);
+      }
     }
   };
-
-  const handleGenerationComplete = (downloadId: string) => {
-    setDownloadId(downloadId);
-    setIsGenerating(false);
-    if (onSuccess) {
-      onSuccess();
-    }
-  };
-
-  const handleGenerationError = (errorMessage: string) => {
-    setError(errorMessage);
-    setIsGenerating(false);
-    if (onError) {
-      onError(errorMessage);
-    }
-  };
-
-  // Show progress if generating
-  if (isGenerating && generationId) {
-    return (
-      <div className={`space-y-3 md:space-y-4 ${className}`}>
-        <GenerationProgress
-          generationId={generationId}
-          onComplete={handleGenerationComplete}
-          onError={handleGenerationError}
-        />
-      </div>
-    );
-  }
 
   // Show GitHub push progress if creating repository
   if (isCreatingRepo && githubGenerationId) {
@@ -286,7 +263,6 @@ export function GenerateButton({
             setIsCreatingRepo(false);
             setGithubGenerationId(null);
             setDownloadId(null);
-            setGenerationId(null);
             setError(null);
           }}
           className="w-full px-4 py-2 md:px-6 text-xs md:text-sm text-gray-600 hover:text-gray-800 transition-colors touch-manipulation"
@@ -385,13 +361,25 @@ export function GenerateButton({
         <button
           onClick={() => {
             setDownloadId(null);
-            setGenerationId(null);
             setError(null);
           }}
           className="w-full px-4 py-2 md:px-6 text-xs md:text-sm text-gray-600 hover:text-gray-800 transition-colors touch-manipulation"
         >
           Generate Another
         </button>
+      </div>
+    );
+  }
+
+  // Show loading state while generating
+  if (isGenerating) {
+    return (
+      <div className={`space-y-3 md:space-y-4 ${className}`}>
+        <div className="flex flex-col items-center justify-center p-8 space-y-4">
+          <Loader2 size={32} className="animate-spin text-purple-600" />
+          <p className="text-sm text-gray-600">Generating your scaffold...</p>
+          <p className="text-xs text-gray-500">This may take a few seconds</p>
+        </div>
       </div>
     );
   }

@@ -414,6 +414,142 @@ export function generateRailwayConfig(config: ScaffoldConfigWithFramework): stri
 }
 
 /**
+ * Generate Render configuration (render.yaml)
+ */
+export function generateRenderConfig(config: ScaffoldConfigWithFramework): string {
+  const isNextJs = config.framework === 'next' || config.framework === 'monorepo';
+  const port = isNextJs ? '3000' : '4000';
+  
+  // Build the main web service
+  let webService = `  - type: web
+    name: ${config.projectName}
+    runtime: node
+    buildCommand: ${config.framework === 'monorepo' ? 'npm install && turbo run build' : 'npm install && npm run build'}
+    startCommand: ${config.framework === 'monorepo' ? 'pnpm --filter=web start' : 'npm start'}
+    healthCheckPath: ${isNextJs ? '/api/health' : '/health'}
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: ${port}`;
+
+  // Add database environment variables if needed
+  if (config.database === 'prisma-postgres' || config.database === 'drizzle-postgres') {
+    webService += `
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ${config.projectName}-db
+          property: connectionString`;
+  }
+
+  // Add Supabase environment variables
+  if (config.database === 'supabase') {
+    webService += `
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false`;
+  }
+
+  // Add MongoDB environment variables
+  if (config.database === 'mongodb') {
+    webService += `
+      - key: DATABASE_URL
+        sync: false`;
+  }
+
+  // Add authentication environment variables
+  if (config.auth === 'nextauth') {
+    webService += `
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: NEXTAUTH_URL
+        sync: false
+      - key: GITHUB_ID
+        sync: false
+      - key: GITHUB_SECRET
+        sync: false`;
+  }
+
+  if (config.auth === 'clerk') {
+    webService += `
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false`;
+  }
+
+  // Add AI template environment variables
+  if (config.aiTemplate && config.aiTemplate !== 'none') {
+    const apiKeyMap: Record<string, string> = {
+      anthropic: 'ANTHROPIC_API_KEY',
+      openai: 'OPENAI_API_KEY',
+      'aws-bedrock': 'AWS_ACCESS_KEY_ID',
+      gemini: 'GEMINI_API_KEY',
+    };
+    const apiKeyName = apiKeyMap[config.aiProvider || 'anthropic'];
+    webService += `
+      - key: ${apiKeyName}
+        sync: false`;
+    
+    // Add AWS secret key if using Bedrock
+    if (config.aiProvider === 'aws-bedrock') {
+      webService += `
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        value: us-east-1`;
+    }
+  }
+
+  // Add Redis environment variables
+  if (config.extras.redis) {
+    webService += `
+      - key: REDIS_URL
+        fromService:
+          name: ${config.projectName}-redis
+          type: redis
+          property: connectionString`;
+  }
+
+  // Build the complete YAML
+  let yaml = `# Render Blueprint
+# https://render.com/docs/blueprint-spec
+
+services:
+${webService}
+`;
+
+  // Add PostgreSQL database if needed
+  if (config.database === 'prisma-postgres' || config.database === 'drizzle-postgres') {
+    yaml += `
+  - type: pserv
+    name: ${config.projectName}-db
+    plan: starter
+    ipAllowList: []
+    databases:
+      - name: ${config.projectName}
+        user: ${config.projectName}
+`;
+  }
+
+  // Add Redis if needed
+  if (config.extras.redis) {
+    yaml += `
+  - type: redis
+    name: ${config.projectName}-redis
+    plan: starter
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
+`;
+  }
+
+  return yaml;
+}
+
+/**
  * Generate GitHub Actions workflow
  */
 export function generateGithubActionsWorkflow(config: ScaffoldConfigWithFramework): string {

@@ -590,6 +590,45 @@ export function ConfigurationWizard() {
           </div>
         </section>
 
+        {/* Deployment Section */}
+        <section className="bg-white rounded-lg border p-4 md:p-6 hover-lift transition-shadow hover:shadow-md fade-in">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Deployment Targets</h2>
+          <p className="text-sm text-gray-600 mb-3">
+            Select one or more deployment platforms (at least one required)
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3" role="group" aria-label="Deployment targets">
+            {(['vercel', 'render', 'ec2', 'railway'] as const).map((deployOption) => {
+              const isSelected = formValues.deployment.includes(deployOption);
+              return (
+                <label
+                  key={deployOption}
+                  className={`flex items-center justify-center p-3 md:p-4 border-2 rounded-lg cursor-pointer transition-all touch-manipulation ${
+                    isSelected
+                      ? 'border-purple-500 bg-purple-50'
+                      : 'border-gray-200 hover:border-gray-300 active:border-gray-400'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={(e) => {
+                      const newDeployment = e.target.checked
+                        ? [...formValues.deployment, deployOption]
+                        : formValues.deployment.filter((d) => d !== deployOption);
+                      handleFieldChange('deployment', newDeployment);
+                    }}
+                    className="sr-only"
+                    aria-label={`Deploy to ${deployOption}`}
+                  />
+                  <span className="font-medium text-xs md:text-sm capitalize">
+                    {deployOption === 'ec2' ? 'AWS EC2' : deployOption}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        </section>
+
         {/* Tooling Extras Section */}
         <section className="bg-white rounded-lg border p-4 md:p-6 hover-lift transition-shadow hover:shadow-md fade-in">
           <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Tooling Extras</h2>

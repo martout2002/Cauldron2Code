@@ -15,6 +15,10 @@ export async function GET(
     const progress = progressStore.get(id);
 
     if (!progress) {
+      // Log for debugging
+      console.log(`Progress not found for ID: ${id}`);
+      console.log(`Available IDs: ${progressStore.getAll().map(p => p.id).join(', ')}`);
+      
       return NextResponse.json(
         {
           error: 'Progress tracker not found',
@@ -37,6 +41,3 @@ export async function GET(
     );
   }
 }
-
-// Configure as Edge Function for optimal performance
-export const runtime = 'edge';

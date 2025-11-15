@@ -62,6 +62,7 @@ import {
   generateDockerfile,
   generateDockerCompose,
   generateRailwayConfig,
+  generateRenderConfig,
   generateGithubActionsWorkflow,
   generateDockerignore,
   generateEnhancedGitignore,
@@ -395,6 +396,13 @@ export class ScaffoldGenerator {
       files.push({
         path: 'railway.json',
         content: generateRailwayConfig(this.config),
+      });
+    }
+
+    if (this.config.deployment.includes('render')) {
+      files.push({
+        path: 'render.yaml',
+        content: generateRenderConfig(this.config),
       });
     }
 

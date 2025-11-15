@@ -6,19 +6,13 @@ import {
   createTempDirectory,
   writeFiles,
   cleanupDirectory,
-  FileOperationError,
 } from '@/lib/generator/file-operations';
 import {
   generateDownloadId,
   createZipArchive,
   ensureArchiveStorageDir,
   getArchiveStoragePath,
-  ArchiveError,
 } from '@/lib/generator/archive-generator';
-import {
-  progressStore,
-  ProgressTracker,
-} from '@/lib/generator/progress-tracker';
 import { GenerationErrorLogger } from '@/lib/generator/error-logger';
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
@@ -27,16 +21,12 @@ import path from 'path';
 /**
  * POST /api/generate
  * Generates a scaffold based on configuration
- * Returns generation ID for progress tracking and download
+ * Returns download ID immediately (synchronous)
  */
 export async function POST(request: NextRequest) {
   const generationId = randomBytes(16).toString('hex');
-  const tracker = new ProgressTracker(generationId);
 
   try {
-    // Create progress tracker
-    progressStore.create(generationId);
-    tracker.update('validating', 'Validating configuration...', 5);
 
     // Parse and validate request body
     const body = await request.json();
@@ -51,12 +41,9 @@ export async function POST(request: NextRequest) {
         ruleId: 'schema-validation',
       }));
 
-      tracker.setError('Configuration validation failed');
-
       return NextResponse.json(
         {
           success: false,
-          generationId,
           error: 'Invalid configuration',
           details: zodErrors,
         },
@@ -68,12 +55,9 @@ export async function POST(request: NextRequest) {
     const validationResult = validateConfig(schemaValidation.data);
 
     if (!validationResult.isValid) {
-      tracker.setError('Configuration has validation errors');
-
       return NextResponse.json(
         {
           success: false,
-          generationId,
           error: 'Configuration validation failed',
           details: validationResult.errors,
         },
@@ -83,31 +67,25 @@ export async function POST(request: NextRequest) {
 
     const config = schemaValidation.data;
 
-    // Start generation process asynchronously
-    // Don't await - return immediately with generation ID
-    generateScaffoldAsync(generationId, config, tracker).catch((error) => {
-      console.error('Generation failed:', error);
-      tracker.setError(error.message || 'Generation failed');
-    });
+    // Generate scaffold synchronously
+    const downloadId = await generateScaffold(generationId, config);
 
-    // Return generation ID immediately
+    // Return download ID immediately
     return NextResponse.json(
       {
         success: true,
-        generationId,
-        message: 'Scaffold generation started',
+        downloadId,
+        message: 'Scaffold generated successfully',
       },
-      { status: 202 } // 202 Accepted
+      { status: 200 }
     );
   } catch (error) {
     console.error('Generation error:', error);
-    tracker.setError('Internal server error');
 
     return NextResponse.json(
       {
         success: false,
-        generationId,
-        error: 'Failed to start generation',
+        error: 'Failed to generate scaffold',
         details:
           error instanceof Error ? error.message : 'Unknown error occurred',
       },
@@ -117,58 +95,24 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * Async scaffold generation function
- * Runs in background after API response is sent
+ * Synchronous scaffold generation function
  */
-async function generateScaffoldAsync(
+async function generateScaffold(
   generationId: string,
-  config: any,
-  tracker: ProgressTracker
-): Promise<void> {
+  config: any
+): Promise<string> {
   let tempDir: string | null = null;
   const errorLogger = new GenerationErrorLogger(generationId);
   let partialScaffoldCreated = false;
 
   try {
-    // Step 1: Create directory structure
-    tracker.update(
-      'creating-structure',
-      'Creating project structure...',
-      15
-    );
+    // Create directory structure
+    tempDir = await createTempDirectory(`scaffold-${config.projectName}`);
 
-    try {
-      tempDir = await createTempDirectory(`scaffold-${config.projectName}`);
-    } catch (error) {
-      errorLogger.log('creating-structure', error as Error, {
-        projectName: config.projectName,
-      });
-      throw new Error(
-        'Failed to create temporary directory. Please try again.'
-      );
-    }
-
-    // Step 2: Generate files
-    tracker.update('generating-files', 'Generating project files...', 30);
-
-    let result;
-    try {
-      // Add framework property for backward compatibility with generator
-      const configWithFramework = addFrameworkProperty(config);
-      const generator = new ScaffoldGenerator(configWithFramework);
-      result = await generator.generate();
-    } catch (error) {
-      const configWithFramework = addFrameworkProperty(config);
-      errorLogger.log('generating-files', error as Error, {
-        framework: configWithFramework.framework,
-        totalSelections: Object.keys(config).length,
-      });
-      throw new Error(
-        'Failed to generate project files. Configuration may be invalid.'
-      );
-    }
-
-    tracker.update('generating-files', 'Writing files to disk...', 50);
+    // Generate files
+    const configWithFramework = addFrameworkProperty(config);
+    const generator = new ScaffoldGenerator(configWithFramework);
+    const result = await generator.generate();
 
     // Write files to temp directory
     try {
@@ -194,53 +138,19 @@ async function generateScaffoldAsync(
       );
     }
 
-    // Step 3: Apply theme
-    tracker.update('applying-theme', 'Applying color scheme...', 65);
-    // Theme is already applied in file generation
-
-    // Step 4: Generate documentation
-    tracker.update('generating-docs', 'Generating documentation...', 75);
-    // Documentation is already generated in file generation
-
-    // Step 5: Create archive
-    tracker.update('creating-archive', 'Creating download archive...', 85);
-
+    // Create archive
     const downloadId = generateDownloadId();
     await ensureArchiveStorageDir();
     const archivePath = getArchiveStoragePath(downloadId);
 
-    try {
-      await createZipArchive(tempDir, archivePath, config.projectName);
-    } catch (error) {
-      errorLogger.log('creating-archive', error as Error, {
-        tempDir,
-        archivePath,
-      });
-      throw new Error(
-        'Failed to create download archive. Please try again.'
-      );
-    }
-
-    // Step 6: Complete
-    tracker.update('complete', 'Scaffold generation complete!', 100);
-    tracker.setDownloadId(downloadId);
+    await createZipArchive(tempDir, archivePath, config.projectName);
 
     // Cleanup temp directory
     await cleanupDirectory(tempDir);
+
+    return downloadId;
   } catch (error) {
     console.error('Scaffold generation failed:', error);
-
-    let errorMessage = 'Generation failed';
-
-    if (error instanceof FileOperationError) {
-      errorMessage = `File operation failed: ${error.message}`;
-    } else if (error instanceof ArchiveError) {
-      errorMessage = `Archive creation failed: ${error.message}`;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-
-    tracker.setError(errorMessage);
 
     // If partial scaffold was created, try to create archive with error report
     if (partialScaffoldCreated && tempDir) {
@@ -254,12 +164,10 @@ async function generateScaffoldAsync(
         await fs.writeFile(errorReportPath, errorLogger.generateErrorReport());
 
         await createZipArchive(tempDir, archivePath, config.projectName);
-        tracker.setDownloadId(downloadId);
 
-        // Update error message to indicate partial scaffold is available
-        tracker.setError(
-          `${errorMessage} - Partial scaffold with error report is available for download.`
-        );
+        // Cleanup and return partial download
+        await cleanupDirectory(tempDir);
+        return downloadId;
       } catch (archiveError) {
         console.error('Failed to create partial scaffold archive:', archiveError);
       }
