@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { ConfigurationWizard } from '@/components/ConfigurationWizard';
 import { ValidationAlert } from '@/components/ValidationAlert';
 import { PreviewPanel } from '@/components/PreviewPanel';
@@ -60,7 +61,14 @@ export default function ConfigurePage() {
                 <p className="text-sm text-gray-600 mb-4">
                   Sign in with GitHub to create repositories directly from StackForge
                 </p>
-                <GitHubAuthButton />
+                <Suspense fallback={
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                    <span className="text-sm text-gray-500">Loading...</span>
+                  </div>
+                }>
+                  <GitHubAuthButton />
+                </Suspense>
               </div>
             </div>
             
