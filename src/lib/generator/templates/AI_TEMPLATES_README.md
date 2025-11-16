@@ -1,6 +1,6 @@
 # AI Templates Implementation
 
-This document describes the AI template generation system implemented for StackForge.
+This document describes the AI template generation system implemented for Cauldron2Code.
 
 ## Overview
 

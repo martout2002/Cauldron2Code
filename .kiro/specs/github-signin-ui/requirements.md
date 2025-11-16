@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This feature adds a visible GitHub sign-in button to the StackForge configuration page, allowing users to authenticate with GitHub before generating their project. Currently, the GitHubAuthButton component exists but is not displayed in the UI, making it impossible for users to sign in with GitHub to create repositories directly.
+This feature adds a visible GitHub sign-in button to the Cauldron2Code configuration page, allowing users to authenticate with GitHub before generating their project. Currently, the GitHubAuthButton component exists but is not displayed in the UI, making it impossible for users to sign in with GitHub to create repositories directly.
 
 ## Glossary
 

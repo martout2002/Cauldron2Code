@@ -1,8 +1,8 @@
-# StackForge Technical Design
+# Cauldron2Code Technical Design
 
 ## Overview
 
-StackForge is a Next.js-based web application that generates customized full-stack project scaffolds. The system uses a configuration-driven approach where users select technologies through an interactive UI, and a generation engine creates a complete, production-ready project with all necessary files, configurations, and documentation.
+Cauldron2Code is a Next.js-based web application that generates customized full-stack project scaffolds. The system uses a configuration-driven approach where users select technologies through an interactive UI, and a generation engine creates a complete, production-ready project with all necessary files, configurations, and documentation.
 
 ## Architecture
 
@@ -1321,7 +1321,7 @@ Test scaffold generation with these representative configurations:
 - API documentation with examples
 - Rate limiting and error handling
 
-Both demos will be deployed and accessible from the StackForge website, with source code viewable and configuration details displayed.
+Both demos will be deployed and accessible from the Cauldron2Code website, with source code viewable and configuration details displayed.
 
 ## Future Enhancements
 

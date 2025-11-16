@@ -1,6 +1,6 @@
 # Scaffold Generator
 
-This module implements the complete scaffold generation engine for StackForge.
+This module implements the complete scaffold generation engine for Cauldron2Code.
 
 ## Overview
 

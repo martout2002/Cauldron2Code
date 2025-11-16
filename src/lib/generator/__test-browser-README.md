@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains comprehensive browser compatibility testing documentation for the StackForge configuration UI. These tests ensure the application works correctly across Chrome 120+, Firefox 120+, and Safari 17+ as specified in **Requirement 6.3**.
+This directory contains comprehensive browser compatibility testing documentation for the Cauldron2Code configuration UI. These tests ensure the application works correctly across Chrome 120+, Firefox 120+, and Safari 17+ as specified in **Requirement 6.3**.
 
 ## Documentation Files
 

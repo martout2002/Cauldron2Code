@@ -352,7 +352,7 @@
   
   - [x] 15.2 Add platform connection guidance
     - Explain OAuth permissions being requested
-    - Show what StackForge can and cannot do
+    - Show what Cauldron2Code can and cannot do
     - Add security and privacy information
     - _Requirements: 11.2_
   

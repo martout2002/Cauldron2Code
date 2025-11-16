@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { vercelOAuthService } from '@/lib/platforms/vercel';
+import { getVercelOAuthService } from '@/lib/platforms/vercel';
 import { VercelCookieManager } from '@/lib/platforms/vercel';
 
 /**
@@ -39,10 +39,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const service = getVercelOAuthService();
     // Validate state parameter (CSRF protection)
     const storedState = await VercelCookieManager.getOAuthState();
 
-    if (!storedState || !vercelOAuthService.validateState(state, storedState)) {
+    if (!storedState || !service.validateState(state, storedState)) {
       throw new Error('Invalid state parameter. Possible CSRF attack.');
     }
 
@@ -50,14 +51,14 @@ export async function GET(request: NextRequest) {
     await VercelCookieManager.removeOAuthState();
 
     // Exchange code for access token
-    const tokens = await vercelOAuthService.exchangeCodeForToken(code);
+    const tokens = await service.exchangeCodeForToken(code);
 
     // Get user information
-    const user = await vercelOAuthService.getUserInfo(tokens.accessToken);
+    const user = await service.getUserInfo(tokens.accessToken);
 
     // Create connection
     // Note: In a real implementation, you would get the actual userId from the session
-    const connection = await vercelOAuthService.createConnection(
+    const connection = await service.createConnection(
       'current-user-id', // This should come from your auth system
       tokens,
       user

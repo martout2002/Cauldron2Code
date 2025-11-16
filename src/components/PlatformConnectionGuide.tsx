@@ -38,7 +38,7 @@ const PLATFORM_PERMISSIONS: Record<
         'Read deployment status and logs',
       ],
       notGranted: [
-        'Access existing projects not created by StackForge',
+        'Access existing projects not created by Cauldron2Code',
         'Modify billing or payment settings',
         'Delete projects or deployments',
         'Access team member information',
@@ -69,7 +69,7 @@ const PLATFORM_PERMISSIONS: Record<
         'Monitor deployment status',
       ],
       notGranted: [
-        'Access existing projects not created by StackForge',
+        'Access existing projects not created by Cauldron2Code',
         'Modify billing or subscription',
         'Delete projects or services',
         'Access team settings',
@@ -100,7 +100,7 @@ const PLATFORM_PERMISSIONS: Record<
         'Read deployment logs',
       ],
       notGranted: [
-        'Access existing services not created by StackForge',
+        'Access existing services not created by Cauldron2Code',
         'Modify billing information',
         'Delete services or databases',
         'Access team members',
@@ -137,7 +137,7 @@ export function PlatformConnectionGuide({
             Connecting to {info.name}
           </h3>
           <p className="text-sm text-gray-600">
-            Understand what permissions StackForge requests and how your data is
+            Understand what permissions Cauldron2Code requests and how your data is
             protected
           </p>
         </div>
@@ -152,12 +152,12 @@ export function PlatformConnectionGuide({
         )}
       </div>
 
-      {/* What StackForge CAN Do */}
+      {/* What Cauldron2Code CAN Do */}
       <div className="border border-green-200 rounded-lg p-4 bg-green-50">
         <div className="flex items-center gap-2 mb-3">
           <CheckCircle2 size={20} className="text-green-600" />
           <h4 className="font-semibold text-green-900">
-            What StackForge CAN Do
+            What Cauldron2Code CAN Do
           </h4>
         </div>
         <ul className="space-y-2">
@@ -170,12 +170,12 @@ export function PlatformConnectionGuide({
         </ul>
       </div>
 
-      {/* What StackForge CANNOT Do */}
+      {/* What Cauldron2Code CANNOT Do */}
       <div className="border border-red-200 rounded-lg p-4 bg-red-50">
         <div className="flex items-center gap-2 mb-3">
           <XCircle size={20} className="text-red-600" />
           <h4 className="font-semibold text-red-900">
-            What StackForge CANNOT Do
+            What Cauldron2Code CANNOT Do
           </h4>
         </div>
         <ul className="space-y-2">
@@ -195,7 +195,7 @@ export function PlatformConnectionGuide({
           <h4 className="font-semibold text-blue-900">Data Access</h4>
         </div>
         <p className="text-sm text-blue-800 mb-2">
-          StackForge only accesses the following information:
+          Cauldron2Code only accesses the following information:
         </p>
         <ul className="space-y-2">
           {info.dataAccess.map((data, index) => (
@@ -232,7 +232,7 @@ export function PlatformConnectionGuide({
               Your Privacy Matters
             </h4>
             <ul className="space-y-1 text-sm text-yellow-800">
-              <li>• StackForge never stores your environment variable values</li>
+              <li>• Cauldron2Code never stores your environment variable values</li>
               <li>• Access tokens are encrypted and stored securely</li>
               <li>• You can disconnect at any time to revoke access</li>
               <li>• We never share your data with third parties</li>
@@ -252,7 +252,7 @@ export function PlatformConnectionGuide({
           platform connector. This will:
         </p>
         <ul className="mt-2 space-y-1 text-sm text-gray-700">
-          <li>• Immediately revoke StackForge's access to your account</li>
+          <li>• Immediately revoke Cauldron2Code's access to your account</li>
           <li>• Delete all stored access tokens</li>
           <li>• Remove the OAuth connection from {info.name}</li>
           <li>• Keep your deployed projects running (they won't be affected)</li>
@@ -283,7 +283,7 @@ export function PlatformConnectionGuideSummary({
             Secure OAuth Connection
           </p>
           <p className="text-sm text-blue-800">
-            StackForge will request permission to create and deploy projects on{' '}
+            Cauldron2Code will request permission to create and deploy projects on{' '}
             {info.name}. We never access billing, existing projects, or account
             settings.
           </p>

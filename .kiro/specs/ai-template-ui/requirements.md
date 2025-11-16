@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This feature adds AI template selection to the StackForge configuration wizard, allowing users to easily discover and select AI-powered features for their generated projects. Currently, AI templates exist in the backend but are not exposed in the UI.
+This feature adds AI template selection to the Cauldron2Code configuration wizard, allowing users to easily discover and select AI-powered features for their generated projects. Currently, AI templates exist in the backend but are not exposed in the UI.
 
 ## Glossary
 

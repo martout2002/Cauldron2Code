@@ -302,7 +302,7 @@ export default function PublicAPIDemo() {
             About This Demo
           </h2>
           <p className="text-slate-300 mb-6">
-            This public API service was generated using StackForge with the following configuration:
+            This public API service was generated using Cauldron2Code with the following configuration:
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">

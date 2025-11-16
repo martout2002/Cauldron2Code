@@ -1,6 +1,6 @@
 # Framework Selection Refactor Tasks
 
-This task list focuses on updating StackForge to use the new four-category framework selection structure.
+This task list focuses on updating Cauldron2Code to use the new four-category framework selection structure.
 
 ## Overview
 

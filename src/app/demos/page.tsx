@@ -8,7 +8,7 @@ const demos = [
     title: "SaaS Dashboard",
     description: "A modern SaaS application with user authentication, dashboard analytics, and data visualization. Perfect for building internal tools or customer-facing platforms.",
     theme: "Purple",
-    liveUrl: "https://stackforge-saas-demo.vercel.app",
+    liveUrl: "https://cauldron2code-saas-demo.vercel.app",
     features: [
       "User authentication with NextAuth",
       "Dashboard with charts and metrics",
@@ -31,7 +31,7 @@ const demos = [
     title: "Public API Service",
     description: "An AI-powered document analysis API with comprehensive documentation. Ideal for building public-facing APIs or microservices with AI capabilities.",
     theme: "Futuristic",
-    liveUrl: "https://stackforge-api-demo.railway.app",
+    liveUrl: "https://cauldron2code-api-demo.railway.app",
     features: [
       "RESTful API endpoints",
       "AI document analyzer integration",
@@ -60,7 +60,7 @@ export default function DemosPage() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-              StackForge
+              Cauldron2Code
             </Link>
             <Link
               href="/configure"
@@ -79,7 +79,7 @@ export default function DemosPage() {
             Live Demos
           </h1>
           <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-8">
-            Explore real applications built with StackForge. Each demo showcases different use cases and technology combinations—all generated from the same base scaffold.
+            Explore real applications built with Cauldron2Code. Each demo showcases different use cases and technology combinations—all generated from the same base scaffold.
           </p>
           <div className="flex justify-center gap-4 mt-8">
             <Link

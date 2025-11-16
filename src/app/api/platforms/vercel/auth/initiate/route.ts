@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { vercelOAuthService } from '@/lib/platforms/vercel';
+import { getVercelOAuthService } from '@/lib/platforms/vercel';
 import { VercelCookieManager } from '@/lib/platforms/vercel';
 
 /**
@@ -8,14 +8,15 @@ import { VercelCookieManager } from '@/lib/platforms/vercel';
  */
 export async function GET() {
   try {
+    const service = getVercelOAuthService();
     // Generate state parameter for CSRF protection
-    const state = vercelOAuthService.generateState();
+    const state = service.generateState();
 
     // Store state in cookie
     await VercelCookieManager.setOAuthState(state);
 
     // Get authorization URL
-    const authUrl = vercelOAuthService.getAuthorizationUrl(state);
+    const authUrl = service.getAuthorizationUrl(state);
 
     return NextResponse.json({
       authUrl,

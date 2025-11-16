@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StackForge - Generate Custom Full-Stack Scaffolds",
+  title: "Cauldron2Code - Generate Custom Full-Stack Scaffolds",
   description: "Interactive web application that generates custom full-stack project scaffolds based on your technology choices",
 };
 

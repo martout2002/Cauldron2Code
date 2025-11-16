@@ -59,7 +59,7 @@ export default function ConfigurePage() {
                   GitHub Integration
                 </h2>
                 <p className="text-sm text-gray-600 mb-4">
-                  Sign in with GitHub to create repositories directly from StackForge
+                  Sign in with GitHub to create repositories directly from Cauldron2Code
                 </p>
                 <Suspense fallback={
                   <div className="flex items-center gap-2">

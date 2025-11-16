@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { renderOAuthService } from '@/lib/platforms/render';
+import { getRenderOAuthService } from '@/lib/platforms/render';
 import { RenderCookieManager } from '@/lib/platforms/render';
 
 /**
@@ -8,14 +8,15 @@ import { RenderCookieManager } from '@/lib/platforms/render';
  */
 export async function GET() {
   try {
+    const service = getRenderOAuthService();
     // Generate state parameter for CSRF protection
-    const state = renderOAuthService.generateState();
+    const state = service.generateState();
 
     // Store state in cookie
     await RenderCookieManager.setOAuthState(state);
 
     // Get authorization URL
-    const authUrl = renderOAuthService.getAuthorizationUrl(state);
+    const authUrl = service.getAuthorizationUrl(state);
 
     return NextResponse.json({
       authUrl,

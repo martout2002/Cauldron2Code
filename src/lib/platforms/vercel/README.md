@@ -1,6 +1,6 @@
 # Vercel Platform Integration
 
-This module provides complete Vercel platform integration for StackForge, enabling automated deployment of generated scaffolds to Vercel.
+This module provides complete Vercel platform integration for Cauldron2Code, enabling automated deployment of generated scaffolds to Vercel.
 
 ## Features
 
@@ -106,7 +106,7 @@ TOKEN_ENCRYPTION_KEY=your_64_character_hex_key
 
 1. Go to https://vercel.com/account/integrations
 2. Click "Create Integration"
-3. Set Integration name: "StackForge"
+3. Set Integration name: "Cauldron2Code"
 4. Set Redirect URL: `http://localhost:3000/api/platforms/vercel/auth/callback`
 5. Configure required scopes
 6. Click "Create"

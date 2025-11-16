@@ -2,7 +2,7 @@
 
 ## Overview
 
-This feature adds a comprehensive AI template selection interface to the StackForge configuration wizard. The design focuses on discoverability, clarity, and ease of use while maintaining consistency with the existing wizard UI.
+This feature adds a comprehensive AI template selection interface to the Cauldron2Code configuration wizard. The design focuses on discoverability, clarity, and ease of use while maintaining consistency with the existing wizard UI.
 
 ## Architecture
 

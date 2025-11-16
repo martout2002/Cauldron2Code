@@ -1,6 +1,6 @@
 # Error Handling Implementation
 
-This document describes the comprehensive error handling system implemented for StackForge scaffold generation.
+This document describes the comprehensive error handling system implemented for Cauldron2Code scaffold generation.
 
 ## Overview
 

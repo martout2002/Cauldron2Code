@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "stackforge",
+      "name": "cauldron2code",
       "dependencies": {
         "@hookform/resolvers": "^5.2.2",
         "archiver": "^7.0.1",

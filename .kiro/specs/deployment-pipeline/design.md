@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Deployment Pipeline feature extends StackForge to automatically deploy generated scaffolds to hosting platforms. Users can go from configuration → generation → live deployed application in one seamless flow. The system integrates with Vercel, Railway, and Render via their APIs, handling project creation, file uploads, environment variable configuration, and deployment triggering.
+The Deployment Pipeline feature extends Cauldron2Code to automatically deploy generated scaffolds to hosting platforms. Users can go from configuration → generation → live deployed application in one seamless flow. The system integrates with Vercel, Railway, and Render via their APIs, handling project creation, file uploads, environment variable configuration, and deployment triggering.
 
 ## Architecture
 
@@ -560,7 +560,7 @@ class RenderService implements PlatformService {
         type: 'web_service',
         name: config.projectName,
         ownerId: await this.getOwnerId(),
-        repo: 'https://github.com/stackforge/temp', // Placeholder
+        repo: 'https://github.com/cauldron2code/temp', // Placeholder
         autoDeploy: 'yes',
         branch: 'main',
         buildCommand: this.getBuildCommand(config.scaffoldConfig),

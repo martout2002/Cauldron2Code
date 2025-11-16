@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { railwayOAuthService } from '@/lib/platforms/railway';
+import { getRailwayOAuthService } from '@/lib/platforms/railway';
 import { RailwayCookieManager } from '@/lib/platforms/railway';
 
 /**
@@ -8,14 +8,15 @@ import { RailwayCookieManager } from '@/lib/platforms/railway';
  */
 export async function GET() {
   try {
+    const service = getRailwayOAuthService();
     // Generate state parameter for CSRF protection
-    const state = railwayOAuthService.generateState();
+    const state = service.generateState();
 
     // Store state in cookie
     await RailwayCookieManager.setOAuthState(state);
 
     // Get authorization URL
-    const authUrl = railwayOAuthService.getAuthorizationUrl(state);
+    const authUrl = service.getAuthorizationUrl(state);
 
     return NextResponse.json({
       authUrl,

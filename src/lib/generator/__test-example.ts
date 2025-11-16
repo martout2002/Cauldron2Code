@@ -9,7 +9,7 @@ import { ScaffoldConfig } from '@/types';
 // Example configuration
 const exampleConfig: ScaffoldConfig = {
   projectName: 'my-awesome-app',
-  description: 'A full-stack application built with StackForge',
+  description: 'A full-stack application built with Cauldron2Code',
   framework: 'next',
   nextjsRouter: 'app',
   auth: 'nextauth',

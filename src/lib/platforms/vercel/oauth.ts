@@ -31,6 +31,12 @@ export class VercelOAuthService {
     this.clientId = process.env.VERCEL_CLIENT_ID || '';
     this.clientSecret = process.env.VERCEL_CLIENT_SECRET || '';
     this.callbackUrl = process.env.VERCEL_CALLBACK_URL || '';
+
+    if (!this.clientId || !this.clientSecret || !this.callbackUrl) {
+      console.warn(
+        'Vercel OAuth configuration is missing. Please set VERCEL_CLIENT_ID, VERCEL_CLIENT_SECRET, and VERCEL_CALLBACK_URL environment variables.'
+      );
+    }
   }
 
   /**
@@ -39,7 +45,7 @@ export class VercelOAuthService {
   private ensureConfigured(): void {
     if (!this.clientId || !this.clientSecret || !this.callbackUrl) {
       throw new Error(
-        'Vercel OAuth configuration is missing. Please check environment variables.'
+        'Vercel OAuth is not configured. Please check environment variables.'
       );
     }
 
@@ -209,5 +215,12 @@ export class VercelOAuthService {
   }
 }
 
-// Export singleton instance
-export const vercelOAuthService = new VercelOAuthService();
+// Lazy singleton instance
+let vercelOAuthServiceInstance: VercelOAuthService | null = null;
+
+export function getVercelOAuthService(): VercelOAuthService {
+  if (!vercelOAuthServiceInstance) {
+    vercelOAuthServiceInstance = new VercelOAuthService();
+  }
+  return vercelOAuthServiceInstance;
+}

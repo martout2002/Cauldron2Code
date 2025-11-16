@@ -386,7 +386,7 @@ export function DeploymentConfigForm({
                 <span className="font-medium text-blue-900">
                   Provision PostgreSQL Database
                 </span>
-                <Tooltip content="StackForge will create a new database instance on the platform and automatically configure the DATABASE_URL environment variable.">
+                <Tooltip content="Cauldron2Code will create a new database instance on the platform and automatically configure the DATABASE_URL environment variable.">
                   <HelpCircle size={14} className="text-blue-600 cursor-help" />
                 </Tooltip>
               </div>

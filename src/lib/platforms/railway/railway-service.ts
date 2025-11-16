@@ -9,7 +9,7 @@ import type {
   GeneratedFile,
 } from '../types';
 import type { ScaffoldConfig } from '@/types';
-import { railwayOAuthService } from './oauth';
+import { getRailwayOAuthService } from './oauth';
 
 /**
  * Railway Platform Service
@@ -27,26 +27,28 @@ export class RailwayService implements PlatformService {
    * Initiate OAuth flow
    */
   async initiateOAuth(): Promise<string> {
-    const state = railwayOAuthService.generateState();
-    return railwayOAuthService.getAuthorizationUrl(state);
+    const service = getRailwayOAuthService();
+    const state = service.generateState();
+    return service.getAuthorizationUrl(state);
   }
 
   /**
    * Handle OAuth callback
    */
   async handleCallback(code: string): Promise<PlatformConnection> {
-    const tokens = await railwayOAuthService.exchangeCodeForToken(code);
-    const user = await railwayOAuthService.getUserInfo(tokens.accessToken);
+    const service = getRailwayOAuthService();
+    const tokens = await service.exchangeCodeForToken(code);
+    const user = await service.getUserInfo(tokens.accessToken);
 
     // Create connection with a placeholder userId (should be set by caller)
-    return railwayOAuthService.createConnection('placeholder', tokens, user);
+    return service.createConnection('placeholder', tokens, user);
   }
 
   /**
    * Refresh access token
    */
   async refreshToken(connection: PlatformConnection): Promise<PlatformConnection> {
-    return railwayOAuthService.refreshToken(connection);
+    return getRailwayOAuthService().refreshToken(connection);
   }
 
   /**

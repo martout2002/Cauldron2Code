@@ -19,7 +19,7 @@ This module provides integration with Render's deployment platform, enabling aut
 2. Navigate to Account Settings → OAuth Applications
 3. Click "Create OAuth Application"
 4. Configure:
-   - **Name**: StackForge (or your preferred name)
+   - **Name**: Cauldron2Code (or your preferred name)
    - **Redirect URI**: `http://localhost:3000/api/platforms/render/auth/callback` (for development)
    - **Scopes**: `read`, `write`
 5. Save and copy the Client ID and Client Secret

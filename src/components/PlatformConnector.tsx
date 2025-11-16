@@ -205,12 +205,12 @@ export function PlatformConnector({
           <h3 className="text-lg font-semibold text-gray-900">
             Connect Deployment Platforms
           </h3>
-          <Tooltip content="Connect your hosting platform accounts to enable one-click deployment. StackForge will securely authenticate and deploy your projects.">
+          <Tooltip content="Connect your hosting platform accounts to enable one-click deployment. Cauldron2Code will securely authenticate and deploy your projects.">
             <Info size={16} className="text-gray-400 cursor-help" />
           </Tooltip>
         </div>
         <p className="text-sm text-gray-600">
-          Connect your accounts to deploy directly from StackForge
+          Connect your accounts to deploy directly from Cauldron2Code
         </p>
       </div>
 
@@ -327,7 +327,7 @@ export function PlatformConnector({
               Secure OAuth Authentication
             </p>
             <p className="text-sm text-blue-800">
-              StackForge uses OAuth to securely connect to your platforms. We only request
+              Cauldron2Code uses OAuth to securely connect to your platforms. We only request
               permissions to create and deploy projects - never access to billing or other projects.
             </p>
           </div>
@@ -340,7 +340,7 @@ export function PlatformConnector({
             </p>
             <p className="text-sm text-blue-800">
               Access tokens are encrypted and stored securely. You can disconnect at any time
-              to revoke StackForge's access.{' '}
+              to revoke Cauldron2Code's access.{' '}
               <a 
                 href="/DEPLOYMENT.md#step-1-connect-your-platform-account" 
                 target="_blank"

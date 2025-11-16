@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { RenderCookieManager } from '@/lib/platforms/render';
-import { renderOAuthService } from '@/lib/platforms/render';
+import { getRenderOAuthService } from '@/lib/platforms/render';
 
 /**
  * POST /api/platforms/render/auth/disconnect
@@ -12,10 +12,11 @@ export async function POST() {
 
     if (connection) {
       try {
+        const service = getRenderOAuthService();
         // Decrypt token and attempt to revoke it
-        const decryptedToken = renderOAuthService.decryptToken(connection);
+        const decryptedToken = service.decryptToken(connection);
         
-        await renderOAuthService.revokeToken(decryptedToken);
+        await service.revokeToken(decryptedToken);
       } catch (error) {
         // Log but don't fail - Render doesn't have a revocation endpoint
         console.log('Token revocation not supported by Render:', error);

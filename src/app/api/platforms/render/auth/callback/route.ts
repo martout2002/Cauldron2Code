@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { renderOAuthService } from '@/lib/platforms/render';
+import { getRenderOAuthService } from '@/lib/platforms/render';
 import { RenderCookieManager } from '@/lib/platforms/render';
 
 /**
@@ -39,10 +39,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const service = getRenderOAuthService();
     // Validate state parameter (CSRF protection)
     const storedState = await RenderCookieManager.getOAuthState();
 
-    if (!storedState || !renderOAuthService.validateState(state, storedState)) {
+    if (!storedState || !service.validateState(state, storedState)) {
       throw new Error('Invalid state parameter. Possible CSRF attack.');
     }
 
@@ -50,14 +51,14 @@ export async function GET(request: NextRequest) {
     await RenderCookieManager.clearOAuthState();
 
     // Exchange code for access token
-    const tokens = await renderOAuthService.exchangeCodeForToken(code);
+    const tokens = await service.exchangeCodeForToken(code);
 
     // Get user information
-    const user = await renderOAuthService.getUserInfo(tokens.accessToken);
+    const user = await service.getUserInfo(tokens.accessToken);
 
     // Create connection
     // Note: In a real implementation, you would get the actual userId from the session
-    const connection = await renderOAuthService.createConnection(
+    const connection = await service.createConnection(
       'current-user-id', // This should come from your auth system
       tokens,
       user

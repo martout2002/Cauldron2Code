@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { RailwayCookieManager } from '@/lib/platforms/railway';
-import { railwayOAuthService } from '@/lib/platforms/railway';
+import { getRailwayOAuthService } from '@/lib/platforms/railway';
 
 /**
  * POST /api/platforms/railway/auth/disconnect
@@ -12,8 +12,9 @@ export async function POST() {
 
     if (connection) {
       // Decrypt and revoke the token
-      const accessToken = railwayOAuthService.decryptToken(connection);
-      await railwayOAuthService.revokeToken(accessToken);
+      const service = getRailwayOAuthService();
+      const accessToken = service.decryptToken(connection);
+      await service.revokeToken(accessToken);
     }
 
     // Clear connection cookie

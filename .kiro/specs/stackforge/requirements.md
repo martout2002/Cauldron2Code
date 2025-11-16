@@ -2,11 +2,11 @@
 
 ## Introduction
 
-StackForge is an interactive web application that generates custom full-stack project scaffolds based on user-selected technology choices. Users configure their ideal tech stack via a visual UI, and the system generates a complete, working monorepo with proper tooling, deployment configurations, and optional AI integrations. The generated scaffolds are production-ready and include all necessary dependencies, configuration files, and example implementations.
+Cauldron2Code is an interactive web application that generates custom full-stack project scaffolds based on user-selected technology choices. Users configure their ideal tech stack via a visual UI, and the system generates a complete, working monorepo with proper tooling, deployment configurations, and optional AI integrations. The generated scaffolds are production-ready and include all necessary dependencies, configuration files, and example implementations.
 
 ## Glossary
 
-- **StackForge System**: The web application that provides the configuration interface and scaffold generation functionality
+- **Cauldron2Code System**: The web application that provides the configuration interface and scaffold generation functionality
 - **Configuration UI**: The interactive interface where users select technology options
 - **Tech Stack**: The collection of technologies (frameworks, databases, deployment targets, etc.) selected by the user
 - **Scaffold**: The generated project structure including code files, configuration files, and dependencies
@@ -41,7 +41,7 @@ StackForge is an interactive web application that generates custom full-stack pr
 
 1.5 WHEN the user views the Project Structure category, THE Configuration UI SHALL display options for Next.js only (frontend + API routes), React SPA (frontend only), Full-stack monorepo (Next.js + Express), and Express API only (no frontend).
 
-1.6 WHILE the user modifies technology selections, THE StackForge System SHALL validate compatibility between selected options within 100 milliseconds.
+1.6 WHILE the user modifies technology selections, THE Cauldron2Code System SHALL validate compatibility between selected options within 100 milliseconds.
 
 1.7 IF incompatible technology options are selected, THEN THE Configuration UI SHALL display a warning message that explains the specific conflict and suggests resolution options.
 
@@ -59,11 +59,11 @@ StackForge is an interactive web application that generates custom full-stack pr
 
 #### Acceptance Criteria
 
-2.1 WHEN the user initiates generation by clicking the generate button, THE StackForge System SHALL create a monorepo structure containing all selected technologies.
+2.1 WHEN the user initiates generation by clicking the generate button, THE Cauldron2Code System SHALL create a monorepo structure containing all selected technologies.
 
 2.2 WHILE the Generation Process executes, THE Configuration UI SHALL display progress updates indicating the current generation step.
 
-2.3 IF the Generation Process completes successfully, THEN THE StackForge System SHALL provide a downloadable ZIP file containing the complete scaffold.
+2.3 IF the Generation Process completes successfully, THEN THE Cauldron2Code System SHALL provide a downloadable ZIP file containing the complete scaffold.
 
 2.4 WHEN the user extracts and opens the generated scaffold, THE Scaffold SHALL include a package.json file with all required dependencies that install successfully via npm or yarn.
 
@@ -71,7 +71,7 @@ StackForge is an interactive web application that generates custom full-stack pr
 
 2.6 THE Generation Process SHALL complete within 30 seconds for configurations with up to 15 technology selections.
 
-2.7 THE StackForge System SHALL generate scaffolds that use TypeScript exclusively.
+2.7 THE Cauldron2Code System SHALL generate scaffolds that use TypeScript exclusively.
 
 ### Requirement 3: AI Integration Templates
 
@@ -79,9 +79,9 @@ StackForge is an interactive web application that generates custom full-stack pr
 
 #### Acceptance Criteria
 
-3.1 WHEN the user selects the AI template option in the Configuration UI, THE StackForge System SHALL display available AI use case templates (chatbot, document analyzer, image generator, semantic search, code assistant).
+3.1 WHEN the user selects the AI template option in the Configuration UI, THE Cauldron2Code System SHALL display available AI use case templates (chatbot, document analyzer, image generator, semantic search, code assistant).
 
-3.2 WHILE the user selects an AI Template, THE StackForge System SHALL automatically add required AI dependencies (OpenAI SDK, LangChain, vector database clients, etc.) to the configuration.
+3.2 WHILE the user selects an AI Template, THE Cauldron2Code System SHALL automatically add required AI dependencies (OpenAI SDK, LangChain, vector database clients, etc.) to the configuration.
 
 3.3 WHERE the user selects the chatbot AI Template, THE Scaffold SHALL include a streaming message interface implementation with example API routes.
 
@@ -89,31 +89,31 @@ StackForge is an interactive web application that generates custom full-stack pr
 
 3.5 WHEN the user runs the generated project with an AI Template, THE Scaffold SHALL include working API endpoints that demonstrate the AI functionality (with placeholder API keys in environment variables).
 
-3.6 THE StackForge System SHALL limit AI Template options to 5 common use cases.
+3.6 THE Cauldron2Code System SHALL limit AI Template options to 5 common use cases.
 
 ### Requirement 4: Demonstration Applications
 
-**User Story:** As a potential user evaluating StackForge, I want to see two different working applications built from the same scaffold, so that I can understand the flexibility of the generated code.
+**User Story:** As a potential user evaluating Cauldron2Code, I want to see two different working applications built from the same scaffold, so that I can understand the flexibility of the generated code.
 
 #### Acceptance Criteria
 
-4.1 WHEN the user navigates to the demos section, THE StackForge System SHALL display two distinct working applications built from the same base scaffold.
+4.1 WHEN the user navigates to the demos section, THE Cauldron2Code System SHALL display two distinct working applications built from the same base scaffold.
 
 4.2 WHILE the user views the demonstration applications, THE Configuration UI SHALL clearly indicate the different use cases implemented (e.g., SaaS dashboard vs Public API service).
 
-4.3 WHEN the user inspects the source code of both demonstration applications, THE StackForge System SHALL show that both applications share the same base scaffold structure.
+4.3 WHEN the user inspects the source code of both demonstration applications, THE Cauldron2Code System SHALL show that both applications share the same base scaffold structure.
 
-4.4 WHEN the user clicks a "View Source" or "View Configuration" button, THE StackForge System SHALL display the exact technology configuration used to generate each demonstration application.
+4.4 WHEN the user clicks a "View Source" or "View Configuration" button, THE Cauldron2Code System SHALL display the exact technology configuration used to generate each demonstration application.
 
 ### Requirement 5: Performance and Responsiveness
 
-**User Story:** As a developer using StackForge, I want the interface to respond quickly to my actions, so that I can efficiently configure my project without delays.
+**User Story:** As a developer using Cauldron2Code, I want the interface to respond quickly to my actions, so that I can efficiently configure my project without delays.
 
 #### Acceptance Criteria
 
 5.1 WHEN the user interacts with any Configuration UI control (toggle, dropdown, button), THE Configuration UI SHALL provide visual feedback within 100 milliseconds.
 
-5.2 WHEN the StackForge System generates a Next.js-based scaffold, THE Scaffold SHALL produce production builds with bundle sizes under 5 megabytes.
+5.2 WHEN the Cauldron2Code System generates a Next.js-based scaffold, THE Scaffold SHALL produce production builds with bundle sizes under 5 megabytes.
 
 5.3 THE Configuration UI SHALL function correctly on desktop and tablet screen sizes (768px width and above).
 
@@ -135,7 +135,7 @@ StackForge is an interactive web application that generates custom full-stack pr
 
 #### Acceptance Criteria
 
-7.1 WHERE the user selects multiple Deployment Targets (e.g., Vercel and EC2), THE StackForge System SHALL generate configuration files for each selected target.
+7.1 WHERE the user selects multiple Deployment Targets (e.g., Vercel and EC2), THE Cauldron2Code System SHALL generate configuration files for each selected target.
 
 7.2 WHERE the user selects multiple Deployment Targets, THE Scaffold SHALL include README documentation explaining how to use each deployment configuration.
 
@@ -199,30 +199,30 @@ StackForge is an interactive web application that generates custom full-stack pr
 
 11.1 WHEN the Generation Process completes successfully, THE Configuration UI SHALL display two delivery options: "Download ZIP" and "Create GitHub Repository".
 
-11.2 WHEN the user clicks "Create GitHub Repository", THE StackForge System SHALL initiate GitHub OAuth authentication if the user is not already authenticated.
+11.2 WHEN the user clicks "Create GitHub Repository", THE Cauldron2Code System SHALL initiate GitHub OAuth authentication if the user is not already authenticated.
 
-11.3 WHILE the user authenticates with GitHub, THE StackForge System SHALL request only the necessary permissions (repo creation and code push).
+11.3 WHILE the user authenticates with GitHub, THE Cauldron2Code System SHALL request only the necessary permissions (repo creation and code push).
 
 11.4 WHEN the user completes GitHub authentication, THE Configuration UI SHALL display a form requesting repository name, description, and visibility (public or private).
 
-11.5 WHEN the user submits the repository creation form, THE StackForge System SHALL validate that the repository name is available and follows GitHub naming conventions.
+11.5 WHEN the user submits the repository creation form, THE Cauldron2Code System SHALL validate that the repository name is available and follows GitHub naming conventions.
 
 11.6 IF the repository name is already taken or invalid, THEN THE Configuration UI SHALL display an error message with suggestions for alternative names.
 
 11.7 WHEN the repository creation begins, THE Configuration UI SHALL display progress updates showing: "Creating repository", "Initializing git", "Committing files", and "Pushing to GitHub".
 
-11.8 WHEN the GitHub repository creation completes successfully, THE StackForge System SHALL provide a direct link to the newly created repository.
+11.8 WHEN the GitHub repository creation completes successfully, THE Cauldron2Code System SHALL provide a direct link to the newly created repository.
 
 11.9 WHEN the user opens the created GitHub repository, THE Scaffold SHALL include an initial commit with all generated files, a descriptive commit message, and a README.md file.
 
 11.10 WHERE the user selected a Deployment Target that integrates with GitHub (Vercel, Railway), THE Scaffold SHALL include instructions in the README for connecting the repository to the deployment platform.
 
-11.11 THE StackForge System SHALL complete the GitHub repository creation and push process within 45 seconds for configurations with up to 15 technology selections.
+11.11 THE Cauldron2Code System SHALL complete the GitHub repository creation and push process within 45 seconds for configurations with up to 15 technology selections.
 
 11.12 IF the GitHub repository creation fails, THEN THE Configuration UI SHALL display an error message with the failure reason and offer the "Download ZIP" option as a fallback.
 
 11.13 WHEN the user is authenticated with GitHub, THE Configuration UI SHALL display the user's GitHub username and provide a "Sign Out" option.
 
-11.14 THE StackForge System SHALL store GitHub OAuth tokens securely and SHALL NOT expose them in client-side code or logs.
+11.14 THE Cauldron2Code System SHALL store GitHub OAuth tokens securely and SHALL NOT expose them in client-side code or logs.
 
-11.15 WHERE the user creates a private repository, THE StackForge System SHALL respect the privacy setting and SHALL NOT make the repository publicly accessible.
+11.15 WHERE the user creates a private repository, THE Cauldron2Code System SHALL respect the privacy setting and SHALL NOT make the repository publicly accessible.

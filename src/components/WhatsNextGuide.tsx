@@ -457,13 +457,13 @@ function TroubleshootingView() {
             <ExternalLink size={14} className="text-gray-400 group-hover:text-blue-600" />
           </a>
           <a
-            href="https://github.com/stackforge/stackforge/discussions"
+            href="https://github.com/cauldron2code/cauldron2code/discussions"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all group"
           >
             <span className="text-sm font-medium text-gray-900">
-              StackForge Community Discussions
+              Cauldron2Code Community Discussions
             </span>
             <ExternalLink size={14} className="text-gray-400 group-hover:text-blue-600" />
           </a>

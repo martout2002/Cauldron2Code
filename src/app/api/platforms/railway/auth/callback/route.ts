@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { railwayOAuthService } from '@/lib/platforms/railway';
+import { getRailwayOAuthService } from '@/lib/platforms/railway';
 import { RailwayCookieManager } from '@/lib/platforms/railway';
 
 /**
@@ -33,8 +33,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify state to prevent CSRF attacks
+    const service = getRailwayOAuthService();
     const storedState = await RailwayCookieManager.getOAuthState();
-    if (!storedState || !railwayOAuthService.validateState(state, storedState)) {
+    if (!storedState || !service.validateState(state, storedState)) {
       return NextResponse.redirect(
         new URL('/configure?error=Invalid state parameter', request.url)
       );
@@ -44,14 +45,14 @@ export async function GET(request: NextRequest) {
     await RailwayCookieManager.clearOAuthState();
 
     // Exchange code for tokens
-    const tokens = await railwayOAuthService.exchangeCodeForToken(code);
+    const tokens = await service.exchangeCodeForToken(code);
 
     // Get user information
-    const user = await railwayOAuthService.getUserInfo(tokens.accessToken);
+    const user = await service.getUserInfo(tokens.accessToken);
 
     // Create connection object
     // In a real implementation, you would get the actual userId from the session
-    const connection = await railwayOAuthService.createConnection(
+    const connection = await service.createConnection(
       'user-id-placeholder',
       tokens,
       user

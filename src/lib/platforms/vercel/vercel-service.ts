@@ -9,7 +9,7 @@ import type {
   GeneratedFile,
 } from '../types';
 import type { ScaffoldConfig } from '@/types';
-import { vercelOAuthService } from './oauth';
+import { getVercelOAuthService } from './oauth';
 
 /**
  * Vercel Platform Service
@@ -26,26 +26,28 @@ export class VercelService implements PlatformService {
    * Initiate OAuth flow
    */
   async initiateOAuth(): Promise<string> {
-    const state = vercelOAuthService.generateState();
-    return vercelOAuthService.getAuthorizationUrl(state);
+    const service = getVercelOAuthService();
+    const state = service.generateState();
+    return service.getAuthorizationUrl(state);
   }
 
   /**
    * Handle OAuth callback
    */
   async handleCallback(code: string): Promise<PlatformConnection> {
-    const tokens = await vercelOAuthService.exchangeCodeForToken(code);
-    const user = await vercelOAuthService.getUserInfo(tokens.accessToken);
+    const service = getVercelOAuthService();
+    const tokens = await service.exchangeCodeForToken(code);
+    const user = await service.getUserInfo(tokens.accessToken);
     
     // Create connection with a placeholder userId (should be set by caller)
-    return vercelOAuthService.createConnection('placeholder', tokens, user);
+    return service.createConnection('placeholder', tokens, user);
   }
 
   /**
    * Refresh access token
    */
   async refreshToken(connection: PlatformConnection): Promise<PlatformConnection> {
-    return vercelOAuthService.refreshToken(connection);
+    return getVercelOAuthService().refreshToken(connection);
   }
 
   /**

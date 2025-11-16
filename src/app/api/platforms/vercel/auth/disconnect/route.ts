@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { VercelCookieManager } from '@/lib/platforms/vercel';
-import { vercelOAuthService } from '@/lib/platforms/vercel';
+import { getVercelOAuthService } from '@/lib/platforms/vercel';
 
 /**
  * POST /api/platforms/vercel/auth/disconnect
@@ -12,12 +12,13 @@ export async function POST() {
 
     if (authToken) {
       try {
+        const service = getVercelOAuthService();
         // Decrypt token and attempt to revoke it
-        const decryptedToken = vercelOAuthService.decryptToken({
+        const decryptedToken = service.decryptToken({
           accessToken: authToken,
         } as any);
         
-        await vercelOAuthService.revokeToken(decryptedToken);
+        await service.revokeToken(decryptedToken);
       } catch (error) {
         // Log but don't fail - Vercel doesn't have a revocation endpoint
         console.log('Token revocation not supported by Vercel:', error);

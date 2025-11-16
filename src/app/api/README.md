@@ -1,8 +1,8 @@
-# StackForge API Documentation
+# Cauldron2Code API Documentation
 
 ## Overview
 
-This directory contains the API routes for the StackForge scaffold generator.
+This directory contains the API routes for the Cauldron2Code scaffold generator.
 
 ## Endpoints
 

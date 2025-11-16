@@ -9,7 +9,7 @@ import type {
   GeneratedFile,
 } from '../types';
 import type { ScaffoldConfig } from '@/types';
-import { renderOAuthService } from './oauth';
+import { getRenderOAuthService } from './oauth';
 
 /**
  * Render Platform Service
@@ -27,26 +27,28 @@ export class RenderService implements PlatformService {
    * Initiate OAuth flow
    */
   async initiateOAuth(): Promise<string> {
-    const state = renderOAuthService.generateState();
-    return renderOAuthService.getAuthorizationUrl(state);
+    const service = getRenderOAuthService();
+    const state = service.generateState();
+    return service.getAuthorizationUrl(state);
   }
 
   /**
    * Handle OAuth callback
    */
   async handleCallback(code: string): Promise<PlatformConnection> {
-    const tokens = await renderOAuthService.exchangeCodeForToken(code);
-    const user = await renderOAuthService.getUserInfo(tokens.accessToken);
+    const service = getRenderOAuthService();
+    const tokens = await service.exchangeCodeForToken(code);
+    const user = await service.getUserInfo(tokens.accessToken);
 
     // Create connection with a placeholder userId (should be set by caller)
-    return renderOAuthService.createConnection('placeholder', tokens, user);
+    return service.createConnection('placeholder', tokens, user);
   }
 
   /**
    * Refresh access token
    */
   async refreshToken(connection: PlatformConnection): Promise<PlatformConnection> {
-    return renderOAuthService.refreshToken(connection);
+    return getRenderOAuthService().refreshToken(connection);
   }
 
   /**

@@ -2,7 +2,7 @@
 
 ## Test Summary
 
-This document tracks browser compatibility test results for the StackForge configuration UI across Chrome 120+, Firefox 120+, and Safari 17+.
+This document tracks browser compatibility test results for the Cauldron2Code configuration UI across Chrome 120+, Firefox 120+, and Safari 17+.
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides comprehensive browser compatibility testing procedures for the StackForge configuration UI. Tests should be performed on Chrome 120+, Firefox 120+, and Safari 17+ to ensure full cross-browser compatibility as specified in Requirement 6.3.
+This document provides comprehensive browser compatibility testing procedures for the Cauldron2Code configuration UI. Tests should be performed on Chrome 120+, Firefox 120+, and Safari 17+ to ensure full cross-browser compatibility as specified in Requirement 6.3.
 
 ## Test Environment Setup
 

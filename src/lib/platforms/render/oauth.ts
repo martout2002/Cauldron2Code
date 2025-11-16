@@ -28,6 +28,12 @@ export class RenderOAuthService {
     this.clientId = process.env.RENDER_CLIENT_ID || '';
     this.clientSecret = process.env.RENDER_CLIENT_SECRET || '';
     this.callbackUrl = process.env.RENDER_CALLBACK_URL || '';
+
+    if (!this.clientId || !this.clientSecret || !this.callbackUrl) {
+      console.warn(
+        'Render OAuth configuration is missing. Please set RENDER_CLIENT_ID, RENDER_CLIENT_SECRET, and RENDER_CALLBACK_URL environment variables.'
+      );
+    }
   }
 
   /**
@@ -36,7 +42,7 @@ export class RenderOAuthService {
   private ensureConfigured(): void {
     if (!this.clientId || !this.clientSecret || !this.callbackUrl) {
       throw new Error(
-        'Render OAuth configuration is missing. Please check environment variables.'
+        'Render OAuth is not configured. Please check environment variables.'
       );
     }
 
@@ -213,5 +219,12 @@ export class RenderOAuthService {
   }
 }
 
-// Export singleton instance
-export const renderOAuthService = new RenderOAuthService();
+// Lazy singleton instance
+let renderOAuthServiceInstance: RenderOAuthService | null = null;
+
+export function getRenderOAuthService(): RenderOAuthService {
+  if (!renderOAuthServiceInstance) {
+    renderOAuthServiceInstance = new RenderOAuthService();
+  }
+  return renderOAuthServiceInstance;
+}

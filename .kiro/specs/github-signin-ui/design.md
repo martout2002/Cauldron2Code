@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design adds the GitHub authentication UI to the StackForge configuration page by integrating the existing `GitHubAuthButton` component into the page layout. The component already handles all authentication logic, OAuth flow, and state management - we simply need to make it visible to users.
+This design adds the GitHub authentication UI to the Cauldron2Code configuration page by integrating the existing `GitHubAuthButton` component into the page layout. The component already handles all authentication logic, OAuth flow, and state management - we simply need to make it visible to users.
 
 ## Architecture
 
@@ -42,7 +42,7 @@ The GitHub authentication section will be added as a new section in the main con
       GitHub Integration
     </h2>
     <p className="text-sm text-gray-600 mb-4">
-      Sign in with GitHub to create repositories directly from StackForge
+      Sign in with GitHub to create repositories directly from Cauldron2Code
     </p>
     <GitHubAuthButton />
   </div>

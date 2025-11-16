@@ -33,8 +33,8 @@ export class RailwayOAuthService {
     this.callbackUrl = process.env.RAILWAY_CALLBACK_URL || '';
 
     if (!this.clientId || !this.clientSecret || !this.callbackUrl) {
-      throw new Error(
-        'Railway OAuth configuration is missing. Please check environment variables.'
+      console.warn(
+        'Railway OAuth configuration is missing. Please set RAILWAY_CLIENT_ID, RAILWAY_CLIENT_SECRET, and RAILWAY_CALLBACK_URL environment variables.'
       );
     }
 
@@ -53,6 +53,10 @@ export class RailwayOAuthService {
    * Returns the authorization URL to redirect the user to
    */
   getAuthorizationUrl(state: string): string {
+    if (!this.clientId || !this.callbackUrl) {
+      throw new Error('Railway OAuth is not configured. Please check environment variables.');
+    }
+
     const params = new URLSearchParams({
       client_id: this.clientId,
       redirect_uri: this.callbackUrl,
@@ -68,6 +72,10 @@ export class RailwayOAuthService {
    * Exchange authorization code for access token
    */
   async exchangeCodeForToken(code: string): Promise<RailwayOAuthTokens> {
+    if (!this.clientId || !this.clientSecret || !this.callbackUrl) {
+      throw new Error('Railway OAuth is not configured. Please check environment variables.');
+    }
+
     const response = await fetch('https://railway.app/oauth/token', {
       method: 'POST',
       headers: {
@@ -266,5 +274,12 @@ export class RailwayOAuthService {
   }
 }
 
-// Export singleton instance
-export const railwayOAuthService = new RailwayOAuthService();
+// Lazy singleton instance
+let railwayOAuthServiceInstance: RailwayOAuthService | null = null;
+
+export function getRailwayOAuthService(): RailwayOAuthService {
+  if (!railwayOAuthServiceInstance) {
+    railwayOAuthServiceInstance = new RailwayOAuthService();
+  }
+  return railwayOAuthServiceInstance;
+}

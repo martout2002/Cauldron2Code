@@ -438,7 +438,7 @@ All responsive breakpoints have been thoroughly tested and verified:
 - ✅ Performance optimized
 - ✅ Accessible at all breakpoints
 
-The StackForge configuration UI is fully responsive and ready for production use.
+The Cauldron2Code configuration UI is fully responsive and ready for production use.
 
 ---
 

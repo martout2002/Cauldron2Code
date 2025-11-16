@@ -1,6 +1,6 @@
 # Cross-Platform Compatibility Testing
 
-This document describes how to test StackForge's generated scaffolds across different platforms and ensure Node.js 20+ compatibility.
+This document describes how to test Cauldron2Code's generated scaffolds across different platforms and ensure Node.js 20+ compatibility.
 
 ## Overview
 
@@ -112,7 +112,7 @@ If you prefer to test manually:
 
 ### 1. Generate a Scaffold
 
-Use the StackForge UI or API to generate a scaffold with your desired configuration.
+Use the Cauldron2Code UI or API to generate a scaffold with your desired configuration.
 
 ### 2. Extract and Navigate
 
@@ -298,7 +298,7 @@ Your platform is fully compatible with generated scaffolds.
 ## Continuous Monitoring
 
 Run these tests:
-- Before releasing new versions of StackForge
+- Before releasing new versions of Cauldron2Code
 - After updating dependencies in package.json templates
 - When adding new technology options
 - On different platforms to ensure compatibility
@@ -307,4 +307,4 @@ Run these tests:
 
 - `src/lib/generator/__test-cross-platform.ts` - Main test suite
 - `src/lib/generator/templates/package-json.ts` - Package.json generator with engines field
-- `package.json` - StackForge's own package.json with Node.js requirements
+- `package.json` - Cauldron2Code's own package.json with Node.js requirements

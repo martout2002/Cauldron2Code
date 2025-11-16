@@ -1,7 +1,7 @@
 /**
  * Responsive Breakpoint Testing
  * 
- * This file contains tests to verify that the StackForge configuration UI
+ * This file contains tests to verify that the Cauldron2Code configuration UI
  * responds correctly to different screen sizes and breakpoints.
  * 
  * Requirements: 5.3 - Configuration UI SHALL function correctly on desktop and tablet screen sizes

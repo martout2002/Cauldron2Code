@@ -111,7 +111,7 @@ export default function SaaSDashboardDemo() {
 
               <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-900/30">
                 <p className="text-sm text-purple-900 dark:text-purple-300">
-                  <strong>Demo Note:</strong> This is a demonstration of a SaaS dashboard built with StackForge. 
+                  <strong>Demo Note:</strong> This is a demonstration of a SaaS dashboard built with Cauldron2Code. 
                   In a real application, authentication would be handled by NextAuth with GitHub OAuth.
                 </p>
               </div>
@@ -276,7 +276,7 @@ export default function SaaSDashboardDemo() {
             About This Demo
           </h3>
           <p className="text-purple-800 dark:text-purple-400 mb-4">
-            This SaaS dashboard was generated using StackForge with the following configuration:
+            This SaaS dashboard was generated using Cauldron2Code with the following configuration:
           </p>
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div>

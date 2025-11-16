@@ -66,7 +66,7 @@ const DEPLOYMENT_STEPS = [
   {
     step: 3,
     title: 'Deploy',
-    description: 'StackForge creates the project and deploys your code',
+    description: 'Cauldron2Code creates the project and deploys your code',
   },
   {
     step: 4,
@@ -135,7 +135,7 @@ function IntroView({ onNext }: { onNext: () => void }) {
           Deploy in Minutes, Not Hours
         </h3>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          StackForge automates the entire deployment process. Go from generated
+          Cauldron2Code automates the entire deployment process. Go from generated
           scaffold to live application without leaving your browser.
         </p>
       </div>
@@ -212,7 +212,7 @@ function PlatformsView({
   return (
     <div className="space-y-6">
       <p className="text-gray-600 text-center">
-        StackForge supports three leading hosting platforms. Choose the one that
+        Cauldron2Code supports three leading hosting platforms. Choose the one that
         best fits your application's needs.
       </p>
 

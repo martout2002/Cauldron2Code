@@ -155,7 +155,7 @@ export const useConfigStore = create<ConfigState>()(
       resetConfig: () => set({ config: defaultConfig }),
     }),
     {
-      name: 'stackforge-config',
+      name: 'cauldron2code-config',
       version: 1,
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);

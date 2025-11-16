@@ -1,12 +1,12 @@
-# StackForge
+# Cauldron2Code
 
 > **Your AI-powered full-stack scaffold generator**
 
-StackForge is a modern web application that generates production-ready full-stack project scaffolds with best practices baked in. Configure your tech stack through an intuitive UI, and get a complete, working codebase in seconds.
+Cauldron2Code is a modern web application that generates production-ready full-stack project scaffolds with best practices baked in. Configure your tech stack through an intuitive UI, and get a complete, working codebase in seconds.
 
-## 🎯 What is StackForge?
+## 🎯 What is Cauldron2Code?
 
-StackForge eliminates the tedious setup phase of starting new projects. Instead of spending hours configuring build tools, setting up authentication, connecting databases, and wiring up APIs, you can:
+Cauldron2Code eliminates the tedious setup phase of starting new projects. Instead of spending hours configuring build tools, setting up authentication, connecting databases, and wiring up APIs, you can:
 
 1. **Configure** your stack through a visual interface
 2. **Generate** a complete, production-ready scaffold
@@ -15,7 +15,7 @@ StackForge eliminates the tedious setup phase of starting new projects. Instead 
 
 ### Deployment Pipeline
 
-StackForge now includes **automated deployment** that takes you from configuration to a live application in minutes:
+Cauldron2Code now includes **automated deployment** that takes you from configuration to a live application in minutes:
 
 ```mermaid
 graph LR
@@ -77,7 +77,7 @@ graph LR
 
 ## 🚀 Vision
 
-StackForge aims to become the **go-to tool for developers starting new projects**. The vision includes:
+Cauldron2Code aims to become the **go-to tool for developers starting new projects**. The vision includes:
 
 ### Short-term Goals
 - [ ] More framework options (SvelteKit, Remix, Astro)
@@ -98,7 +98,7 @@ StackForge aims to become the **go-to tool for developers starting new projects*
 
 ## 🛠️ Tech Stack
 
-StackForge is built with the same modern stack it generates:
+Cauldron2Code is built with the same modern stack it generates:
 
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
@@ -120,8 +120,8 @@ StackForge is built with the same modern stack it generates:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/stackforge.git
-cd stackforge
+git clone https://github.com/yourusername/cauldron2code.git
+cd cauldron2code
 
 # Install dependencies
 bun install
@@ -145,7 +145,7 @@ Open [http://localhost:3000](http://localhost:3000) to start configuring your fi
 
 ## 🤝 Contributing
 
-StackForge is open to contributions! Whether you want to:
+Cauldron2Code is open to contributions! Whether you want to:
 
 - Add support for a new framework or library
 - Create new AI templates
@@ -158,7 +158,7 @@ Check out [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 ## 🎨 Project Structure
 
 ```
-stackforge/
+cauldron2code/
 ├── src/
 │   ├── app/                    # Next.js app router
 │   │   ├── api/               # API routes
@@ -190,7 +190,7 @@ stackforge/
 
 ## 📝 License
 
-[MIT License](./LICENSE) - feel free to use StackForge for personal or commercial projects.
+[MIT License](./LICENSE) - feel free to use Cauldron2Code for personal or commercial projects.
 
 ## 🙏 Acknowledgments
 
@@ -201,9 +201,9 @@ Built with inspiration from:
 
 ## 💬 Community & Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/stackforge/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/stackforge/discussions)
-- **Twitter**: [@stackforge](https://twitter.com/stackforge) (coming soon)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/cauldron2code/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/cauldron2code/discussions)
+- **Twitter**: [@cauldron2code](https://twitter.com/cauldron2code) (coming soon)
 
 ---
 
