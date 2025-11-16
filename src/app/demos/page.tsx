@@ -81,6 +81,14 @@ export default function DemosPage() {
           <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-8">
             Explore real applications built with StackForge. Each demo showcases different use cases and technology combinations—all generated from the same base scaffold.
           </p>
+          <div className="flex justify-center gap-4 mt-8">
+            <Link
+              href="/demos/post-deployment-checklist"
+              className="px-6 py-2 text-sm font-semibold text-purple-600 dark:text-purple-400 border-2 border-purple-600 dark:border-purple-400 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all"
+            >
+              View Component Demos →
+            </Link>
+          </div>
         </div>
       </section>
 

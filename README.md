@@ -10,8 +10,37 @@ StackForge eliminates the tedious setup phase of starting new projects. Instead 
 
 1. **Configure** your stack through a visual interface
 2. **Generate** a complete, production-ready scaffold
-3. **Deploy** directly to GitHub or download as a ZIP
+3. **Deploy** automatically to hosting platforms or push to GitHub
 4. **Start building** your actual features immediately
+
+### Deployment Pipeline
+
+StackForge now includes **automated deployment** that takes you from configuration to a live application in minutes:
+
+```mermaid
+graph LR
+    A[Configure Stack] --> B[Generate Scaffold]
+    B --> C{Choose Delivery}
+    C -->|Deploy Now| D[Connect Platform]
+    C -->|GitHub| E[Create Repository]
+    C -->|Download| F[ZIP File]
+    D --> G[Configure Environment]
+    G --> H[Deploy & Monitor]
+    H --> I[Live Application]
+```
+
+**Supported Platforms:**
+- **Vercel**: Optimized for Next.js with automatic framework detection
+- **Railway**: Full-stack apps with database provisioning
+- **Render**: Web services with health checks and auto-scaling
+
+**Key Features:**
+- 🔐 Secure OAuth authentication with platforms
+- ⚙️ Smart environment variable detection and validation
+- 📊 Real-time deployment progress and build logs
+- 🗄️ Automatic database provisioning (Railway & Render)
+- 📋 Post-deployment setup checklist
+- 🔄 Monorepo support with multi-service deployment
 
 ## ✨ Features
 
@@ -30,6 +59,11 @@ StackForge eliminates the tedious setup phase of starting new projects. Instead 
   - **Image Generator**: Text-to-image generation
 - **AI Providers**: Support for Anthropic Claude, OpenAI, AWS Bedrock, and Google Gemini
 - **GitHub Integration**: Create and push repositories directly from the UI
+- **Automated Deployment**: One-click deployment to Vercel, Railway, or Render
+  - OAuth integration with hosting platforms
+  - Automatic environment variable configuration
+  - Real-time build logs and progress tracking
+  - Post-deployment setup guidance
 - **Deployment Configs**: Vercel, Railway, Render, or AWS EC2
 - **Extras**: Docker, Redis, Prettier, shadcn/ui components
 
@@ -105,6 +139,7 @@ Open [http://localhost:3000](http://localhost:3000) to start configuring your fi
 ## 📖 Documentation
 
 - **[SETUP.md](./SETUP.md)** - Detailed setup instructions for GitHub OAuth
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Guide for using the automated deployment pipeline
 - **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Guidelines for contributing
 - **[Architecture](./docs/ARCHITECTURE.md)** - System design and architecture decisions
 
@@ -127,11 +162,16 @@ stackforge/
 ├── src/
 │   ├── app/                    # Next.js app router
 │   │   ├── api/               # API routes
+│   │   │   ├── deploy/        # Deployment endpoints
+│   │   │   ├── platforms/     # Platform OAuth & APIs
+│   │   │   └── github/        # GitHub integration
 │   │   ├── configure/         # Main configuration page
 │   │   └── demos/             # Demo pages
 │   ├── components/            # React components
 │   ├── lib/
 │   │   ├── generator/         # Scaffold generation engine
+│   │   ├── deployment/        # Deployment orchestration
+│   │   ├── platforms/         # Platform integrations
 │   │   ├── github/            # GitHub API integration
 │   │   ├── validation/        # Configuration validation
 │   │   └── store/             # State management
