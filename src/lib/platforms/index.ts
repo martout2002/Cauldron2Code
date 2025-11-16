@@ -22,19 +22,23 @@ export type {
 // Platform Service Interface
 export type { PlatformService } from './platform-service';
 
-// Utilities
+// Core Utilities
 export { TokenEncryption } from './token-encryption';
 export { DeploymentRateLimiter, getDeploymentRateLimiter } from './rate-limiter';
 export { getRedisClient, createRedisClient } from './redis-client';
+
+// Security & Token Management
+export { SecureTokenHandler, getSecureTokenHandler } from './secure-token-handler';
+export { TokenCleanupService, getTokenCleanupService, initializeTokenCleanup } from './token-cleanup';
+
+// Middleware
 export {
-  SecureTokenHandler,
-  getSecureTokenHandler,
-} from './secure-token-handler';
-export {
-  TokenCleanupService,
-  getTokenCleanupService,
-  initializeTokenCleanup,
-} from './token-cleanup';
+  checkRateLimit,
+  createRateLimitResponse,
+  addRateLimitHeaders,
+  withRateLimit,
+} from './rate-limit-middleware';
+export type { RateLimitResult } from './rate-limit-middleware';
 
 // Platform Integrations
 export * from './vercel';

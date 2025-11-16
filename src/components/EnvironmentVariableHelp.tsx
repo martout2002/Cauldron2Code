@@ -15,7 +15,7 @@
 
 import { useState } from 'react';
 import { HelpCircle, ExternalLink, AlertCircle, CheckCircle2, Info, X } from 'lucide-react';
-import { getEnvVarHelp, type EnvVarHelpInfo } from '@/lib/deployment/environment-variable-help';
+import { getEnvVarHelp } from '@/lib/deployment/environment-variable-help';
 
 interface EnvironmentVariableHelpProps {
   envVarKey: string;
