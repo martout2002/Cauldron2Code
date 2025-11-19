@@ -123,9 +123,14 @@ export async function directoryExists(dirPath: string): Promise<boolean> {
 
 /**
  * Create temporary directory for scaffold generation
+ * Uses /tmp on serverless environments (Vercel) or ./tmp locally
  */
 export async function createTempDirectory(prefix: string): Promise<string> {
-  const tmpDir = path.join(process.cwd(), 'tmp', `${prefix}-${Date.now()}`);
+  // Use /tmp for serverless environments (Vercel, AWS Lambda, etc.)
+  // Use ./tmp for local development
+  const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
+  const baseTmpDir = isServerless ? '/tmp' : path.join(process.cwd(), 'tmp');
+  const tmpDir = path.join(baseTmpDir, `${prefix}-${Date.now()}`);
   
   try {
     await fs.mkdir(tmpDir, { recursive: true });

@@ -93,17 +93,23 @@ export async function cleanupArchive(archivePath: string): Promise<void> {
 
 /**
  * Get archive storage path
+ * Uses /tmp on serverless environments (Vercel) or ./tmp locally
  */
 export function getArchiveStoragePath(downloadId: string): string {
-  const storageDir = path.join(process.cwd(), 'tmp', 'archives');
+  const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
+  const baseTmpDir = isServerless ? '/tmp' : path.join(process.cwd(), 'tmp');
+  const storageDir = path.join(baseTmpDir, 'archives');
   return path.join(storageDir, `${downloadId}.zip`);
 }
 
 /**
  * Ensure archive storage directory exists
+ * Uses /tmp on serverless environments (Vercel) or ./tmp locally
  */
 export async function ensureArchiveStorageDir(): Promise<string> {
-  const storageDir = path.join(process.cwd(), 'tmp', 'archives');
+  const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
+  const baseTmpDir = isServerless ? '/tmp' : path.join(process.cwd(), 'tmp');
+  const storageDir = path.join(baseTmpDir, 'archives');
   await fs.mkdir(storageDir, { recursive: true });
   return storageDir;
 }
