@@ -174,9 +174,7 @@ export function getDirectoryStructure(
     dirs.push({ path: '.github' }, { path: '.github/workflows' });
   }
 
-  if (config.deployment.includes('ec2')) {
-    dirs.push({ path: 'deploy' });
-  }
+  // EC2 deployment removed - use Vercel, Railway, or Render instead
 
   return dirs;
 }

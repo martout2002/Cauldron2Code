@@ -66,10 +66,6 @@ import {
   generateGithubActionsWorkflow,
   generateDockerignore,
   generateEnhancedGitignore,
-  generateEC2DeployScript,
-  generateSystemdService,
-  generateNginxConfig,
-  generateEC2SetupScript,
   generateHuskyPreCommit,
   generateHuskyCommitMsg,
   generateCommitlintConfig,
@@ -432,28 +428,7 @@ export class ScaffoldGenerator {
       });
     }
 
-    // EC2 deployment scripts
-    if (this.config.deployment.includes('ec2')) {
-      files.push({
-        path: 'deploy/setup.sh',
-        content: generateEC2SetupScript(this.config),
-      });
-
-      files.push({
-        path: 'deploy/deploy.sh',
-        content: generateEC2DeployScript(this.config),
-      });
-
-      files.push({
-        path: `deploy/${this.config.projectName}.service`,
-        content: generateSystemdService(this.config),
-      });
-
-      files.push({
-        path: 'deploy/nginx.conf',
-        content: generateNginxConfig(this.config),
-      });
-    }
+    // EC2 deployment removed - use Vercel, Railway, or Render instead
 
     return files;
   }

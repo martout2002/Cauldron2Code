@@ -1387,9 +1387,7 @@ Make sure to set all required environment variables in your deployment platform.
       guides.push(this.getRenderDeploymentGuide());
     }
 
-    if (this.config.deployment.includes('ec2')) {
-      guides.push(this.getEC2DeploymentGuide());
-    }
+    // EC2 deployment removed - use Vercel, Railway, or Render instead
 
     return guides;
   }

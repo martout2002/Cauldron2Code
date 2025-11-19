@@ -180,7 +180,6 @@ export class GitOperationsService {
         if (p === 'vercel') return 'Vercel';
         if (p === 'railway') return 'Railway';
         if (p === 'render') return 'Render';
-        if (p === 'ec2') return 'AWS EC2';
         return p;
       });
       features.push(`Deployment configs for ${platforms.join(', ')}`);

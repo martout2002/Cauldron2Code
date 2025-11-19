@@ -40,7 +40,7 @@ export interface ScaffoldConfig {
   colorScheme: 'purple' | 'gold' | 'white' | 'futuristic';
 
   // Deployment
-  deployment: ('vercel' | 'render' | 'ec2' | 'railway')[];
+  deployment: ('vercel' | 'railway' | 'render')[];
 
   // AI Templates
   aiTemplate?:
@@ -169,9 +169,9 @@ export const scaffoldConfigSchema = z.object({
 
   // Deployment
   deployment: z
-    .array(z.enum(['vercel', 'render', 'ec2', 'railway']))
+    .array(z.enum(['vercel', 'railway', 'render']))
     .min(1, 'At least one deployment target is required')
-    .max(4, 'Maximum 4 deployment targets allowed'),
+    .max(3, 'Maximum 3 deployment targets allowed'),
 
   // AI Templates
   aiTemplate: z

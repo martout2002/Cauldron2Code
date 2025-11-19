@@ -60,7 +60,7 @@ export const VALIDATION_RULES: ValidationRule[] = [
   {
     id: 'vercel-express',
     message:
-      'Standalone Express apps cannot deploy to Vercel. Consider Render, Railway, or EC2.',
+      'Standalone Express apps cannot deploy to Vercel. Consider Render or Railway.',
     severity: 'error',
     check: (config) =>
       config.projectStructure === 'express-api-only' && config.deployment.includes('vercel'),
@@ -149,11 +149,10 @@ export const VALIDATION_RULES: ValidationRule[] = [
   {
     id: 'docker-deployment-recommendation',
     message:
-      'Docker is recommended when deploying to EC2 or Railway for consistent environments.',
+      'Docker is recommended when deploying to Railway for consistent environments.',
     severity: 'warning',
     check: (config) =>
-      (config.deployment.includes('ec2') ||
-        config.deployment.includes('railway')) &&
+      config.deployment.includes('railway') &&
       !config.extras.docker,
   },
 ];

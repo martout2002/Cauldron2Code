@@ -605,8 +605,8 @@ export function ConfigurationWizard() {
           <p className="text-sm text-gray-600 mb-3">
             Select one or more deployment platforms (at least one required)
           </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3" role="group" aria-label="Deployment targets">
-            {(['vercel', 'render', 'ec2', 'railway'] as const).map((deployOption) => {
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3" role="group" aria-label="Deployment targets">
+            {(['vercel', 'render', 'railway'] as const).map((deployOption) => {
               const isSelected = formValues.deployment.includes(deployOption);
               return (
                 <label
@@ -630,7 +630,7 @@ export function ConfigurationWizard() {
                     aria-label={`Deploy to ${deployOption}`}
                   />
                   <span className="font-medium text-xs md:text-sm capitalize">
-                    {deployOption === 'ec2' ? 'AWS EC2' : deployOption}
+                    {deployOption}
                   </span>
                 </label>
               );

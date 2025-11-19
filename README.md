@@ -64,7 +64,7 @@ graph LR
   - Automatic environment variable configuration
   - Real-time build logs and progress tracking
   - Post-deployment setup guidance
-- **Deployment Configs**: Vercel, Railway, Render, or AWS EC2
+- **Deployment Configs**: Vercel, Railway, or Render
 - **Extras**: Docker, Redis, Prettier, shadcn/ui components
 
 ### What Makes It Special

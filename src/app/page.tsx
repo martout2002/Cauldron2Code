@@ -127,7 +127,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-2">Deployment</h3>
-              <p className="text-zinc-600 dark:text-zinc-400 mb-3">Vercel, Railway, EC2, Docker</p>
+              <p className="text-zinc-600 dark:text-zinc-400 mb-3">Vercel, Railway, Render, Docker</p>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-full">CI/CD</span>
                 <span className="px-3 py-1 text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-full">Docker</span>

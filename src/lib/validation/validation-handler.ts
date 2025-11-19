@@ -77,7 +77,7 @@ export function getErrorGuidance(error: ValidationError): {
         'Vercel is optimized for Next.js applications and does not support standalone Express servers.',
       suggestions: [
         'Remove Vercel from deployment targets',
-        'Use Railway, Render, or EC2 for Express deployments',
+        'Use Railway or Render for Express deployments',
         'Or switch to Next.js or Monorepo framework',
       ],
     },

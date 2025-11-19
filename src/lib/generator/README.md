@@ -11,7 +11,7 @@ The scaffold generator creates complete, production-ready project structures bas
 - **Styling options**: Tailwind CSS, CSS Modules, and Styled Components
 - **Authentication**: NextAuth, Supabase, and Clerk
 - **Databases**: Prisma, Drizzle, Supabase, and MongoDB
-- **Deployment targets**: Vercel, Railway, EC2, and Render
+- **Deployment targets**: Vercel, Railway, and Render
 - **AI templates**: Chatbot, Document Analyzer, and more
 
 ## Architecture
