@@ -27,6 +27,7 @@ export { EnvironmentVariableInput } from './EnvironmentVariableInput';
 export { PlatformConnector } from './PlatformConnector';
 export { DeploymentConfigForm } from './DeploymentConfigForm';
 export { DeploymentProgress } from './DeploymentProgress';
+export { DeploymentModal } from './DeploymentModal';
 export { BuildLogViewer } from './BuildLogViewer';
 export { DeploymentSuccessCard } from './DeploymentSuccessCard';
 export { PostDeploymentChecklist } from './PostDeploymentChecklist';

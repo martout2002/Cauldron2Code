@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertCircle, Download, Loader2, Github, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, Download, Loader2, Github, ExternalLink, CheckCircle2, Rocket } from 'lucide-react';
 import { ScaffoldConfig, ValidationResult } from '@/types';
 import { validateForGeneration } from '@/lib/validation/validation-handler';
 import { DownloadButton } from './DownloadButton';
 import { CreateRepoModal } from './CreateRepoModal';
 import { GenerationProgress } from './GenerationProgress';
 import { ErrorMessage, ERROR_MESSAGES } from './ErrorMessage';
+import { DeploymentModal } from './DeploymentModal';
 
 interface GenerateButtonProps {
   config: ScaffoldConfig;
@@ -64,6 +65,7 @@ export function GenerateButton({
     description: string;
     private: boolean;
   } | null>(null);
+  const [showDeployModal, setShowDeployModal] = useState(false);
 
   // Check GitHub authentication status
   useEffect(() => {
@@ -298,6 +300,25 @@ export function GenerateButton({
           }}
         />
 
+        {/* Deploy Now Option */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="px-2 bg-white text-gray-500">or</span>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setShowDeployModal(true)}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 md:px-6 md:py-3 bg-blue-600 text-white rounded-lg font-medium text-sm md:text-base hover:bg-blue-700 active:bg-blue-800 transition-all touch-manipulation"
+          title="Deploy your scaffold to Vercel with one click"
+        >
+          <Rocket size={18} className="md:w-5 md:h-5" />
+          Deploy Now
+        </button>
+
         {/* GitHub Repository Option */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
@@ -346,6 +367,16 @@ export function GenerateButton({
               </span>
             </p>
           </div>
+        )}
+
+        {/* Deployment Modal */}
+        {showDeployModal && downloadId && (
+          <DeploymentModal
+            isOpen={showDeployModal}
+            onClose={() => setShowDeployModal(false)}
+            downloadId={downloadId}
+            scaffoldConfig={config}
+          />
         )}
 
         {/* Repository Creation Modal */}
