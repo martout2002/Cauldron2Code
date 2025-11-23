@@ -1,0 +1,14 @@
+<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="256" height="256" fill="#2a2a3a" rx="32"/>
+  
+  <!-- Styled components logo inspired -->
+  <circle cx="128" cy="128" r="70" fill="none" stroke="#8fcc4f" stroke-width="8"/>
+  
+  <!-- Inner brackets -->
+  <path d="M90 100 L80 100 L80 156 L90 156" fill="none" stroke="#8fcc4f" stroke-width="6" stroke-linecap="round"/>
+  <path d="M166 100 L176 100 L176 156 L166 156" fill="none" stroke="#8fcc4f" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Center dot -->
+  <circle cx="128" cy="128" r="8" fill="#8fcc4f"/>
+</svg>

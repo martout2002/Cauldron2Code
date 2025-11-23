@@ -30,22 +30,22 @@ export function WizardStep({
 
   // Handle updates for different field types
   const handleUpdate = (value: any) => {
-    onUpdate({ [step.field]: value });
+    // Special handling for extras field (convert array to object)
+    if (step.field === 'extras' && Array.isArray(value)) {
+      const extrasObj = {
+        docker: value.includes('docker'),
+        githubActions: value.includes('githubActions'),
+        redis: value.includes('redis'),
+        prettier: value.includes('prettier'),
+        husky: value.includes('husky'),
+      };
+      onUpdate({ extras: extrasObj });
+    } else {
+      onUpdate({ [step.field]: value });
+    }
   };
 
-  // Handle extras field specially (it's an object, not a simple value)
-  const handleExtrasUpdate = (selected: string[]) => {
-    const extrasObj = {
-      docker: selected.includes('docker'),
-      githubActions: selected.includes('githubActions'),
-      redis: selected.includes('redis'),
-      prettier: selected.includes('prettier'),
-      husky: selected.includes('husky'),
-    };
-    onUpdate({ extras: extrasObj });
-  };
-
-  // Convert extras object to array for CheckboxGroup
+  // Convert extras object to array for OptionGrid with multiSelect
   const getExtrasArray = (): string[] => {
     if (!config.extras || typeof config.extras !== 'object') return [];
     return Object.entries(config.extras)
@@ -80,7 +80,7 @@ export function WizardStep({
         {step.type === 'option-grid' && step.options && (
           <OptionGrid
             options={step.options}
-            selected={currentValue as string | string[]}
+            selected={step.field === 'extras' ? getExtrasArray() : (currentValue as string | string[])}
             onSelect={handleUpdate}
             columns={step.columns || 3}
             multiSelect={step.multiSelect || false}
@@ -93,17 +93,6 @@ export function WizardStep({
             options={step.options}
             selected={Array.isArray(currentValue) ? currentValue : []}
             onChange={handleUpdate}
-            columns={step.columns || 2}
-            label={step.title}
-          />
-        )}
-
-        {/* Custom handling for extras field */}
-        {step.type === 'custom' && step.field === 'extras' && step.options && (
-          <CheckboxGroup
-            options={step.options}
-            selected={getExtrasArray()}
-            onChange={handleExtrasUpdate}
             columns={step.columns || 2}
             label={step.title}
           />

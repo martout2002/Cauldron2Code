@@ -12,7 +12,7 @@ interface Option {
 interface OptionGridProps {
   options: Option[];
   selected: string | string[];
-  onSelect: (value: string) => void;
+  onSelect: (value: string | string[]) => void;
   columns?: number;
   multiSelect?: boolean;
   label?: string;
@@ -35,7 +35,17 @@ export function OptionGrid({
   };
 
   const handleSelect = (value: string) => {
-    onSelect(value);
+    if (multiSelect && Array.isArray(selected)) {
+      // Toggle selection in multi-select mode
+      if (selected.includes(value)) {
+        onSelect(selected.filter((v) => v !== value));
+      } else {
+        onSelect([...selected, value]);
+      }
+    } else {
+      // Single select mode
+      onSelect(value);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, value: string, index: number) => {
@@ -113,9 +123,10 @@ export function OptionGrid({
                 <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center">
                   <img
                     src={option.icon || '/icons/frameworks/placeholder.svg'}
-                    alt=""
+                    alt={option.label}
                     className="w-full h-full object-contain transition-transform duration-200"
                     onError={(e) => {
+                      console.warn(`Failed to load icon for ${option.label}, using placeholder`);
                       e.currentTarget.src = '/icons/frameworks/placeholder.svg';
                     }}
                   />

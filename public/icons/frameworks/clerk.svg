@@ -1,0 +1,13 @@
+<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="256" height="256" fill="#2a2a3a" rx="32"/>
+  
+  <!-- User icon with checkmark -->
+  <circle cx="128" cy="90" r="35" fill="none" stroke="#8fcc4f" stroke-width="8"/>
+  <path d="M70 200 Q70 150 128 150 Q186 150 186 200" 
+        fill="none" stroke="#8fcc4f" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Checkmark badge -->
+  <circle cx="170" cy="80" r="25" fill="#8fcc4f"/>
+  <path d="M160 80 L167 87 L180 70" fill="none" stroke="#2a2a3a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

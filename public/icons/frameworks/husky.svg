@@ -1,0 +1,21 @@
+<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="256" height="256" fill="#2a2a3a" rx="32"/>
+  
+  <!-- Husky dog head -->
+  <ellipse cx="128" cy="120" rx="50" ry="55" fill="none" stroke="#8fcc4f" stroke-width="8"/>
+  
+  <!-- Ears -->
+  <path d="M90 80 L85 50 L100 70" fill="none" stroke="#8fcc4f" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M166 80 L171 50 L156 70" fill="none" stroke="#8fcc4f" stroke-width="6" stroke-linejoin="round"/>
+  
+  <!-- Eyes -->
+  <circle cx="110" cy="110" r="6" fill="#8fcc4f"/>
+  <circle cx="146" cy="110" r="6" fill="#8fcc4f"/>
+  
+  <!-- Nose -->
+  <circle cx="128" cy="135" r="8" fill="#8fcc4f"/>
+  
+  <!-- Git hook -->
+  <path d="M128 175 Q128 190 140 200" fill="none" stroke="#8fcc4f" stroke-width="6" stroke-linecap="round"/>
+</svg>

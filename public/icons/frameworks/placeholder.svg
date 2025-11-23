@@ -1,7 +1,16 @@
 <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
   <rect width="256" height="256" fill="#2a2a3a" rx="32"/>
+  
+  <!-- Outer circle with dashed border -->
   <circle cx="128" cy="128" r="80" fill="none" stroke="#8fcc4f" stroke-width="8" stroke-dasharray="12 8"/>
+  
+  <!-- Center dot -->
   <circle cx="128" cy="128" r="12" fill="#8fcc4f"/>
+  
+  <!-- Cardinal direction lines -->
   <path d="M128 68v-20M128 208v-20M68 128h-20M208 128h-20" stroke="#8fcc4f" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Diagonal lines (slightly transparent) -->
   <path d="M88 88l-14-14M182 182l-14-14M182 88l-14 14M88 182l-14-14" stroke="#8fcc4f" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
 </svg>

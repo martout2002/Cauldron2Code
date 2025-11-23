@@ -204,6 +204,10 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
       return;
     }
 
+    // Set transitioning state IMMEDIATELY to prevent spam clicking
+    setIsTransitioning(true);
+    setIsAnimating(true);
+
     // Check if user prefers reduced motion
     const prefersReducedMotion = typeof window !== 'undefined' 
       ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
@@ -214,7 +218,6 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
       try {
         // Find the selected option element
         const selectedValue = config[currentStepConfig.field as keyof typeof config];
-        console.log('🎯 Flying animation check:', { selectedValue, field: currentStepConfig.field });
         
         if (selectedValue && typeof selectedValue === 'string') {
           // Find all option cards and the selected one
@@ -223,16 +226,8 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
           const selectedIcon = selectedCard?.querySelector('img') as HTMLElement;
           const cauldronImg = document.querySelector('.cauldron-asset') as HTMLElement;
           
-          console.log('🎯 Elements found:', { 
-            totalCards: allCards.length,
-            selectedCard: !!selectedCard, 
-            selectedIcon: !!selectedIcon,
-            cauldronImg: !!cauldronImg,
-            allCardsClasses: Array.from(allCards).map(c => c.className)
-          });
           
           if (selectedIcon && cauldronImg && allCards.length > 0) {
-            console.log('🚀 Starting flying animation...');
             
             // Step 1: Fade out only unselected options quickly
             allCards.forEach(card => {
@@ -258,9 +253,14 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
             
             await animationPromise;
             
+            // Clean up inline styles after animation completes
+            allCards.forEach(card => {
+              card.style.transition = '';
+              card.style.opacity = '';
+            });
+            
             // Small delay before transitioning
             await new Promise((resolve) => setTimeout(resolve, 100));
-            console.log('✅ Flying animation complete');
           } else {
             console.log('❌ Missing elements for animation', {
               hasCards: allCards.length > 0,
@@ -275,10 +275,6 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
         console.warn('Flying animation failed:', error);
       }
     }
-
-    // Animate transition
-    setIsTransitioning(true);
-    setIsAnimating(true);
 
     // Wait for fade-out animation
     await new Promise((resolve) => setTimeout(resolve, 150));

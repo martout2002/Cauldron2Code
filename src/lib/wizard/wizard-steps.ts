@@ -153,31 +153,31 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'none', 
           label: 'None',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/none.svg',
           description: 'No database'
         },
         { 
           value: 'prisma-postgres', 
           label: 'Prisma + PostgreSQL',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/prisma.svg',
           description: 'Type-safe ORM with PostgreSQL'
         },
         { 
           value: 'drizzle-postgres', 
           label: 'Drizzle + PostgreSQL',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/drizzle.svg',
           description: 'Lightweight ORM with PostgreSQL'
         },
         { 
           value: 'supabase', 
           label: 'Supabase',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/supabase.svg',
           description: 'Open source Firebase alternative'
         },
         { 
           value: 'mongodb', 
           label: 'MongoDB',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/mongodb.svg',
           description: 'NoSQL document database'
         },
       ],
@@ -195,25 +195,25 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'none', 
           label: 'None',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/none.svg',
           description: 'No authentication'
         },
         { 
           value: 'nextauth', 
           label: 'NextAuth',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/next-auth.png',
           description: 'Authentication for Next.js'
         },
         { 
           value: 'supabase', 
           label: 'Supabase Auth',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/supabase.svg',
           description: 'Built-in Supabase authentication'
         },
         { 
           value: 'clerk', 
           label: 'Clerk',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/clerk.svg',
           description: 'Complete user management'
         },
       ],
@@ -231,60 +231,62 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'tailwind', 
           label: 'Tailwind CSS',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/tailwind.svg',
           description: 'Utility-first CSS framework'
         },
         { 
           value: 'css-modules', 
           label: 'CSS Modules',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/css-modules.svg',
           description: 'Scoped CSS files'
         },
         { 
           value: 'styled-components', 
           label: 'Styled Components',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/styled-components.svg',
           description: 'CSS-in-JS library'
         },
       ],
     },
     
-    // Step 8: Extras (using checkbox-group for multiple selections)
+    // Step 8: Extras (using option-grid with multiple selections)
     {
       id: 'extras',
       title: 'Final Ingredients',
       subtitle: 'Add the finishing touches to your spell',
-      type: 'custom', // Will handle extras object specially
+      type: 'option-grid',
       field: 'extras',
+      multiSelect: true,
+      columns: 5,
       options: [
         { 
           value: 'docker', 
           label: 'Docker',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/docker.svg',
           description: 'Containerization'
         },
         { 
           value: 'githubActions', 
           label: 'GitHub Actions',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/github-actions.svg',
           description: 'CI/CD workflows'
         },
         { 
           value: 'redis', 
           label: 'Redis',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/redis.svg',
           description: 'In-memory data store'
         },
         { 
           value: 'prettier', 
           label: 'Prettier',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/prettier.svg',
           description: 'Code formatter'
         },
         { 
           value: 'husky', 
           label: 'Husky',
-          icon: '/icons/frameworks/placeholder.svg',
+          icon: '/icons/frameworks/husky.svg',
           description: 'Git hooks'
         },
       ],

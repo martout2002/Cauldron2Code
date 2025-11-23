@@ -1,0 +1,18 @@
+<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="256" height="256" fill="#2a2a3a" rx="32"/>
+  
+  <!-- Drizzle drops -->
+  <path d="M90 60 L90 100 Q90 110 80 110 Q70 110 70 100 L70 60" 
+        fill="#8fcc4f" stroke="#6a9938" stroke-width="4"/>
+  <path d="M128 80 L128 130 Q128 145 115 145 Q102 145 102 130 L102 80" 
+        fill="#8fcc4f" stroke="#6a9938" stroke-width="4"/>
+  <path d="M166 60 L166 100 Q166 110 176 110 Q186 110 186 100 L186 60" 
+        fill="#8fcc4f" stroke="#6a9938" stroke-width="4"/>
+  
+  <!-- Database cylinder -->
+  <ellipse cx="128" cy="170" rx="60" ry="15" fill="none" stroke="#8fcc4f" stroke-width="6"/>
+  <line x1="68" y1="170" x2="68" y2="200" stroke="#8fcc4f" stroke-width="6"/>
+  <line x1="188" y1="170" x2="188" y2="200" stroke="#8fcc4f" stroke-width="6"/>
+  <ellipse cx="128" cy="200" rx="60" ry="15" fill="none" stroke="#8fcc4f" stroke-width="6"/>
+</svg>
