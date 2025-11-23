@@ -228,30 +228,60 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
         console.log('🎯 Flying animation check:', { selectedValue, field: currentStepConfig.field });
         
         if (selectedValue && typeof selectedValue === 'string') {
-          // Find the selected option card by looking for the selected class
-          const selectedCard = document.querySelector('.pixel-option-card.selected') as HTMLElement;
+          // Find all option cards and the selected one
+          const allCards = document.querySelectorAll('.wizard-option') as NodeListOf<HTMLElement>;
+          const selectedCard = document.querySelector('.wizard-option.selected') as HTMLElement;
+          const selectedIcon = selectedCard?.querySelector('img') as HTMLElement;
           const cauldronImg = document.querySelector('.cauldron-asset') as HTMLElement;
           
           console.log('🎯 Elements found:', { 
+            totalCards: allCards.length,
             selectedCard: !!selectedCard, 
+            selectedIcon: !!selectedIcon,
             cauldronImg: !!cauldronImg,
-            selectedCardClasses: selectedCard?.className,
-            cauldronClasses: cauldronImg?.className
+            allCardsClasses: Array.from(allCards).map(c => c.className)
           });
           
-          if (selectedCard && cauldronImg) {
+          if (selectedIcon && cauldronImg && allCards.length > 0) {
             console.log('🚀 Starting flying animation...');
-            // Trigger flying animation
-            await animateOptionToCauldron(selectedCard, cauldronImg);
             
-            // Trigger cauldron splash effect
+            // Step 1: Fade out only unselected options quickly
+            allCards.forEach(card => {
+              if (card !== selectedCard) {
+                card.style.transition = 'opacity 0.2s ease';
+                card.style.opacity = '0';
+              }
+            });
+            
+            // Wait briefly for unselected to fade
+            await new Promise((resolve) => setTimeout(resolve, 150));
+            
+            // Step 2: Start flying animation while selected is still visible
+            // The animateOptionToCauldron creates a clone, so we hide the original as animation starts
+            const animationPromise = animateOptionToCauldron(selectedIcon, cauldronImg);
+            
+            // Hide the original selected card immediately after clone is created
+            setTimeout(() => {
+              if (selectedCard) {
+                selectedCard.style.opacity = '0';
+              }
+            }, 50);
+            
+            await animationPromise;
+            
+            // Step 3: Trigger cauldron splash effect
             triggerCauldronSplash(cauldronImg);
             
             // Small delay after splash before transitioning
             await new Promise((resolve) => setTimeout(resolve, 100));
             console.log('✅ Flying animation complete');
           } else {
-            console.log('❌ Missing elements for animation');
+            console.log('❌ Missing elements for animation', {
+              hasCards: allCards.length > 0,
+              hasCard: !!selectedCard,
+              hasIcon: !!selectedIcon,
+              hasCauldron: !!cauldronImg
+            });
           }
         }
       } catch (error) {

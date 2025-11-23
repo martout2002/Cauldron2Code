@@ -65,7 +65,7 @@ export function OptionGrid({
     <div className="w-full max-w-5xl mx-auto px-4">
       {/* Horizontal row of icons */}
       <div
-        className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12 flex-wrap"
+        className="flex items-center justify-center gap-6 sm:gap-8 md:gap-10 lg:gap-12"
         role={multiSelect ? 'group' : 'radiogroup'}
         aria-label={label || 'Select an option'}
       >
@@ -82,15 +82,14 @@ export function OptionGrid({
                 onMouseEnter={() => setHoveredOption(option.value)}
                 onMouseLeave={() => setHoveredOption(null)}
                 className={`
+                  wizard-option
                   relative
                   flex flex-col items-center justify-center
-                  p-3 sm:p-4
                   cursor-pointer
                   transition-all duration-200
-                  touch-target
                   hover:scale-110
-                  focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-transparent
-                  ${selected ? 'scale-110' : ''}
+                  outline-none border-none
+                  ${selected ? 'scale-110 selected' : ''}
                 `}
                 role={multiSelect ? 'checkbox' : 'radio'}
                 aria-checked={selected}
@@ -111,16 +110,14 @@ export function OptionGrid({
                 )}
 
                 {/* Icon */}
-                {option.icon && (
-                  <img
-                    src={option.icon}
-                    alt=""
-                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain transition-transform duration-200"
-                    onError={(e) => {
-                      e.currentTarget.src = '/icons/frameworks/placeholder.svg';
-                    }}
-                  />
-                )}
+                <img
+                  src={option.icon || '/icons/frameworks/placeholder.svg'}
+                  alt=""
+                  className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain transition-transform duration-200"
+                  onError={(e) => {
+                    e.currentTarget.src = '/icons/frameworks/placeholder.svg';
+                  }}
+                />
 
                 {/* Label below icon */}
                 <span className="mt-2 font-pixelify text-xs sm:text-sm text-white text-center whitespace-nowrap">

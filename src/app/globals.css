@@ -482,34 +482,11 @@
 
 /* Option Grid Cards - Optimized for 60fps */
 .pixel-option-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background: rgba(20, 20, 30, 0.8);
-  border: 3px solid #4a4a5a;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: var(--font-pixelify);
-  /* GPU acceleration */
-  will-change: transform, border-color, background, box-shadow;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-.pixel-option-card:hover {
-  border-color: #8fcc4f;
-  background: rgba(30, 30, 40, 0.9);
-  transform: translateY(-4px) translateZ(0);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  /* Minimal styling for animation selector - no backgrounds or borders */
 }
 
 .pixel-option-card.selected {
-  border-color: #b4ff64;
-  background: rgba(180, 255, 100, 0.2);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  /* Removed green border and background for cleaner look */
 }
 
 .pixel-option-label {
@@ -848,21 +825,7 @@
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
 }
 
-/* Add subtle background for logo area to improve contrast */
-.pixel-option-card > div[aria-hidden="true"] {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 12px;
-  padding: 0.75rem;
-  transition: background 0.2s ease;
-}
-
-.pixel-option-card:hover > div[aria-hidden="true"] {
-  background: rgba(255, 255, 255, 0.95);
-}
-
-.pixel-option-card.selected > div[aria-hidden="true"] {
-  background: rgba(180, 255, 100, 0.9);
-}
+/* Removed icon background styling for cleaner horizontal layout */
 
 /* Ensure logos maintain aspect ratio and don't distort */
 .pixel-option-card img {
@@ -870,90 +833,59 @@
   object-fit: contain;
 }
 
-/* Responsive logo sizing adjustments */
-@media (max-width: 640px) {
-  .pixel-option-card > div[aria-hidden="true"] {
-    padding: 0.5rem;
-  }
-}
+/* Removed responsive logo sizing adjustments */
 
 /* ============================================
    SPARKLE EFFECTS
    ============================================ */
 
 /* Sparkle container for positioning sparkles around cards */
-.pixel-option-card {
+.wizard-option {
   position: relative;
   overflow: visible;
 }
 
-/* Sparkle elements using pseudo-elements */
-.pixel-option-card::before,
-.pixel-option-card::after {
-  content: '✨';
+/* Sparkle overlay using pseudo-element */
+.wizard-option::before {
+  content: '';
   position: absolute;
-  font-size: 1.5rem;
+  top: 40%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  max-width: 120px;
+  max-height: 120px;
+  background-image: url('/sparkles.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.5s ease;
+  z-index: 100;
   /* GPU acceleration for smooth 60fps animation */
   will-change: transform, opacity;
-  transform: translateZ(0);
-  backface-visibility: hidden;
 }
 
-/* Position sparkles around the card edges */
-.pixel-option-card::before {
-  top: -12px;
-  left: -12px;
-}
-
-.pixel-option-card::after {
-  bottom: -12px;
-  right: -12px;
-}
-
-/* Show sparkles on hover with floating animation */
-.pixel-option-card:hover::before {
+/* Show sparkles on hover with subtle pulse */
+.wizard-option:hover::before {
   opacity: 1;
-  animation: sparkle-float 1.5s ease-in-out infinite;
+  animation: sparkle-pulse 1.5s ease-in-out infinite;
 }
 
-.pixel-option-card:hover::after {
-  opacity: 1;
-  animation: sparkle-float 1.5s ease-in-out infinite 0.75s;
-}
-
-/* Sparkle floating animation with scaling effect */
-@keyframes sparkle-float {
+/* Sparkle pulse animation */
+@keyframes sparkle-pulse {
   0%, 100% {
-    transform: translateY(0) scale(1) translateZ(0);
-    opacity: 1;
-  }
-  25% {
-    transform: translateY(-8px) scale(1.2) translateZ(0);
+    transform: translate(-50%, -50%) scale(1);
     opacity: 0.8;
   }
   50% {
-    transform: translateY(-4px) scale(1.1) translateZ(0);
+    transform: translate(-50%, -50%) scale(1.1);
     opacity: 1;
   }
-  75% {
-    transform: translateY(-10px) scale(1.15) translateZ(0);
-    opacity: 0.9;
-  }
 }
 
-/* Additional sparkles using data attributes for more sparkle positions */
-.pixel-option-card[data-sparkle]::before {
-  top: -10px;
-  right: 20%;
-}
-
-.pixel-option-card[data-sparkle]::after {
-  bottom: -10px;
-  left: 20%;
-}
+/* Removed additional sparkle positions - using centered overlay only */
 
 /* Mobile sparkle adjustments */
 @media (max-width: 640px) {
