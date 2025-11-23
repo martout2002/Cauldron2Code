@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 interface Option {
   value: string;
   label: string;
@@ -20,10 +22,11 @@ export function OptionGrid({
   options,
   selected,
   onSelect,
-  columns = 3,
   multiSelect = false,
   label,
 }: OptionGridProps) {
+  const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+
   const isSelected = (value: string): boolean => {
     if (Array.isArray(selected)) {
       return selected.includes(value);
@@ -55,94 +58,99 @@ export function OptionGrid({
         nextIndex = (index - 1 + totalOptions) % totalOptions;
         (e.currentTarget.parentElement?.children[nextIndex] as HTMLElement)?.focus();
         break;
-      case 'ArrowDown':
-        e.preventDefault();
-        nextIndex = Math.min(index + columns, totalOptions - 1);
-        (e.currentTarget.parentElement?.children[nextIndex] as HTMLElement)?.focus();
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        nextIndex = Math.max(index - columns, 0);
-        (e.currentTarget.parentElement?.children[nextIndex] as HTMLElement)?.focus();
-        break;
     }
-  };
-
-  // Determine responsive columns
-  const getResponsiveColumns = () => {
-    if (columns >= 3) {
-      return 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3';
-    } else if (columns === 2) {
-      return 'grid-cols-1 sm:grid-cols-2';
-    }
-    return 'grid-cols-1';
   };
 
   return (
-    <div
-      className={`grid gap-3 sm:gap-4 w-full max-w-4xl mx-auto px-2 sm:px-0 ${getResponsiveColumns()}`}
-      role={multiSelect ? 'group' : 'radiogroup'}
-      aria-label={label || 'Select an option'}
-    >
-      {options.map((option, index) => {
-        const selected = isSelected(option.value);
-        return (
-          <button
-            key={option.value}
-            onClick={() => handleSelect(option.value)}
-            onKeyDown={(e) => handleKeyDown(e, option.value, index)}
-            className={`
-              pixel-option-card
-              flex flex-col items-center justify-center
-              p-4 sm:p-5 md:p-6 
-              min-h-[90px] sm:min-h-[120px] md:min-h-[140px]
-              bg-gray-900/80 
-              border-3 border-gray-700
-              rounded-lg
-              cursor-pointer
-              transition-all duration-200
-              touch-target
-              hover:border-green-500 hover:bg-gray-800/90 hover:-translate-y-1 hover:shadow-lg
-              focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-900
-              ${
-                selected
-                  ? 'border-green-400 bg-green-900/30 shadow-pixel-glow-green'
-                  : ''
-              }
-            `}
-            role={multiSelect ? 'checkbox' : 'radio'}
-            aria-checked={selected}
-            aria-label={`${option.label}${option.description ? `, ${option.description}` : ''}`}
-            tabIndex={0}
-          >
-            {/* Icon */}
-            {option.icon && (
-              <div className="mb-2 sm:mb-3" aria-hidden="true">
-                <img
-                  src={option.icon}
-                  alt=""
-                  className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-              </div>
-            )}
+    <div className="w-full max-w-5xl mx-auto px-4">
+      {/* Horizontal row of icons */}
+      <div
+        className="flex items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12 flex-wrap"
+        role={multiSelect ? 'group' : 'radiogroup'}
+        aria-label={label || 'Select an option'}
+      >
+        {options.map((option, index) => {
+          const selected = isSelected(option.value);
+          const isHovered = hoveredOption === option.value;
+          
+          return (
+            <div key={option.value} className="relative flex flex-col items-center">
+              {/* Icon button */}
+              <button
+                onClick={() => handleSelect(option.value)}
+                onKeyDown={(e) => handleKeyDown(e, option.value, index)}
+                onMouseEnter={() => setHoveredOption(option.value)}
+                onMouseLeave={() => setHoveredOption(null)}
+                className={`
+                  relative
+                  flex flex-col items-center justify-center
+                  p-3 sm:p-4
+                  cursor-pointer
+                  transition-all duration-200
+                  touch-target
+                  hover:scale-110
+                  focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-transparent
+                  ${selected ? 'scale-110' : ''}
+                `}
+                role={multiSelect ? 'checkbox' : 'radio'}
+                aria-checked={selected}
+                aria-label={`${option.label}${option.description ? `, ${option.description}` : ''}`}
+                tabIndex={0}
+              >
+                {/* Checkmark indicator for selected state */}
+                {selected && (
+                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center z-10 shadow-lg">
+                    <svg 
+                      viewBox="0 0 24 24" 
+                      className="w-4 h-4 fill-gray-900"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                  </div>
+                )}
 
-            {/* Label */}
-            <span className="pixel-option-label font-pixelify text-sm sm:text-base text-white text-center">
-              {option.label}
-            </span>
+                {/* Icon */}
+                {option.icon && (
+                  <img
+                    src={option.icon}
+                    alt=""
+                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain transition-transform duration-200"
+                    onError={(e) => {
+                      e.currentTarget.src = '/icons/frameworks/placeholder.svg';
+                    }}
+                  />
+                )}
 
-            {/* Description */}
-            {option.description && (
-              <span className="mt-1 sm:mt-2 text-xs text-gray-400 text-center">
-                {option.description}
-              </span>
-            )}
-          </button>
-        );
-      })}
+                {/* Label below icon */}
+                <span className="mt-2 font-pixelify text-xs sm:text-sm text-white text-center whitespace-nowrap">
+                  {option.label}
+                </span>
+
+                {/* Info icon */}
+                {option.description && (
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-700 rounded-full flex items-center justify-center text-white text-xs font-bold border-2 border-gray-900">
+                    ⓘ
+                  </div>
+                )}
+              </button>
+
+              {/* Tooltip popup */}
+              {isHovered && option.description && (
+                <div className="absolute top-full mt-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="bg-gray-900 border-2 border-gray-700 rounded-lg px-4 py-3 shadow-xl max-w-xs">
+                    <p className="text-sm text-gray-200 text-center leading-relaxed">
+                      {option.description}
+                    </p>
+                    {/* Arrow pointing up */}
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-900 border-l-2 border-t-2 border-gray-700 rotate-45" />
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

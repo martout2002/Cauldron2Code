@@ -11,7 +11,7 @@ export function CauldronAsset({ className = '' }: CauldronAssetProps) {
       <img
         src="/cauldron.png"
         alt=""
-        className="w-80 mr-4"
+        className="cauldron-asset w-80 mr-4"
         role="presentation"
         onError={(e) => {
           // Hide image if it fails to load

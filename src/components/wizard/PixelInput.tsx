@@ -1,14 +1,12 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Search } from 'lucide-react';
 import { debounce } from '@/lib/wizard/debounce';
 
 interface PixelInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  icon?: 'search' | 'none';
   error?: string;
   label?: string;
   debounceMs?: number;
@@ -18,7 +16,6 @@ export function PixelInput({
   value,
   onChange,
   placeholder,
-  icon = 'search',
   error,
   label,
   debounceMs = 300,

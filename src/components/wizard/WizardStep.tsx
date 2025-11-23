@@ -90,7 +90,6 @@ export function WizardStep({
             value={typeof currentValue === 'string' ? currentValue : ''}
             onChange={handleUpdate}
             placeholder={step.placeholder}
-            icon="none"
             error={validationError || undefined}
             label={step.title}
           />

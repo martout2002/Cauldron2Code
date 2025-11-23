@@ -151,10 +151,68 @@
   - Add optional link to switch between old and new wizard UIs
   - _Requirements: 8.6, 10.6_
 
-- [ ]* 14. Testing and validation
+- [x] 14. Add framework logos to option cards
+  - Source or create framework logo images (Next.js, React, Vue, Angular, Svelte) and save to `/public/icons/frameworks/`
+  - Update wizard-steps.ts to include logo paths for each framework option
+  - Update OptionGrid component to display framework logos as the main visual element
+  - Add fallback placeholder images for missing logos
+  - Ensure logos are properly sized and visible against the dark background
+  - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
+
+- [x] 15. Implement hover sparkle effects
+- [x] 15.1 Create sparkle animation styles
+  - Add sparkle CSS animations to globals.css using pseudo-elements (::before, ::after)
+  - Create @keyframes sparkle-float animation with floating and scaling effects
+  - Position sparkles around the edges of option cards on hover
+  - _Requirements: 13.1, 13.2, 13.3_
+
+- [x] 15.2 Add sparkle interaction logic
+  - Implement sparkle removal when hover ends
+  - Add performance optimization to ensure sparkles maintain 60fps
+  - Add prefers-reduced-motion media query to disable sparkles for users with motion sensitivity
+  - _Requirements: 13.4, 13.5, 13.6_
+
+- [x] 16. Add selection checkmark indicator
+  - Create checkmark SVG icon component or use existing icon library
+  - Add checkmark-badge styles to globals.css with positioning in top-right corner
+  - Update OptionGrid component to conditionally render checkmark on selected cards
+  - Implement checkmark-appear animation with scale and rotation effect
+  - Add checkmark removal animation when option is deselected
+  - Style checkmark with green glow effect matching the magical theme
+  - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6_
+
+- [x] 17. Implement flying animation to cauldron
+- [x] 17.1 Create flying animation function
+  - Create animateOptionToCauldron function in PixelArtWizard component
+  - Calculate trajectory from selected option card to cauldron center using getBoundingClientRect
+  - Clone the selected option element and position it as a fixed overlay
+  - Animate the clone using Web Animations API with scale-down and fade-out effects
+  - Remove clone element after animation completes (800ms duration)
+  - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.6_
+
+- [x] 17.2 Add cauldron splash effect
+  - Create cauldron-splash CSS animation with scale and brightness effects
+  - Trigger splash effect when flying option reaches the cauldron
+  - Remove splash effect class after 500ms
+  - _Requirements: 15.5_
+
+- [x] 17.3 Integrate flying animation with navigation
+  - Update handleNext function to trigger flying animation before step transition
+  - Ensure flying animation completes before proceeding to next step
+  - Add prefers-reduced-motion check to use simple fade instead of flying animation
+  - Ensure animation does not block user interaction with other elements
+  - _Requirements: 15.6, 15.7, 15.8_
+
+- [ ]* 18. Testing and validation
   - Test all wizard steps render correctly with proper data
   - Test navigation between all steps preserves state
   - Test validation for each step type
+  - Test framework logos display correctly on all option cards
+  - Test sparkle effects appear on hover and disappear on hover end
+  - Test checkmark appears on selection with proper animation
+  - Test flying animation to cauldron works smoothly
+  - Test cauldron splash effect triggers correctly
+  - Test prefers-reduced-motion disables animations appropriately
   - Test final configuration object matches expected format
   - Test on Chrome, Safari, Firefox, and Edge browsers
   - Verify Lighthouse performance score > 85

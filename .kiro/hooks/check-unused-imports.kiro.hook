@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Check Unused Imports",
+  "description": "Automatically checks for unused imports in the codebase when tasks.md is modified to ensure deployment won't fail due to linting errors",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "tasks.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The tasks.md file has been updated. Please scan all TypeScript and JavaScript files in the src/ directory for unused imports. Check for:\n1. Import statements that are declared but never used in the file\n2. Named imports where some names are unused\n3. Report any files with unused imports so they can be cleaned up before deployment\n\nFocus on files in: src/app/, src/components/, src/lib/, and src/types/\n\nProvide a summary of:\n- Files with unused imports (if any)\n- Specific unused import statements\n- Suggestions for cleanup\n\nIf no unused imports are found, confirm that the codebase is clean and ready for deployment."
+  }
+}

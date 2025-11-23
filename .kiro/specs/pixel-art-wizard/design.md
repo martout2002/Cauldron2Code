@@ -898,11 +898,253 @@ export default function ConfigurePage() {
 3. Animation performance (no jank)
 4. Memory usage during navigation
 
+## Interactive Enhancements
+
+### Framework Logo Display
+
+Framework logos will be displayed as potion bottle images. Each option card will show the official framework logo or a themed potion bottle variant.
+
+**Logo Sources:**
+- Next.js: Official Next.js logo
+- React: Official React logo
+- Vue: Official Vue logo
+- Angular: Official Angular logo
+- Svelte: Official Svelte logo
+
+**Implementation:**
+```typescript
+const frameworkLogos = {
+  nextjs: '/icons/frameworks/nextjs-logo.svg',
+  react: '/icons/frameworks/react-logo.svg',
+  vue: '/icons/frameworks/vue-logo.svg',
+  angular: '/icons/frameworks/angular-logo.svg',
+  svelte: '/icons/frameworks/svelte-logo.svg',
+};
+```
+
+### Hover Sparkle Effects
+
+Sparkles will appear around option cards on hover using CSS animations and pseudo-elements or dynamically generated particle elements.
+
+**CSS Approach:**
+```css
+.pixel-option-card::before,
+.pixel-option-card::after {
+  content: '✨';
+  position: absolute;
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pixel-option-card:hover::before {
+  top: -10px;
+  left: -10px;
+  opacity: 1;
+  animation: sparkle-float 1.5s ease-in-out infinite;
+}
+
+.pixel-option-card:hover::after {
+  bottom: -10px;
+  right: -10px;
+  opacity: 1;
+  animation: sparkle-float 1.5s ease-in-out infinite 0.5s;
+}
+
+@keyframes sparkle-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.2); }
+}
+```
+
+**JavaScript Approach (for more sparkles):**
+```typescript
+function createSparkles(element: HTMLElement) {
+  const sparkleCount = 4;
+  const sparkles: HTMLElement[] = [];
+  
+  for (let i = 0; i < sparkleCount; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.textContent = '✨';
+    sparkle.style.position = 'absolute';
+    sparkle.style.pointerEvents = 'none';
+    
+    // Random position around the card
+    const angle = (i / sparkleCount) * Math.PI * 2;
+    const distance = 60;
+    sparkle.style.left = `${50 + Math.cos(angle) * distance}%`;
+    sparkle.style.top = `${50 + Math.sin(angle) * distance}%`;
+    
+    element.appendChild(sparkle);
+    sparkles.push(sparkle);
+  }
+  
+  return () => sparkles.forEach(s => s.remove());
+}
+```
+
+### Selection Checkmark
+
+A checkmark icon will appear in the top-right corner of selected option cards.
+
+**Component Update:**
+```typescript
+<div className={`pixel-option-card ${isSelected ? 'selected' : ''}`}>
+  {isSelected && (
+    <div className="checkmark-badge">
+      <svg viewBox="0 0 24 24" className="checkmark-icon">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+      </svg>
+    </div>
+  )}
+  <img src={option.logo} alt={option.label} />
+  <span>{option.label}</span>
+</div>
+```
+
+**Styles:**
+```css
+.checkmark-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: rgba(180, 255, 100, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: checkmark-appear 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 0 12px rgba(180, 255, 100, 0.8);
+}
+
+.checkmark-icon {
+  width: 20px;
+  height: 20px;
+  fill: #1a1a1a;
+}
+
+@keyframes checkmark-appear {
+  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+```
+
+### Flying Animation to Cauldron
+
+When the user clicks "Next", the selected option will animate flying into the cauldron.
+
+**Implementation:**
+```typescript
+async function animateOptionToCauldron(
+  optionElement: HTMLElement,
+  cauldronElement: HTMLElement
+) {
+  // Get positions
+  const optionRect = optionElement.getBoundingClientRect();
+  const cauldronRect = cauldronElement.getBoundingClientRect();
+  
+  // Calculate trajectory
+  const startX = optionRect.left + optionRect.width / 2;
+  const startY = optionRect.top + optionRect.height / 2;
+  const endX = cauldronRect.left + cauldronRect.width / 2;
+  const endY = cauldronRect.top + cauldronRect.height / 2;
+  
+  // Create flying clone
+  const clone = optionElement.cloneNode(true) as HTMLElement;
+  clone.style.position = 'fixed';
+  clone.style.left = `${startX}px`;
+  clone.style.top = `${startY}px`;
+  clone.style.transform = 'translate(-50%, -50%)';
+  clone.style.zIndex = '9999';
+  clone.style.pointerEvents = 'none';
+  document.body.appendChild(clone);
+  
+  // Animate
+  clone.animate([
+    {
+      left: `${startX}px`,
+      top: `${startY}px`,
+      transform: 'translate(-50%, -50%) scale(1)',
+      opacity: 1
+    },
+    {
+      left: `${endX}px`,
+      top: `${endY}px`,
+      transform: 'translate(-50%, -50%) scale(0.2)',
+      opacity: 0
+    }
+  ], {
+    duration: 800,
+    easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
+  }).onfinish = () => {
+    clone.remove();
+    triggerCauldronSplash(cauldronElement);
+  };
+}
+
+function triggerCauldronSplash(cauldronElement: HTMLElement) {
+  // Add splash effect class
+  cauldronElement.classList.add('splash');
+  setTimeout(() => {
+    cauldronElement.classList.remove('splash');
+  }, 500);
+}
+```
+
+**Cauldron Splash Effect:**
+```css
+.cauldron-asset.splash {
+  animation: cauldron-splash 0.5s ease-out;
+}
+
+@keyframes cauldron-splash {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.1); filter: brightness(1.3); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+```
+
+### Reduced Motion Support
+
+All animations will respect the `prefers-reduced-motion` media query:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .pixel-option-card::before,
+  .pixel-option-card::after {
+    animation: none;
+  }
+  
+  .checkmark-badge {
+    animation: none;
+  }
+  
+  .cauldron-asset {
+    animation: none;
+  }
+}
+```
+
+```typescript
+// In flying animation
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (prefersReducedMotion) {
+  // Simple fade instead of flying
+  await fadeTransition();
+} else {
+  await animateOptionToCauldron(optionElement, cauldronElement);
+}
+```
+
 ## Future Enhancements
 
 1. **Animated Cauldron**: Use sprite sheet or Lottie for bubbling animation
 2. **Sound Effects**: Optional magical sounds on interactions
-3. **Particle Effects**: Floating sparkles or magical dust
+3. **More Particle Effects**: Floating sparkles or magical dust throughout the scene
 4. **Step Branching**: Conditional steps based on previous selections
 5. **Save/Load Configurations**: Allow users to save and load preset configurations
 6. **Tooltips**: Hover tooltips with additional information about each option

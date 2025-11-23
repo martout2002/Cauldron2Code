@@ -509,9 +509,7 @@
 .pixel-option-card.selected {
   border-color: #b4ff64;
   background: rgba(180, 255, 100, 0.2);
-  box-shadow: 
-    0 0 20px rgba(180, 255, 100, 0.4),
-    inset 0 0 20px rgba(180, 255, 100, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .pixel-option-label {
@@ -533,16 +531,11 @@
 
 /* Shadow effects for pixel components */
 .shadow-pixel-glow {
-  box-shadow: 
-    0 0 20px rgba(180, 255, 100, 0.4),
-    0 8px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
 .shadow-pixel-glow-green {
-  box-shadow: 
-    0 0 20px rgba(180, 255, 100, 0.4),
-    inset 0 0 20px rgba(180, 255, 100, 0.1),
-    0 8px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
 /* Border width utility */
@@ -633,11 +626,7 @@
     margin-bottom: 1.5rem;
   }
   
-  /* Cauldron - Mobile */
-  .cauldron-asset {
-    width: 80px !important;
-    height: 80px !important;
-  }
+  /* Cauldron - Mobile (removed size override) */
   
   /* Wizard Content - Mobile */
   .wizard-content {
@@ -705,11 +694,7 @@
     padding: 1rem;
   }
   
-  /* Cauldron - Tablet */
-  .cauldron-asset {
-    width: 120px !important;
-    height: 120px !important;
-  }
+  /* Cauldron - Tablet (removed size override) */
   
   /* Wizard Title - Tablet */
   .pixel-title {
@@ -733,11 +718,7 @@
     transform: scale(1.15);
   }
   
-  /* Larger cauldron on desktop */
-  .cauldron-asset {
-    width: 192px !important;
-    height: 192px !important;
-  }
+  /* Cauldron on desktop (removed size override) */
 }
 
 /* Landscape Mobile Adjustments */
@@ -753,10 +734,7 @@
     margin-bottom: 1rem;
   }
   
-  .cauldron-asset {
-    width: 64px !important;
-    height: 64px !important;
-  }
+  /* Cauldron landscape (removed size override) */
   
   /* Adjust navigation for landscape */
   .pixel-nav-button img {
@@ -844,5 +822,339 @@
   .wizard-step.fade-out {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ============================================
+   FRAMEWORK LOGOS
+   ============================================ */
+
+/* Enhance logo visibility on dark backgrounds */
+.pixel-option-card img {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: filter 0.2s ease, transform 0.2s ease;
+  /* Improve SVG rendering quality */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  shape-rendering: geometricPrecision;
+}
+
+.pixel-option-card:hover img {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  transform: scale(1.05);
+}
+
+.pixel-option-card.selected img {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+}
+
+/* Add subtle background for logo area to improve contrast */
+.pixel-option-card > div[aria-hidden="true"] {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 0.75rem;
+  transition: background 0.2s ease;
+}
+
+.pixel-option-card:hover > div[aria-hidden="true"] {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.pixel-option-card.selected > div[aria-hidden="true"] {
+  background: rgba(180, 255, 100, 0.9);
+}
+
+/* Ensure logos maintain aspect ratio and don't distort */
+.pixel-option-card img {
+  /* Removed max-width/max-height to allow Tailwind classes to work */
+  object-fit: contain;
+}
+
+/* Responsive logo sizing adjustments */
+@media (max-width: 640px) {
+  .pixel-option-card > div[aria-hidden="true"] {
+    padding: 0.5rem;
+  }
+}
+
+/* ============================================
+   SPARKLE EFFECTS
+   ============================================ */
+
+/* Sparkle container for positioning sparkles around cards */
+.pixel-option-card {
+  position: relative;
+  overflow: visible;
+}
+
+/* Sparkle elements using pseudo-elements */
+.pixel-option-card::before,
+.pixel-option-card::after {
+  content: '✨';
+  position: absolute;
+  font-size: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  /* GPU acceleration for smooth 60fps animation */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Position sparkles around the card edges */
+.pixel-option-card::before {
+  top: -12px;
+  left: -12px;
+}
+
+.pixel-option-card::after {
+  bottom: -12px;
+  right: -12px;
+}
+
+/* Show sparkles on hover with floating animation */
+.pixel-option-card:hover::before {
+  opacity: 1;
+  animation: sparkle-float 1.5s ease-in-out infinite;
+}
+
+.pixel-option-card:hover::after {
+  opacity: 1;
+  animation: sparkle-float 1.5s ease-in-out infinite 0.75s;
+}
+
+/* Sparkle floating animation with scaling effect */
+@keyframes sparkle-float {
+  0%, 100% {
+    transform: translateY(0) scale(1) translateZ(0);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(-8px) scale(1.2) translateZ(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-4px) scale(1.1) translateZ(0);
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(-10px) scale(1.15) translateZ(0);
+    opacity: 0.9;
+  }
+}
+
+/* Additional sparkles using data attributes for more sparkle positions */
+.pixel-option-card[data-sparkle]::before {
+  top: -10px;
+  right: 20%;
+}
+
+.pixel-option-card[data-sparkle]::after {
+  bottom: -10px;
+  left: 20%;
+}
+
+/* Mobile sparkle adjustments */
+@media (max-width: 640px) {
+  .pixel-option-card::before,
+  .pixel-option-card::after {
+    font-size: 1.25rem;
+  }
+  
+  .pixel-option-card::before {
+    top: -8px;
+    left: -8px;
+  }
+  
+  .pixel-option-card::after {
+    bottom: -8px;
+    right: -8px;
+  }
+}
+
+/* Tablet sparkle adjustments */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .pixel-option-card::before,
+  .pixel-option-card::after {
+    font-size: 1.375rem;
+  }
+}
+
+/* Performance optimization: Disable sparkles on touch devices to maintain 60fps */
+@media (hover: none) and (pointer: coarse) {
+  .pixel-option-card::before,
+  .pixel-option-card::after {
+    display: none;
+  }
+}
+
+/* Accessibility: Disable sparkles for users with motion sensitivity */
+@media (prefers-reduced-motion: reduce) {
+  .pixel-option-card::before,
+  .pixel-option-card::after {
+    display: none !important;
+  }
+  
+  .pixel-option-card:hover::before,
+  .pixel-option-card:hover::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
+/* ============================================
+   CHECKMARK INDICATOR
+   ============================================ */
+
+/* Checkmark badge container positioned in top-right corner */
+.checkmark-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: rgba(180, 255, 100, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  /* Simple shadow without glow */
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 0 8px rgba(255, 255, 255, 0.3);
+  /* GPU acceleration for smooth animation */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  /* Appear animation with scale and rotation */
+  animation: checkmark-appear 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Checkmark icon styling */
+.checkmark-icon {
+  width: 20px;
+  height: 20px;
+  fill: #1a1a1a;
+  stroke: #1a1a1a;
+  stroke-width: 2;
+  /* Smooth rendering */
+  shape-rendering: geometricPrecision;
+}
+
+/* Checkmark appear animation with bounce effect */
+@keyframes checkmark-appear {
+  0% {
+    transform: scale(0) rotate(-180deg) translateZ(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2) rotate(10deg) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* Checkmark removal animation (exit) */
+.checkmark-badge.removing {
+  animation: checkmark-remove 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+}
+
+@keyframes checkmark-remove {
+  0% {
+    transform: scale(1) rotate(0deg) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(180deg) translateZ(0);
+    opacity: 0;
+  }
+}
+
+/* Removed pulse effect */
+
+/* Mobile adjustments for checkmark */
+@media (max-width: 640px) {
+  .checkmark-badge {
+    width: 28px;
+    height: 28px;
+    top: 6px;
+    right: 6px;
+  }
+  
+  .checkmark-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Tablet adjustments for checkmark */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .checkmark-badge {
+    width: 30px;
+    height: 30px;
+    top: 7px;
+    right: 7px;
+  }
+  
+  .checkmark-icon {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+/* Accessibility: Disable checkmark animations for users with motion sensitivity */
+@media (prefers-reduced-motion: reduce) {
+  .checkmark-badge {
+    animation: none !important;
+  }
+  
+  .checkmark-badge::before {
+    animation: none !important;
+  }
+  
+  .checkmark-badge.removing {
+    animation: none !important;
+    display: none;
+  }
+}
+
+/* ============================================
+   CAULDRON SPLASH EFFECT
+   ============================================ */
+
+/* Cauldron splash animation triggered when option flies into cauldron */
+.cauldron-splash {
+  animation: cauldron-splash 0.5s ease-out;
+}
+
+/* Splash animation with scale and brightness effects */
+@keyframes cauldron-splash {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  30% {
+    transform: scale(1.15);
+    filter: brightness(1.4) drop-shadow(0 0 30px rgba(180, 255, 100, 0.8));
+  }
+  60% {
+    transform: scale(1.05);
+    filter: brightness(1.2) drop-shadow(0 0 20px rgba(180, 255, 100, 0.6));
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* Accessibility: Disable splash animation for users with motion sensitivity */
+@media (prefers-reduced-motion: reduce) {
+  .cauldron-splash {
+    animation: none !important;
   }
 }

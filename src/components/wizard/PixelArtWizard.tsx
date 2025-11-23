@@ -119,6 +119,77 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     [updateConfig]
   );
 
+  /**
+   * Animate selected option flying into the cauldron
+   */
+  const animateOptionToCauldron = useCallback(async (
+    optionElement: HTMLElement,
+    cauldronElement: HTMLElement
+  ): Promise<void> => {
+    return new Promise((resolve) => {
+      // Get positions
+      const optionRect = optionElement.getBoundingClientRect();
+      const cauldronRect = cauldronElement.getBoundingClientRect();
+      
+      // Calculate trajectory from option center to cauldron center
+      const startX = optionRect.left + optionRect.width / 2;
+      const startY = optionRect.top + optionRect.height / 2;
+      const endX = cauldronRect.left + cauldronRect.width / 2;
+      const endY = cauldronRect.top + cauldronRect.height / 2;
+      
+      // Clone the selected option element
+      const clone = optionElement.cloneNode(true) as HTMLElement;
+      clone.style.position = 'fixed';
+      clone.style.left = `${startX}px`;
+      clone.style.top = `${startY}px`;
+      clone.style.width = `${optionRect.width}px`;
+      clone.style.height = `${optionRect.height}px`;
+      clone.style.transform = 'translate(-50%, -50%)';
+      clone.style.zIndex = '9999';
+      clone.style.pointerEvents = 'none';
+      clone.style.margin = '0';
+      document.body.appendChild(clone);
+      
+      // Animate using Web Animations API
+      const animation = clone.animate([
+        {
+          left: `${startX}px`,
+          top: `${startY}px`,
+          transform: 'translate(-50%, -50%) scale(1)',
+          opacity: 1
+        },
+        {
+          left: `${endX}px`,
+          top: `${endY}px`,
+          transform: 'translate(-50%, -50%) scale(0.2)',
+          opacity: 0
+        }
+      ], {
+        duration: 800,
+        easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
+      });
+      
+      // Clean up and resolve when animation completes
+      animation.onfinish = () => {
+        clone.remove();
+        resolve();
+      };
+    });
+  }, []);
+
+  /**
+   * Trigger cauldron splash effect
+   */
+  const triggerCauldronSplash = useCallback((cauldronElement: HTMLElement) => {
+    // Add splash effect class
+    cauldronElement.classList.add('cauldron-splash');
+    
+    // Remove splash effect after animation completes
+    setTimeout(() => {
+      cauldronElement.classList.remove('cauldron-splash');
+    }, 500);
+  }, []);
+
   // Handle next step navigation
   const handleNext = useCallback(async () => {
     if (isTransitioning) return;
@@ -142,6 +213,51 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
         onGenerate();
       }
       return;
+    }
+
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = typeof window !== 'undefined' 
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
+      : false;
+
+    // Try to trigger flying animation for option-grid steps (if not reduced motion)
+    if (!prefersReducedMotion && currentStepConfig?.type === 'option-grid') {
+      try {
+        // Find the selected option element
+        const selectedValue = config[currentStepConfig.field as keyof typeof config];
+        console.log('🎯 Flying animation check:', { selectedValue, field: currentStepConfig.field });
+        
+        if (selectedValue && typeof selectedValue === 'string') {
+          // Find the selected option card by looking for the selected class
+          const selectedCard = document.querySelector('.pixel-option-card.selected') as HTMLElement;
+          const cauldronImg = document.querySelector('.cauldron-asset') as HTMLElement;
+          
+          console.log('🎯 Elements found:', { 
+            selectedCard: !!selectedCard, 
+            cauldronImg: !!cauldronImg,
+            selectedCardClasses: selectedCard?.className,
+            cauldronClasses: cauldronImg?.className
+          });
+          
+          if (selectedCard && cauldronImg) {
+            console.log('🚀 Starting flying animation...');
+            // Trigger flying animation
+            await animateOptionToCauldron(selectedCard, cauldronImg);
+            
+            // Trigger cauldron splash effect
+            triggerCauldronSplash(cauldronImg);
+            
+            // Small delay after splash before transitioning
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            console.log('✅ Flying animation complete');
+          } else {
+            console.log('❌ Missing elements for animation');
+          }
+        }
+      } catch (error) {
+        // If animation fails, continue with normal transition
+        console.warn('Flying animation failed:', error);
+      }
     }
 
     // Animate transition
@@ -170,10 +286,13 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     currentStep,
     totalSteps,
     config,
+    currentStepConfig,
     isTransitioning,
     nextStep,
     markStepComplete,
     onGenerate,
+    animateOptionToCauldron,
+    triggerCauldronSplash,
   ]);
 
   // Handle back step navigation

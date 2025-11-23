@@ -69,26 +69,31 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'nextjs', 
           label: 'Next.js',
+          icon: '/icons/frameworks/nextjs.svg',
           description: 'React framework with SSR and routing'
         },
         { 
           value: 'react', 
           label: 'React',
+          icon: '/icons/frameworks/react.svg',
           description: 'Popular UI library'
         },
         { 
           value: 'vue', 
           label: 'Vue',
+          icon: '/icons/frameworks/vue.svg',
           description: 'Progressive JavaScript framework'
         },
         { 
           value: 'angular', 
           label: 'Angular',
+          icon: '/icons/frameworks/angular.svg',
           description: 'Full-featured framework'
         },
         { 
           value: 'svelte', 
           label: 'Svelte',
+          icon: '/icons/frameworks/svelte.svg',
           description: 'Compile-time framework'
         },
       ],
@@ -106,26 +111,31 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'none', 
           label: 'None',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Frontend only'
         },
         { 
           value: 'nextjs-api', 
           label: 'Next.js API',
+          icon: '/icons/frameworks/nextjs.svg',
           description: 'Built-in API routes'
         },
         { 
           value: 'express', 
           label: 'Express',
+          icon: '/icons/frameworks/express.svg',
           description: 'Minimal Node.js framework'
         },
         { 
           value: 'fastify', 
           label: 'Fastify',
+          icon: '/icons/frameworks/fastify.svg',
           description: 'Fast and low overhead'
         },
         { 
           value: 'nestjs', 
           label: 'NestJS',
+          icon: '/icons/frameworks/nestjs.svg',
           description: 'Progressive Node.js framework'
         },
       ],
@@ -143,26 +153,31 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'none', 
           label: 'None',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'No database'
         },
         { 
           value: 'prisma-postgres', 
           label: 'Prisma + PostgreSQL',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Type-safe ORM with PostgreSQL'
         },
         { 
           value: 'drizzle-postgres', 
           label: 'Drizzle + PostgreSQL',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Lightweight ORM with PostgreSQL'
         },
         { 
           value: 'supabase', 
           label: 'Supabase',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Open source Firebase alternative'
         },
         { 
           value: 'mongodb', 
           label: 'MongoDB',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'NoSQL document database'
         },
       ],
@@ -180,21 +195,25 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'none', 
           label: 'None',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'No authentication'
         },
         { 
           value: 'nextauth', 
           label: 'NextAuth',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Authentication for Next.js'
         },
         { 
           value: 'supabase', 
           label: 'Supabase Auth',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Built-in Supabase authentication'
         },
         { 
           value: 'clerk', 
           label: 'Clerk',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Complete user management'
         },
       ],
@@ -212,16 +231,19 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'tailwind', 
           label: 'Tailwind CSS',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Utility-first CSS framework'
         },
         { 
           value: 'css-modules', 
           label: 'CSS Modules',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Scoped CSS files'
         },
         { 
           value: 'styled-components', 
           label: 'Styled Components',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'CSS-in-JS library'
         },
       ],
@@ -238,26 +260,31 @@ export function getWizardSteps(): StepConfig[] {
         { 
           value: 'docker', 
           label: 'Docker',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Containerization'
         },
         { 
           value: 'githubActions', 
           label: 'GitHub Actions',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'CI/CD workflows'
         },
         { 
           value: 'redis', 
           label: 'Redis',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'In-memory data store'
         },
         { 
           value: 'prettier', 
           label: 'Prettier',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Code formatter'
         },
         { 
           value: 'husky', 
           label: 'Husky',
+          icon: '/icons/frameworks/placeholder.svg',
           description: 'Git hooks'
         },
       ],

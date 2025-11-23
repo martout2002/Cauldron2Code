@@ -167,3 +167,56 @@ This feature redesigns the configuration wizard at `/configure` to adopt a magic
 4. THE Configuration Wizard SHALL debounce input validation to avoid excessive re-renders
 5. THE Configuration Wizard SHALL achieve a Lighthouse performance score > 85
 6. THE Configuration Wizard SHALL render the first step within 1.5 seconds on a standard 3G connection
+
+### Requirement 12: Framework Logo Display
+
+**User Story:** As a user, I want to see recognizable framework logos as potion bottles, so that I can quickly identify my technology choices
+
+#### Acceptance Criteria
+
+1. THE Configuration Wizard SHALL display framework logos (Next.js, React, Vue, Angular, Svelte) as potion bottle images in the option grid
+2. THE Configuration Wizard SHALL use official framework logos or recognizable brand imagery for each technology option
+3. THE Configuration Wizard SHALL provide fallback placeholder images when framework logos are unavailable
+4. THE Configuration Wizard SHALL maintain consistent sizing for all framework logo images
+5. THE Configuration Wizard SHALL ensure logos are clearly visible against the dark background
+
+### Requirement 13: Hover Sparkle Effects
+
+**User Story:** As a user, I want to see sparkle effects when I hover over options, so that the interface feels magical and interactive
+
+#### Acceptance Criteria
+
+1. WHEN a user hovers over an option card, THE Configuration Wizard SHALL display animated sparkle particles around the card
+2. THE Configuration Wizard SHALL position sparkles randomly around the edges of the hovered card
+3. THE Configuration Wizard SHALL animate sparkles with a twinkling or floating effect
+4. THE Configuration Wizard SHALL remove sparkles when the user stops hovering
+5. THE Configuration Wizard SHALL ensure sparkle animations do not impact performance (maintain 60fps)
+6. THE Configuration Wizard SHALL respect prefers-reduced-motion settings by disabling sparkles for users with motion sensitivity
+
+### Requirement 14: Selection State with Checkmark
+
+**User Story:** As a user, I want to see a clear checkmark on selected options, so that I know which technology I've chosen
+
+#### Acceptance Criteria
+
+1. WHEN a user selects an option, THE Configuration Wizard SHALL display a checkmark icon overlaid on the selected card
+2. THE Configuration Wizard SHALL position the checkmark in the top-right corner of the selected option card
+3. THE Configuration Wizard SHALL style the checkmark with a green glow effect matching the magical theme
+4. THE Configuration Wizard SHALL animate the checkmark appearance with a scale or fade-in effect
+5. WHEN a user deselects an option, THE Configuration Wizard SHALL remove the checkmark with an exit animation
+6. THE Configuration Wizard SHALL ensure the checkmark is clearly visible against the framework logo background
+
+### Requirement 15: Flying Animation to Cauldron
+
+**User Story:** As a user, I want to see my selected option fly into the cauldron when I click Next, so that the interaction feels magical and satisfying
+
+#### Acceptance Criteria
+
+1. WHEN a user clicks the "Next" button with a valid selection, THE Configuration Wizard SHALL animate the selected option card flying toward the cauldron
+2. THE Configuration Wizard SHALL calculate the trajectory from the option card position to the cauldron center
+3. THE Configuration Wizard SHALL scale down the option card as it flies toward the cauldron
+4. THE Configuration Wizard SHALL fade out the option card as it reaches the cauldron
+5. THE Configuration Wizard SHALL trigger a splash or bubble effect in the cauldron when the option arrives
+6. THE Configuration Wizard SHALL complete the flying animation within 800ms before transitioning to the next step
+7. THE Configuration Wizard SHALL ensure the flying animation does not block user interaction with other elements
+8. THE Configuration Wizard SHALL respect prefers-reduced-motion settings by using a simple fade transition instead of flying animation
