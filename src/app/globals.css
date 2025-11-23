@@ -1055,38 +1055,4 @@
   }
 }
 
-/* ============================================
-   CAULDRON SPLASH EFFECT
-   ============================================ */
 
-/* Cauldron splash animation triggered when option flies into cauldron */
-.cauldron-splash {
-  animation: cauldron-splash 0.5s ease-out;
-}
-
-/* Splash animation with scale and brightness effects */
-@keyframes cauldron-splash {
-  0% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-  30% {
-    transform: scale(1.15);
-    filter: brightness(1.4) drop-shadow(0 0 30px rgba(180, 255, 100, 0.8));
-  }
-  60% {
-    transform: scale(1.05);
-    filter: brightness(1.2) drop-shadow(0 0 20px rgba(180, 255, 100, 0.6));
-  }
-  100% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-}
-
-/* Accessibility: Disable splash animation for users with motion sensitivity */
-@media (prefers-reduced-motion: reduce) {
-  .cauldron-splash {
-    animation: none !important;
-  }
-}

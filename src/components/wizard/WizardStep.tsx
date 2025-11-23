@@ -55,33 +55,15 @@ export function WizardStep({
 
   return (
     <section
-      className={`wizard-step transition-all duration-300 ${
-        isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
+      className={`wizard-step transition-opacity duration-300 w-full ${
+        isAnimating ? 'opacity-0' : 'opacity-100'
       }`}
       aria-labelledby="step-title"
       aria-describedby="step-subtitle"
     >
-      {/* Title */}
-      <h1 
-        id="step-title"
-        className="font-[family-name:var(--font-pixelify)] text-[clamp(2.5rem,8vw,3.5rem)] font-bold text-white text-center mb-2 sm:mb-3 px-2"
-        style={{ textShadow: '3px 3px 0px rgba(0, 0, 0, 0.8)', letterSpacing: '0.05em' }}
-      >
-        {step.title}
-      </h1>
-
-      {/* Subtitle */}
-      <p 
-        id="step-subtitle"
-        className="font-[family-name:var(--font-pixelify)] text-[clamp(1rem,3vw,1.5rem)] text-[#e0e0e0] text-center mb-4 sm:mb-6 md:mb-8 px-2 mx-auto max-w-2xl"
-        style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}
-      >
-        {step.subtitle}
-      </p>
-
-      {/* Dynamic Content based on step type */}
+      {/* Dynamic Content based on step type - with min-height to prevent layout shift */}
       <div 
-        className="wizard-content max-w-4xl mx-auto px-2 sm:px-4"
+        className="wizard-content max-w-4xl mx-auto px-2 sm:px-4 min-h-[300px] sm:min-h-[350px] md:min-h-[400px]"
         role="form"
         aria-label={`Step ${stepNumber} of ${totalSteps}: ${step.title}`}
       >

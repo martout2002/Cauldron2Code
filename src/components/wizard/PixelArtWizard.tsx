@@ -177,18 +177,7 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     });
   }, []);
 
-  /**
-   * Trigger cauldron splash effect
-   */
-  const triggerCauldronSplash = useCallback((cauldronElement: HTMLElement) => {
-    // Add splash effect class
-    cauldronElement.classList.add('cauldron-splash');
-    
-    // Remove splash effect after animation completes
-    setTimeout(() => {
-      cauldronElement.classList.remove('cauldron-splash');
-    }, 500);
-  }, []);
+
 
   // Handle next step navigation
   const handleNext = useCallback(async () => {
@@ -269,10 +258,7 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
             
             await animationPromise;
             
-            // Step 3: Trigger cauldron splash effect
-            triggerCauldronSplash(cauldronImg);
-            
-            // Small delay after splash before transitioning
+            // Small delay before transitioning
             await new Promise((resolve) => setTimeout(resolve, 100));
             console.log('✅ Flying animation complete');
           } else {
@@ -322,7 +308,6 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     markStepComplete,
     onGenerate,
     animateOptionToCauldron,
-    triggerCauldronSplash,
   ]);
 
   // Handle back step navigation
@@ -418,22 +403,49 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
 
       {/* Main content */}
       <main 
-        className="relative z-10 flex flex-col items-center justify-start min-h-screen px-2 sm:px-4 pt-8 sm:pt-12 pb-24 sm:pb-28"
+        className="relative z-10 min-h-screen px-2 sm:px-4 pt-8 sm:pt-12 pb-24 sm:pb-28"
         role="main"
         aria-label="Configuration wizard"
       >
-        {/* Current step content */}
-        {currentStepConfig && (
-          <WizardStep
-            step={currentStepConfig}
-            stepNumber={currentStep + 1}
-            totalSteps={totalSteps}
-            isAnimating={isAnimating}
-            config={config}
-            onUpdate={handleConfigUpdate}
-            validationError={validationError}
-          />
-        )}
+        {/* Title and subtitle - fixed position, never animates */}
+        <div className="flex flex-col items-center mb-4 sm:mb-6 md:mb-8">
+          {currentStepConfig && (
+            <>
+              {/* Title - fixed height to prevent layout shift */}
+              <h1 
+                id="step-title"
+                className="font-[family-name:var(--font-pixelify)] text-[clamp(2.5rem,8vw,3.5rem)] font-bold text-white text-center mb-2 sm:mb-3 px-2 min-h-16 sm:min-h-18 md:min-h-20 flex items-center justify-center"
+                style={{ textShadow: '3px 3px 0px rgba(0, 0, 0, 0.8)', letterSpacing: '0.05em' }}
+              >
+                {currentStepConfig.title}
+              </h1>
+
+              {/* Subtitle - fixed height to prevent layout shift */}
+              <p 
+                id="step-subtitle"
+                className="font-[family-name:var(--font-pixelify)] text-[clamp(1rem,3vw,1.5rem)] text-[#e0e0e0] text-center px-2 mx-auto max-w-2xl min-h-12 sm:min-h-14 md:min-h-16 flex items-center justify-center"
+                style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}
+              >
+                {currentStepConfig.subtitle}
+              </p>
+            </>
+          )}
+        </div>
+
+        {/* Current step content - only content animates, not title/subtitle */}
+        <div className="flex flex-col items-center min-h-[300px] sm:min-h-[350px] md:min-h-[400px]">
+          {currentStepConfig && (
+            <WizardStep
+              step={currentStepConfig}
+              stepNumber={currentStep + 1}
+              totalSteps={totalSteps}
+              isAnimating={isAnimating}
+              config={config}
+              onUpdate={handleConfigUpdate}
+              validationError={validationError}
+            />
+          )}
+        </div>
 
         {/* Navigation controls */}
         <NavigationControls

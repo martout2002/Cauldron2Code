@@ -109,15 +109,17 @@ export function OptionGrid({
                   </div>
                 )}
 
-                {/* Icon */}
-                <img
-                  src={option.icon || '/icons/frameworks/placeholder.svg'}
-                  alt=""
-                  className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain transition-transform duration-200"
-                  onError={(e) => {
-                    e.currentTarget.src = '/icons/frameworks/placeholder.svg';
-                  }}
-                />
+                {/* Icon with fixed dimensions to prevent layout shift */}
+                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center">
+                  <img
+                    src={option.icon || '/icons/frameworks/placeholder.svg'}
+                    alt=""
+                    className="w-full h-full object-contain transition-transform duration-200"
+                    onError={(e) => {
+                      e.currentTarget.src = '/icons/frameworks/placeholder.svg';
+                    }}
+                  />
+                </div>
 
                 {/* Label below icon */}
                 <span className="mt-2 font-pixelify text-xs sm:text-sm text-white text-center whitespace-nowrap">
