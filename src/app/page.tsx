@@ -9,8 +9,6 @@ export default function Home() {
           className="absolute inset-0 pixel-background"
           style={{ backgroundImage: "url('/landing_image.png')" }}
         />
-        {/* Fade overlay on sides */}
-        <div className="absolute inset-0 pixel-fade" />
       </div>
       
       {/* Hero Section */}
