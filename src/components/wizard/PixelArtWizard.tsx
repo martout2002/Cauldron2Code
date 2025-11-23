@@ -120,7 +120,7 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
   );
 
   /**
-   * Animate selected option flying into the cauldron
+   * Animate selected option flying into the cauldron with an arc trajectory
    */
   const animateOptionToCauldron = useCallback(async (
     optionElement: HTMLElement,
@@ -137,6 +137,12 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
       const endX = cauldronRect.left + cauldronRect.width / 2;
       const endY = cauldronRect.top + cauldronRect.height / 2;
       
+      // Calculate arc control point (peak of the arc)
+      const midX = (startX + endX) / 2;
+      const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+      const arcHeight = Math.min(distance * 0.4, 200); // Arc height based on distance
+      const midY = Math.min(startY, endY) - arcHeight; // Peak above both points
+      
       // Clone the selected option element
       const clone = optionElement.cloneNode(true) as HTMLElement;
       clone.style.position = 'fixed';
@@ -150,23 +156,41 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
       clone.style.margin = '0';
       document.body.appendChild(clone);
       
-      // Animate using Web Animations API
-      const animation = clone.animate([
-        {
-          left: `${startX}px`,
-          top: `${startY}px`,
-          transform: 'translate(-50%, -50%) scale(1)',
-          opacity: 1
-        },
-        {
-          left: `${endX}px`,
-          top: `${endY}px`,
-          transform: 'translate(-50%, -50%) scale(0.2)',
-          opacity: 0
-        }
-      ], {
-        duration: 800,
-        easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)'
+      // Create keyframes for parabolic arc motion
+      const duration = 1000;
+      const frames = 60;
+      const keyframes: Keyframe[] = [];
+      
+      for (let i = 0; i <= frames; i++) {
+        const progress = i / frames;
+        
+        // Use ease-in for gravity effect (accelerates as it falls)
+        const easeProgress = progress < 0.5 
+          ? 2 * progress * progress // Ease out in first half (going up)
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2; // Ease in second half (falling down)
+        
+        // Quadratic bezier curve for the arc path
+        const t = progress;
+        const x = Math.pow(1 - t, 2) * startX + 2 * (1 - t) * t * midX + Math.pow(t, 2) * endX;
+        const y = Math.pow(1 - t, 2) * startY + 2 * (1 - t) * t * midY + Math.pow(t, 2) * endY;
+        
+        // Scale down and fade out as it approaches the cauldron
+        const scale = 1 - (easeProgress * 0.8); // Scale from 1 to 0.2
+        const opacity = 1 - (easeProgress * 0.7); // Fade out gradually
+        
+        keyframes.push({
+          left: `${x}px`,
+          top: `${y}px`,
+          transform: `translate(-50%, -50%) scale(${scale})`,
+          opacity: opacity,
+          offset: progress
+        });
+      }
+      
+      // Animate using Web Animations API with custom keyframes
+      const animation = clone.animate(keyframes, {
+        duration: duration,
+        easing: 'linear' // Linear because easing is built into keyframes
       });
       
       // Clean up and resolve when animation completes

@@ -9,14 +9,12 @@ export function WizardBackground() {
         }}
       />
       
-      {/* Background image - height only scaling with fade mask */}
+      {/* Background image - wider image, height-fitted without stretching */}
       <div
         className="absolute inset-0 bg-no-repeat bg-center"
         style={{
           backgroundImage: "url('/background_image.png')",
           backgroundSize: 'auto 100%',
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
-          maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
         }}
       />
     </div>
