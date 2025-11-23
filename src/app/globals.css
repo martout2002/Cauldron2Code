@@ -1058,3 +1058,1014 @@
 }
 
 
+
+/* ============================================
+   ACCESSIBILITY ENHANCEMENTS FOR DEPLOYMENT GUIDES
+   ============================================ */
+
+/* Enhanced focus styles for deployment guide components */
+.deployment-guide button:focus-visible,
+.deployment-guide a:focus-visible,
+.deployment-guide [role="button"]:focus-visible,
+.deployment-guide [role="checkbox"]:focus-visible,
+.deployment-guide [role="radio"]:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip link styles - hidden by default, visible on focus */
+.sr-only:not(:focus):not(:active) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip link visible state */
+.sr-only:focus,
+.sr-only:active {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 9999;
+  width: auto;
+  height: auto;
+  padding: 1rem 1.5rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background-color: #3B82F6;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  outline: 4px solid rgba(59, 130, 246, 0.3);
+  text-decoration: none;
+}
+
+/* Smooth scroll for skip links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Ensure sufficient touch target size (44x44px minimum) */
+.deployment-guide button,
+.deployment-guide a,
+.deployment-guide [role="button"],
+.deployment-guide [role="checkbox"] {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .deployment-guide button,
+  .deployment-guide a,
+  .deployment-guide [role="button"] {
+    border: 2px solid currentColor;
+  }
+  
+  .deployment-guide button:focus-visible,
+  .deployment-guide a:focus-visible {
+    outline-width: 3px;
+    outline-offset: 3px;
+  }
+}
+
+/* Ensure text remains visible during webfont load */
+@font-face {
+  font-display: swap;
+}
+
+/* Improve readability with proper line height */
+.deployment-guide p,
+.deployment-guide li {
+  line-height: 1.6;
+}
+
+/* Ensure code blocks are readable */
+.deployment-guide pre,
+.deployment-guide code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+  line-height: 1.5;
+}
+
+/* Scroll margin for anchor targets (for skip links) */
+[id] {
+  scroll-margin-top: 2rem;
+}
+
+/* ============================================
+   PRINT STYLES FOR DEPLOYMENT GUIDES
+   ============================================ */
+
+/* Print-specific styles for deployment guides */
+@media print {
+  /* Reset page margins and colors */
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+  
+  /* Hide non-essential elements when printing */
+  .no-print,
+  button,
+  nav,
+  header nav,
+  footer nav,
+  .print-hide {
+    display: none !important;
+  }
+  
+  /* Ensure proper page breaks */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  
+  /* Avoid breaking inside important elements */
+  pre,
+  code,
+  blockquote,
+  table,
+  figure,
+  .deployment-step,
+  .checklist-item,
+  .troubleshooting-issue {
+    page-break-inside: avoid;
+  }
+  
+  /* Ensure links show their URLs */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  
+  /* Don't show URLs for internal anchors */
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "";
+  }
+  
+  /* Optimize colors for print */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  /* Ensure text is readable */
+  * {
+    color: black !important;
+    background: white !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Keep borders for structure */
+  .border,
+  [class*="border-"] {
+    border-color: #ccc !important;
+  }
+  
+  /* Code blocks should have light background */
+  pre,
+  code {
+    background: #f5f5f5 !important;
+    border: 1px solid #ddd !important;
+    padding: 0.5em !important;
+  }
+  
+  /* Ensure images fit on page */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+  
+  /* Platform logos should be visible */
+  .platform-logo,
+  [class*="logo"] {
+    filter: none !important;
+  }
+  
+  /* Checkboxes should be visible */
+  input[type="checkbox"] {
+    border: 2px solid #333 !important;
+    appearance: none;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  input[type="checkbox"]:checked {
+    background: #333 !important;
+  }
+  
+  /* Step numbers should be bold */
+  .step-number,
+  [class*="step-"] h3,
+  [class*="step-"] h4 {
+    font-weight: bold !important;
+  }
+  
+  /* Warnings and notes should have borders */
+  .warning,
+  .note,
+  [class*="warning"],
+  [class*="note"] {
+    border: 2px solid #333 !important;
+    padding: 0.5em !important;
+    margin: 0.5em 0 !important;
+  }
+  
+  /* Ensure proper spacing */
+  section {
+    margin-bottom: 2em;
+  }
+  
+  /* Headers should have space above */
+  h1 {
+    font-size: 24pt;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+  
+  h2 {
+    font-size: 18pt;
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+  }
+  
+  h3 {
+    font-size: 14pt;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+  }
+  
+  /* Lists should be readable */
+  ul, ol {
+    margin-left: 1.5em;
+  }
+  
+  li {
+    margin-bottom: 0.25em;
+  }
+  
+  /* Tables should have borders */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th, td {
+    border: 1px solid #333 !important;
+    padding: 0.5em;
+    text-align: left;
+  }
+  
+  /* Progress indicators don't need to print */
+  .progress-bar,
+  .progress-indicator,
+  [class*="progress"] {
+    display: none !important;
+  }
+  
+  /* Export buttons shouldn't print */
+  [class*="export"],
+  [class*="download"],
+  [class*="print"] {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   DEPLOYMENT GUIDES - STYLING AND POLISH
+   ============================================ */
+
+/* Smooth transitions for all guide components */
+.deployment-guide * {
+  transition-property: color, background-color, border-color, transform, opacity, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Expand/collapse animations for guide steps */
+.guide-step-content {
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.guide-step-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.guide-step-content.expanded {
+  max-height: 5000px;
+  opacity: 1;
+}
+
+/* Smooth chevron rotation for expand/collapse */
+.chevron-icon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chevron-icon.rotated {
+  transform: rotate(90deg);
+}
+
+/* Code block syntax highlighting enhancements */
+.deployment-guide pre {
+  position: relative;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.dark .deployment-guide pre {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  scrollbar-color: #4a5568 #2d3748;
+}
+
+/* Custom scrollbar for code blocks */
+.deployment-guide pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.deployment-guide pre::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 4px;
+}
+
+.dark .deployment-guide pre::-webkit-scrollbar-track {
+  background: #2d3748;
+}
+
+.deployment-guide pre::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.dark .deployment-guide pre::-webkit-scrollbar-thumb {
+  background: #4a5568;
+}
+
+.deployment-guide pre::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.dark .deployment-guide pre::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}
+
+/* Syntax highlighting for code elements */
+.deployment-guide code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Inline code styling */
+.deployment-guide p code,
+.deployment-guide li code {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+.dark .deployment-guide p code,
+.dark .deployment-guide li code {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+}
+
+/* Hover states for interactive elements */
+.deployment-guide button:hover:not(:disabled),
+.deployment-guide [role="button"]:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dark .deployment-guide button:hover:not(:disabled),
+.dark .deployment-guide [role="button"]:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Active states for buttons */
+.deployment-guide button:active:not(:disabled),
+.deployment-guide [role="button"]:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress indicator animations */
+.progress-bar-fill {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: progress-shimmer 2s infinite;
+}
+
+@keyframes progress-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Completed progress bar */
+.progress-bar-fill.complete {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+/* Platform card hover effects */
+.platform-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.platform-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.platform-card:hover::before {
+  opacity: 1;
+}
+
+.platform-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.dark .platform-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Checklist item completion animation */
+.checklist-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checklist-item.completed {
+  opacity: 0.7;
+}
+
+.checklist-item.completed .checklist-title {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-color: currentColor;
+}
+
+/* Checkbox animation */
+.checkbox-icon {
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.checkbox-icon.checked {
+  animation: checkbox-pop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkbox-pop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Troubleshooting section expand animation */
+.troubleshooting-content {
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.troubleshooting-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.troubleshooting-content.expanded {
+  max-height: 3000px;
+  opacity: 1;
+}
+
+/* Copy button animations */
+.copy-button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.copy-button:hover {
+  transform: scale(1.05);
+}
+
+.copy-button:active {
+  transform: scale(0.95);
+}
+
+.copy-button.copied {
+  animation: copy-success 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes copy-success {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Loading spinner for guide loading state */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade-in animation for guide sections */
+.guide-section {
+  animation: fade-in-up 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger animation for guide steps */
+.guide-step:nth-child(1) { animation-delay: 0.05s; }
+.guide-step:nth-child(2) { animation-delay: 0.1s; }
+.guide-step:nth-child(3) { animation-delay: 0.15s; }
+.guide-step:nth-child(4) { animation-delay: 0.2s; }
+.guide-step:nth-child(5) { animation-delay: 0.25s; }
+
+/* View mode toggle animation */
+.view-mode-toggle button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.view-mode-toggle button.active {
+  transform: scale(1.05);
+}
+
+.view-mode-toggle button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+/* Platform logo hover effect */
+.platform-logo {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: grayscale(0);
+}
+
+.platform-logo:hover {
+  filter: grayscale(0) brightness(1.1);
+  transform: scale(1.05);
+}
+
+/* Badge animations */
+.badge {
+  animation: badge-appear 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes badge-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Success message animation */
+.success-message {
+  animation: slide-in-down 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Warning/Note box styling */
+.warning-box,
+.note-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.warning-box::before,
+.note-box::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: currentColor;
+}
+
+/* External link icon animation */
+.external-link-icon {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+a:hover .external-link-icon {
+  transform: translate(2px, -2px);
+}
+
+/* Placeholder highlight pulse */
+.placeholder-highlight {
+  animation: placeholder-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes placeholder-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN FOR DEPLOYMENT GUIDES
+   ============================================ */
+
+/* Mobile styles (< 640px) */
+@media (max-width: 640px) {
+  /* Reduce spacing on mobile */
+  .deployment-guide {
+    padding: 1rem;
+  }
+  
+  /* Stack platform cards vertically */
+  .platform-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* Smaller code blocks */
+  .deployment-guide pre {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  /* Adjust button sizes */
+  .deployment-guide button {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Smaller badges */
+  .badge {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  /* Reduce platform logo size */
+  .platform-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Stack view mode toggle vertically if needed */
+  .view-mode-toggle {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .view-mode-toggle button {
+    width: 100%;
+  }
+}
+
+/* Tablet styles (640px - 1024px) */
+@media (min-width: 640px) and (max-width: 1024px) {
+  /* 2-column grid for platform cards */
+  .platform-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  /* Adjust code block size */
+  .deployment-guide pre {
+    font-size: 0.875rem;
+  }
+}
+
+/* Desktop styles (> 1024px) */
+@media (min-width: 1024px) {
+  /* 3-column grid for platform cards */
+  .platform-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  /* Larger hover effects on desktop */
+  .platform-card:hover {
+    transform: translateY(-6px);
+  }
+  
+  /* Show more detailed tooltips on desktop */
+  .tooltip {
+    display: block;
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 896px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .deployment-guide {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Smaller headers */
+  .deployment-guide h1 {
+    font-size: 1.5rem;
+  }
+  
+  .deployment-guide h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY: REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations */
+  .deployment-guide *,
+  .deployment-guide *::before,
+  .deployment-guide *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Remove transform transitions */
+  .deployment-guide button:hover,
+  .platform-card:hover,
+  .copy-button:hover {
+    transform: none !important;
+  }
+  
+  /* Keep opacity transitions for visibility */
+  .deployment-guide * {
+    transition-property: opacity !important;
+  }
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  /* Increase border visibility */
+  .deployment-guide button,
+  .deployment-guide .platform-card,
+  .deployment-guide pre,
+  .deployment-guide code {
+    border: 2px solid currentColor !important;
+  }
+  
+  /* Increase focus indicator visibility */
+  .deployment-guide *:focus-visible {
+    outline-width: 3px !important;
+    outline-offset: 3px !important;
+  }
+  
+  /* Remove subtle backgrounds */
+  .deployment-guide .bg-gray-50,
+  .deployment-guide .bg-blue-50 {
+    background-color: transparent !important;
+    border: 2px solid currentColor !important;
+  }
+}
+
+/* ============================================
+   DARK MODE ENHANCEMENTS
+   ============================================ */
+
+.dark .deployment-guide {
+  /* Enhance contrast in dark mode */
+  color: #f3f4f6;
+}
+
+.dark .deployment-guide pre {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+}
+
+.dark .deployment-guide code {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+}
+
+.dark .platform-card {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-color: #374151;
+}
+
+.dark .platform-card:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f3f4f6 0%,
+    #e5e7eb 50%,
+    #f3f4f6 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    #374151 0%,
+    #4b5563 50%,
+    #374151 100%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Loading overlay */
+.loading-overlay {
+  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.dark .loading-overlay {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* ============================================
+   UTILITY CLASSES FOR DEPLOYMENT GUIDES
+   ============================================ */
+
+/* Smooth scroll behavior */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Glass effect for cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-card {
+  background: rgba(31, 41, 55, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(75, 85, 99, 0.2);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Shine effect for buttons */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shine-effect:hover::after {
+  left: 100%;
+}

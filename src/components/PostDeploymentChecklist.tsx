@@ -9,10 +9,8 @@ import { useState } from 'react';
 import { Info } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import type { Deployment } from '@/lib/platforms/types';
-import {
-  PostDeploymentChecklistGenerator,
-  type ChecklistItem,
-} from '@/lib/deployment';
+import { ChecklistGenerator } from '@/lib/deployment';
+import type { ChecklistItem } from '@/types/deployment-guides';
 
 interface PostDeploymentChecklistProps {
   deployment: Deployment;
@@ -25,7 +23,7 @@ export function PostDeploymentChecklist({
   const [copied, setCopied] = useState(false);
 
   // Generate checklist items
-  const generator = new PostDeploymentChecklistGenerator();
+  const generator = new ChecklistGenerator();
   const items = generator.generate(deployment);
 
   const toggleItem = (id: string) => {

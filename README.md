@@ -13,21 +13,25 @@ Cauldron2Code eliminates the tedious setup phase of starting new projects. Inste
 3. **Deploy** automatically to hosting platforms or push to GitHub
 4. **Start building** your actual features immediately
 
-### Deployment Pipeline
+### Deployment Options
 
-Cauldron2Code now includes **automated deployment** that takes you from configuration to a live application in minutes:
+Cauldron2Code provides **three ways** to get your generated project deployed:
 
 ```mermaid
 graph LR
     A[Configure Stack] --> B[Generate Scaffold]
     B --> C{Choose Delivery}
-    C -->|Deploy Now| D[Connect Platform]
-    C -->|GitHub| E[Create Repository]
-    C -->|Download| F[ZIP File]
-    D --> G[Configure Environment]
-    G --> H[Deploy & Monitor]
-    H --> I[Live Application]
+    C -->|Deploy Now| D[Automated Deployment]
+    C -->|View Guides| E[Deployment Guides]
+    C -->|GitHub| F[Create Repository]
+    C -->|Download| G[ZIP File]
+    D --> H[Live Application]
+    E --> I[Step-by-Step Instructions]
 ```
+
+#### 1. Automated Deployment (Deploy Now)
+
+One-click deployment with full automation:
 
 **Supported Platforms:**
 - **Vercel**: Optimized for Next.js with automatic framework detection
@@ -41,6 +45,34 @@ graph LR
 - 🗄️ Automatic database provisioning (Railway & Render)
 - 📋 Post-deployment setup checklist
 - 🔄 Monorepo support with multi-service deployment
+
+#### 2. Deployment Guides (Learn & Deploy)
+
+Interactive, step-by-step deployment tutorials tailored to your project:
+
+**Supported Platforms:**
+- **Vercel**: Best for Next.js and frontend frameworks
+- **Railway**: Best for full-stack apps with databases
+- **Render**: Best for simple deployments with databases
+- **Netlify**: Best for static sites and JAMstack
+- **AWS Amplify**: Best for AWS ecosystem integration
+
+**Key Features:**
+- 📚 Contextual instructions based on your configuration
+- 📋 Copy-paste commands with placeholder replacement
+- ✅ Progress tracking across page refreshes
+- 🎯 Quick Start vs Detailed Guide modes
+- 📤 Export guides as Markdown or print
+- 🔍 Platform comparison to help you choose
+- 🛠️ Troubleshooting section for common issues
+- ♿ Fully accessible with keyboard navigation
+
+**What Makes Deployment Guides Special:**
+- **Educational**: Learn how deployment works, don't just automate it
+- **Flexible**: Follow at your own pace, skip what you know
+- **Comprehensive**: Covers prerequisites, setup, environment variables, databases, and post-deployment
+- **Smart**: Only shows steps relevant to your specific configuration
+- **Persistent**: Bookmark guides and return anytime with progress saved
 
 ## ✨ Features
 
@@ -140,6 +172,7 @@ Open [http://localhost:3000](http://localhost:3000) to start configuring your fi
 
 - **[SETUP.md](./SETUP.md)** - Detailed setup instructions for GitHub OAuth
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Guide for using the automated deployment pipeline
+- **[DEPLOYMENT_GUIDES.md](./DEPLOYMENT_GUIDES.md)** - How to use and extend deployment guides
 - **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Guidelines for contributing
 - **[Architecture](./docs/ARCHITECTURE.md)** - System design and architecture decisions
 

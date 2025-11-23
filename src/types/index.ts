@@ -271,3 +271,9 @@ export function addFrameworkProperty(config: ScaffoldConfig): ScaffoldConfigWith
     framework: getFrameworkType(config),
   };
 }
+
+// ============================================================================
+// Re-export Deployment Guides Types
+// ============================================================================
+
+export * from './deployment-guides';

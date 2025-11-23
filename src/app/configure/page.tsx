@@ -12,7 +12,7 @@ import { DownloadButton } from '@/components/DownloadButton';
 import { CreateRepoModal } from '@/components/CreateRepoModal';
 import { DeploymentModal } from '@/components/DeploymentModal';
 import { ErrorMessage, ERROR_MESSAGES } from '@/components/ErrorMessage';
-import { Github, Rocket, ExternalLink, CheckCircle2, Settings } from 'lucide-react';
+import { Github, Rocket, ExternalLink, CheckCircle2, Settings, BookOpen } from 'lucide-react';
 
 export default function ConfigurePage() {
   const { config } = useConfigStore();
@@ -233,6 +233,27 @@ export default function ConfigurePage() {
                 setError('Download failed after multiple attempts. Please regenerate your scaffold.');
               }}
             />
+
+            {/* View Deployment Guides Option */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-700"></div>
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-2 bg-zinc-950 text-gray-500">or</span>
+              </div>
+            </div>
+
+            <Link
+              href={`/guides?configId=${downloadId}${repositoryUrl ? `&repoUrl=${encodeURIComponent(repositoryUrl)}` : ''}`}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium text-base hover:bg-purple-700 active:bg-purple-800 transition-all"
+            >
+              <BookOpen size={20} />
+              <div className="flex flex-col items-start">
+                <span>View Deployment Guides</span>
+                <span className="text-xs text-purple-200 font-normal">Step-by-step instructions for any platform</span>
+              </div>
+            </Link>
 
             {/* Deploy Now Option */}
             <div className="relative">

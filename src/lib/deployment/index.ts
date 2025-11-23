@@ -38,11 +38,6 @@ export {
 } from './deployment-store';
 
 export {
-  PostDeploymentChecklistGenerator,
-  type ChecklistItem,
-} from './checklist-generator';
-
-export {
   MonorepoDeploymentStrategy,
   getMonorepoDeploymentStrategy,
 } from './monorepo-strategy';
@@ -71,3 +66,51 @@ export {
   getAllEnvVarHelp,
   type EnvVarHelpInfo,
 } from './environment-variable-help';
+
+export { ConfigurationAnalyzer } from './configuration-analyzer';
+
+export { StepBuilder } from './step-builder';
+
+export { ChecklistGenerator } from './checklist-generator';
+
+export { TroubleshootingBuilder } from './troubleshooting-builder';
+
+export { GuideGenerator } from './guide-generator';
+
+export { PLATFORMS, getPlatformById, getRecommendedPlatforms } from './platforms';
+
+export { GuideProgressManager, getGuideProgressManager } from './guide-progress-manager';
+
+export { GuideExporter, getGuideExporter } from './guide-exporter';
+
+export {
+  generateConfigId,
+  storeConfig,
+  getConfigById,
+  generateGuideUrl,
+  createGuideUrl,
+  cleanupOldConfigs,
+  encodeConfigToUrl,
+  decodeConfigFromUrl,
+} from './guide-url-generator';
+
+export {
+  getDeploymentWorkflowDiagram,
+  getMonorepoArchitectureDiagram,
+  getFullStackArchitectureDiagram,
+  getDatabaseSetupDiagram,
+  getEnvVarsConfigDiagram,
+  getOAuthCallbackDiagram,
+  getTroubleshootingDiagram,
+  getCICDPipelineDiagram,
+  getDiagramForContext,
+  exportDiagramAsMarkdown,
+} from './architecture-diagrams';
+
+export {
+  GuideErrorHandler,
+  getGuideErrorHandler,
+  type GuideError,
+  type GuideErrorCode,
+  type ErrorContext,
+} from './guide-error-handler';
