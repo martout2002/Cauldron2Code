@@ -48,14 +48,16 @@ sequenceDiagram
  * Monorepo architecture diagram showing multiple services
  */
 export function getMonorepoArchitectureDiagram(services: string[]): string {
-  const serviceNodes = services.map((service, index) => {
+  const serviceNodes = services.map((service) => {
     const serviceId = service.toLowerCase().replace(/\s+/g, '');
     return `    ${serviceId}[${service}]`;
   }).join('\n');
 
   const serviceConnections = services.length > 1 ? services.slice(0, -1).map((service, index) => {
     const currentId = service.toLowerCase().replace(/\s+/g, '');
-    const nextId = services[index + 1].toLowerCase().replace(/\s+/g, '');
+    const nextService = services[index + 1];
+    if (!nextService) return '';
+    const nextId = nextService.toLowerCase().replace(/\s+/g, '');
     return `    ${currentId} -->|API Calls| ${nextId}`;
   }).join('\n') : '';
 
@@ -76,7 +78,7 @@ ${serviceNodes}
     
 ${serviceConnections}
     ${services[0]?.toLowerCase().replace(/\s+/g, '')} --> vercel
-    ${services.length > 1 ? services[services.length - 1].toLowerCase().replace(/\s+/g, '') + ' --> vercel' : ''}
+    ${services.length > 1 ? services[services.length - 1]?.toLowerCase().replace(/\s+/g, '') + ' --> vercel' : ''}
     vercel --> db
     vercel --> auth
 \`\`\``;
@@ -163,7 +165,7 @@ graph TB
 /**
  * Environment variables configuration workflow
  */
-export function getEnvVarsConfigDiagram(platform: Platform, varCount: number): string {
+export function getEnvVarsConfigDiagram(platform: Platform): string {
   return `\`\`\`mermaid
 graph TB
     start[Start Environment Configuration]
@@ -353,7 +355,7 @@ export function getDiagramForContext(
   if (context.envVarCount && context.envVarCount > 0) {
     diagrams.push({
       type: 'env-vars-config',
-      diagram: getEnvVarsConfigDiagram(context.platform, context.envVarCount),
+      diagram: getEnvVarsConfigDiagram(context.platform),
       description: 'Environment variable configuration process',
     });
   }

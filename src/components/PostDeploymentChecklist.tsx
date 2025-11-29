@@ -5,11 +5,11 @@
  * Displays setup tasks that need to be completed after deployment
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Info } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import type { Deployment } from '@/lib/platforms/types';
-import { ChecklistGenerator } from '@/lib/deployment';
+import { ChecklistGenerator, ConfigurationAnalyzer, getPlatformById } from '@/lib/deployment';
 import type { ChecklistItem } from '@/types/deployment-guides';
 
 interface PostDeploymentChecklistProps {
@@ -23,8 +23,16 @@ export function PostDeploymentChecklist({
   const [copied, setCopied] = useState(false);
 
   // Generate checklist items
-  const generator = new ChecklistGenerator();
-  const items = generator.generate(deployment);
+  const items = useMemo(() => {
+    const platform = getPlatformById(deployment.platform);
+    if (!platform) return [];
+
+    const analyzer = new ConfigurationAnalyzer();
+    const requirements = analyzer.analyze(deployment.config.scaffoldConfig);
+
+    const generator = new ChecklistGenerator();
+    return generator.generate(platform, requirements, deployment.config.scaffoldConfig);
+  }, [deployment]);
 
   const toggleItem = (id: string) => {
     setCompleted((prev) => {
@@ -47,17 +55,17 @@ export function PostDeploymentChecklist({
       .map((item) => {
         let text = `${item.required ? '☐' : '○'} ${item.title}\n`;
         text += `  ${item.description}\n`;
-        if (item.command) {
-          text += `  Command: ${item.command}\n`;
-        }
-        if (item.links && item.links.length > 0) {
-          text += `  Links:\n`;
-          item.links.forEach((link) => {
-            text += `    - ${link.text}: ${link.url}\n`;
+        if (item.commands && item.commands.length > 0) {
+          text += `  Commands:\n`;
+          item.commands.forEach((cmd) => {
+            text += `    ${cmd.command}\n`;
           });
         }
-        if (item.action) {
-          text += `  Action: ${item.action.text} - ${item.action.url}\n`;
+        if (item.externalLinks && item.externalLinks.length > 0) {
+          text += `  Links:\n`;
+          item.externalLinks.forEach((link) => {
+            text += `    - ${link.text}: ${link.url}\n`;
+          });
         }
         return text;
       })
@@ -211,29 +219,33 @@ function ChecklistItemCard({
 
           <p className="text-sm text-gray-600 mt-1">{item.description}</p>
 
-          {item.command && (
-            <div className="mt-3">
-              <p className="text-xs text-gray-500 mb-1">Run this command:</p>
-              <div className="relative group">
-                <pre className="p-3 bg-gray-900 text-gray-100 rounded font-mono text-sm overflow-x-auto">
-                  {item.command}
-                </pre>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(item.command!);
-                  }}
-                  className="absolute top-2 right-2 px-2 py-1 text-xs bg-gray-700 text-gray-200 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-600"
-                  title="Copy command"
-                >
-                  Copy
-                </button>
-              </div>
+          {item.commands && item.commands.length > 0 && (
+            <div className="mt-3 space-y-2">
+              {item.commands.map((cmd) => (
+                <div key={cmd.id}>
+                  <p className="text-xs text-gray-500 mb-1">{cmd.description}</p>
+                  <div className="relative group">
+                    <pre className="p-3 bg-gray-900 text-gray-100 rounded font-mono text-sm overflow-x-auto">
+                      {cmd.command}
+                    </pre>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(cmd.command);
+                      }}
+                      className="absolute top-2 right-2 px-2 py-1 text-xs bg-gray-700 text-gray-200 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-600"
+                      title="Copy command"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
-          {item.links && item.links.length > 0 && (
+          {item.externalLinks && item.externalLinks.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
-              {item.links.map((link, index) => (
+              {item.externalLinks.map((link, index) => (
                 <a
                   key={index}
                   href={link.url}
@@ -256,28 +268,6 @@ function ChecklistItemCard({
                 </a>
               ))}
             </div>
-          )}
-
-          {item.action && (
-            <a
-              href={item.action.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              {item.action.text}
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-              </svg>
-            </a>
           )}
         </div>
       </div>

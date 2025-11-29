@@ -3,7 +3,7 @@
  * This file is for development verification only
  */
 
-import { Platform, DeploymentGuide, DeploymentStep, ChecklistItem, PlatformId } from '@/types/deployment-guides';
+import { DeploymentStep, ChecklistItem, PlatformId } from '@/types/deployment-guides';
 import { PLATFORMS, getPlatformById, getRecommendedPlatforms } from './platforms';
 import { ScaffoldConfig } from '@/types';
 

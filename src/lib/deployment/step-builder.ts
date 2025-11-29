@@ -36,7 +36,7 @@ export class StepBuilder {
     let order = 1;
 
     // Prerequisites
-    steps.push(this.buildPrerequisitesStep(platform, requirements, order++));
+    steps.push(this.buildPrerequisitesStep(platform, order++));
 
     // CLI installation (if applicable)
     if (this.platformHasCLI(platform)) {
@@ -53,7 +53,7 @@ export class StepBuilder {
     }
 
     // Platform-specific setup
-    const platformSteps = this.buildPlatformSetupSteps(platform, requirements, order);
+    const platformSteps = this.buildPlatformSetupSteps(platform, order);
     steps.push(...platformSteps);
     order += platformSteps.length;
 
@@ -92,7 +92,6 @@ export class StepBuilder {
    */
   buildPrerequisitesStep(
     platform: Platform,
-    requirements: DeploymentRequirements,
     order: number
   ): DeploymentStep {
     const prerequisites: string[] = [
@@ -308,20 +307,19 @@ ${prerequisites.map(p => `• ${p}`).join('\n')}`;
    */
   buildPlatformSetupSteps(
     platform: Platform,
-    requirements: DeploymentRequirements,
     startOrder: number
   ): DeploymentStep[] {
     switch (platform.id) {
       case 'vercel':
-        return this.buildVercelSetupSteps(requirements, startOrder);
+        return this.buildVercelSetupSteps(startOrder);
       case 'railway':
-        return this.buildRailwaySetupSteps(requirements, startOrder);
+        return this.buildRailwaySetupSteps(startOrder);
       case 'render':
-        return this.buildRenderSetupSteps(requirements, startOrder);
+        return this.buildRenderSetupSteps(startOrder);
       case 'netlify':
-        return this.buildNetlifySetupSteps(requirements, startOrder);
+        return this.buildNetlifySetupSteps(startOrder);
       case 'aws-amplify':
-        return this.buildAWSAmplifySetupSteps(requirements, startOrder);
+        return this.buildAWSAmplifySetupSteps(startOrder);
       default:
         return [];
     }
@@ -331,7 +329,6 @@ ${prerequisites.map(p => `• ${p}`).join('\n')}`;
    * Build Vercel-specific setup steps
    */
   private buildVercelSetupSteps(
-    requirements: DeploymentRequirements,
     order: number
   ): DeploymentStep[] {
     return [
@@ -361,7 +358,6 @@ ${prerequisites.map(p => `• ${p}`).join('\n')}`;
    * Build Railway-specific setup steps
    */
   private buildRailwaySetupSteps(
-    requirements: DeploymentRequirements,
     order: number
   ): DeploymentStep[] {
     return [
@@ -410,7 +406,6 @@ ${prerequisites.map(p => `• ${p}`).join('\n')}`;
    * Build Render-specific setup steps
    */
   private buildRenderSetupSteps(
-    requirements: DeploymentRequirements,
     order: number
   ): DeploymentStep[] {
     return [
@@ -462,7 +457,6 @@ ${prerequisites.map(p => `• ${p}`).join('\n')}`;
    * Build Netlify-specific setup steps
    */
   private buildNetlifySetupSteps(
-    requirements: DeploymentRequirements,
     order: number
   ): DeploymentStep[] {
     return [
@@ -512,7 +506,6 @@ ${prerequisites.map(p => `• ${p}`).join('\n')}`;
    * Build AWS Amplify-specific setup steps
    */
   private buildAWSAmplifySetupSteps(
-    requirements: DeploymentRequirements,
     order: number
   ): DeploymentStep[] {
     return [
@@ -696,14 +689,14 @@ ${this.getEnvVarInstructions(platform)}`,
       id: 'database-setup',
       title: `Set Up ${databaseType} Database`,
       description: platformSupportsDB
-        ? `${platform.name} ${this.getPlatformDatabaseSupport(platform, databaseType)}`
+        ? `${platform.name} ${this.getPlatformDatabaseSupport(platform)}`
         : `Set up a ${databaseType} database using an external service. ${platform.name} does not provide built-in database hosting.`,
       order,
       required: true,
       substeps: platformSupportsDB
         ? this.getPlatformDatabaseSteps(platform, databaseType)
         : this.getExternalDatabaseSteps(databaseType),
-      externalLinks: this.getDatabaseLinks(platform, databaseType),
+      externalLinks: this.getDatabaseLinks(platform),
       notes: [
         'Make sure to save your database connection string securely',
         'Test the database connection before deploying your application',
@@ -714,7 +707,7 @@ ${this.getEnvVarInstructions(platform)}`,
   /**
    * Get platform database support description
    */
-  private getPlatformDatabaseSupport(platform: Platform, databaseType: string): string {
+  private getPlatformDatabaseSupport(platform: Platform): string {
     switch (platform.id) {
       case 'vercel':
         return 'integrates with various database providers. You can use Vercel Postgres or connect to external databases.';
@@ -944,7 +937,7 @@ ${this.getEnvVarInstructions(platform)}`,
   /**
    * Get database documentation links
    */
-  private getDatabaseLinks(platform: Platform, databaseType: string): ExternalLink[] {
+  private getDatabaseLinks(platform: Platform): ExternalLink[] {
     const links: ExternalLink[] = [];
 
     if (platform.features.databaseSupport) {
@@ -1320,7 +1313,7 @@ Each service should be deployed as a separate application on ${platform.name}.`,
       {
         id: 'monorepo-frontend',
         title: 'Deploy Frontend Service',
-        description: this.getMonorepoFrontendInstructions(platform),
+        description: this.getMonorepoFrontendInstructions(),
         order: order + 2,
         required: true,
         substeps: this.getMonorepoFrontendSubsteps(platform),
@@ -1421,7 +1414,7 @@ This allows your frontend to make API calls to your backend.`,
   /**
    * Get monorepo frontend deployment instructions
    */
-  private getMonorepoFrontendInstructions(platform: Platform): string {
+  private getMonorepoFrontendInstructions(): string {
     return `Deploy your frontend application after the backend is running. The frontend will connect to the backend API using environment variables.`;
   }
 

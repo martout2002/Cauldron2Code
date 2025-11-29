@@ -3,7 +3,6 @@ import {
   ChecklistItem,
   CommandSnippet,
   DeploymentRequirements,
-  ExternalLink,
   Platform,
 } from '@/types/deployment-guides';
 

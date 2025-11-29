@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { PlatformSelector } from '@/components/guides';
 import { useConfigStore } from '@/lib/store/config-store';
 import { cleanupOldConfigs, getConfigById, generateConfigId } from '@/lib/deployment';
@@ -16,7 +16,7 @@ import type { ScaffoldConfig } from '@/types';
  * 
  * Requirements: 1.1, 1.2, 1.4, 1.5
  */
-export default function GuidesPage() {
+function GuidesPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { config: storeConfig } = useConfigStore();
@@ -103,5 +103,13 @@ export default function GuidesPage() {
         scaffoldConfig={activeConfig}
       />
     </div>
+  );
+}
+
+export default function GuidesPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-zinc-950" />}>
+      <GuidesPageContent />
+    </Suspense>
   );
 }
