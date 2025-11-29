@@ -334,9 +334,17 @@ export default api;
  */
 export function generateRestApiRouteExamples(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
+  const isPrisma = config.database === 'prisma-postgres';
+  const isDrizzle = config.database === 'drizzle-postgres';
+  
+  const dbImport = isPrisma 
+    ? "import { prisma as db } from '@/lib/prisma';" 
+    : isDrizzle 
+    ? "import { db } from '@/lib/db/db';"
+    : "import { db } from '@/lib/db';";
 
   return `import { NextRequest, NextResponse } from 'next/server';
-${hasDatabase ? "import { db } from '@/lib/db';" : ''}
+${hasDatabase ? dbImport : ''}
 
 /**
  * Example REST API routes for ${config.projectName}
@@ -453,9 +461,17 @@ export async function POST(request: NextRequest) {
  */
 export function generateRestApiSingleResourceRoute(config: ScaffoldConfigWithFramework): string {
   const hasDatabase = config.database !== 'none';
+  const isPrisma = config.database === 'prisma-postgres';
+  const isDrizzle = config.database === 'drizzle-postgres';
+  
+  const dbImport = isPrisma 
+    ? "import { prisma as db } from '@/lib/prisma';" 
+    : isDrizzle 
+    ? "import { db } from '@/lib/db/db';"
+    : "import { db } from '@/lib/db';";
 
   return `import { NextRequest, NextResponse } from 'next/server';
-${hasDatabase ? "import { db } from '@/lib/db';" : ''}
+${hasDatabase ? dbImport : ''}
 
 /**
  * Dynamic route for single user: /api/users/[id]
@@ -464,10 +480,10 @@ ${hasDatabase ? "import { db } from '@/lib/db';" : ''}
 // GET /api/users/[id] - Get user by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     ${hasDatabase ? `
     const user = await db.user.findUnique({
@@ -523,10 +539,10 @@ export async function GET(
 // PUT /api/users/[id] - Update user
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { email, name } = body;
 
@@ -572,10 +588,10 @@ export async function PUT(
 // DELETE /api/users/[id] - Delete user
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     ${hasDatabase ? `
     await db.user.delete({

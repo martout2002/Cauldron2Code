@@ -498,7 +498,6 @@ CREATE TRIGGER update_posts_updated_at
  */
 export function generateNextAuthMiddleware(): string {
   return `import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth';
 
 // Define public routes that don't require authentication

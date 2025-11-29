@@ -11,6 +11,18 @@ import { ScaffoldConfigWithFramework } from '@/types';
  * 4. Using tools like Dependabot or Renovate for automated updates
  */
 export function generatePackageJson(config: ScaffoldConfigWithFramework): string {
+  // Use projectStructure for more accurate routing
+  if (config.projectStructure === 'fullstack-monorepo') {
+    return generateMonorepoPackageJson(config);
+  } else if (config.projectStructure === 'react-spa') {
+    return generateReactSpaPackageJson(config);
+  } else if (config.projectStructure === 'express-api-only') {
+    return generateExpressPackageJson(config);
+  } else if (config.projectStructure === 'nextjs-only') {
+    return generateNextJsPackageJson(config);
+  }
+  
+  // Fallback to legacy framework field
   if (config.framework === 'monorepo') {
     return generateMonorepoPackageJson(config);
   } else if (config.framework === 'next') {
@@ -104,6 +116,10 @@ function generateNextJsPackageJson(config: ScaffoldConfigWithFramework): string 
   // Add auth dependencies
   if (config.auth === 'nextauth') {
     dependencies['next-auth'] = '^4.24.0';
+    // Add Prisma adapter if using Prisma
+    if (config.database === 'prisma-postgres') {
+      dependencies['@auth/prisma-adapter'] = '^1.0.0';
+    }
   } else if (config.auth === 'supabase') {
     dependencies['@supabase/supabase-js'] = '^2.39.0';
   } else if (config.auth === 'clerk') {
@@ -178,6 +194,69 @@ function generateNextJsPackageJson(config: ScaffoldConfigWithFramework): string 
       lint: 'next lint',
       format: config.extras.prettier ? 'prettier --write "**/*.{ts,tsx,js,jsx,json,md}"' : undefined,
       prepare: config.extras.husky ? 'husky install' : undefined,
+    },
+    dependencies,
+    devDependencies,
+  };
+
+  // Remove undefined values
+  Object.keys(pkg.scripts).forEach(
+    (key) => pkg.scripts[key] === undefined && delete pkg.scripts[key]
+  );
+
+  return JSON.stringify(pkg, null, 2);
+}
+
+/**
+ * Generate React SPA package.json (Vite-based)
+ */
+function generateReactSpaPackageJson(config: ScaffoldConfigWithFramework): string {
+  const dependencies: Record<string, string> = {
+    react: '^18.2.0',
+    'react-dom': '^18.2.0',
+  };
+
+  const devDependencies: Record<string, string> = {
+    typescript: '^5.3.0',
+    '@types/node': '^20.0.0',
+    '@types/react': '^18.2.0',
+    '@types/react-dom': '^18.2.0',
+    '@vitejs/plugin-react': '^4.2.0',
+    vite: '^5.0.0',
+    eslint: '^8.55.0',
+  };
+
+  // Add styling dependencies
+  if (config.styling === 'tailwind') {
+    dependencies['tailwindcss'] = '^3.4.0';
+    dependencies['autoprefixer'] = '^10.4.0';
+    dependencies['postcss'] = '^8.4.0';
+  } else if (config.styling === 'styled-components') {
+    dependencies['styled-components'] = '^6.1.0';
+    devDependencies['@types/styled-components'] = '^5.1.0';
+  }
+
+  // Add API layer dependencies (client-side only)
+  if (config.api === 'rest-axios') {
+    dependencies['axios'] = '^1.6.0';
+  }
+
+  if (config.extras.prettier) {
+    devDependencies['prettier'] = '^3.1.0';
+  }
+
+  const pkg: any = {
+    name: config.projectName,
+    version: '0.1.0',
+    private: true,
+    description: config.description,
+    type: 'module',
+    scripts: {
+      dev: 'vite',
+      build: 'vite build',
+      preview: 'vite preview',
+      lint: 'eslint src --ext ts,tsx',
+      format: config.extras.prettier ? 'prettier --write "**/*.{ts,tsx,js,jsx,json,md}"' : undefined,
     },
     dependencies,
     devDependencies,

@@ -106,9 +106,6 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60,
   },
   
-  // Production optimizations
-  swcMinify: true,
-  
   // Webpack optimizations for tree-shaking and code splitting
   webpack: (config, { isServer }) => {
     // Tree shaking optimization

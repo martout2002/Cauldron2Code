@@ -524,7 +524,7 @@ export class ScaffoldGenerator {
             ]
           : undefined,
       },
-      include: ['src/**/*', '.next/types/**/*.ts'],
+      include: ['src/**/*', '.next/types/**/*.ts', 'types/**/*.ts'],
       exclude: ['node_modules'],
     };
 
@@ -1287,6 +1287,27 @@ export default App;
 
     switch (this.config.auth) {
       case 'nextauth':
+        // NextAuth type declarations
+        files.push({
+          path: 'types/next-auth.d.ts',
+          content: `import { DefaultSession } from 'next-auth';
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+    } & DefaultSession['user'];
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string;
+  }
+}
+`,
+        });
+
         // NextAuth configuration
         files.push({
           path: `${basePath}/lib/auth.ts`,
@@ -1495,14 +1516,14 @@ export default App;
 
   /**
    * Generate API layer files based on selected API type
-   * Skip for React SPA (no backend)
+   * Skip for React SPA (no backend) and Express (has its own routes)
    */
   private generateApiLayerFiles(): GeneratedFile[] {
     const files: GeneratedFile[] = [];
     
-    // Skip API layer for React SPA (no backend)
+    // Skip API layer for React SPA (no backend) and Express API (uses Express routes)
     const projectStructure = this.config.projectStructure;
-    if (projectStructure === 'react-spa') {
+    if (projectStructure === 'react-spa' || projectStructure === 'express-api-only') {
       return files;
     }
 
@@ -1517,7 +1538,7 @@ export default App;
           content: generateFetchApiClient(this.config),
         });
 
-        // Example API routes
+        // Example API routes (Next.js only)
         files.push({
           path: `${basePath}/app/api/users/route.ts`,
           content: generateRestApiRouteExamples(this.config),
@@ -1624,15 +1645,15 @@ export default App;
 
   /**
    * Generate template pages (dashboard and auth pages if auth is enabled)
-   * Always generated for frontend projects as boilerplate
+   * Only for Next.js-based projects
    */
   private generateTemplatePages(): GeneratedFile[] {
     const files: GeneratedFile[] = [];
     const projectStructure = this.config.projectStructure;
     const hasAuth = this.config.auth !== 'none';
     
-    // Skip for Express API only (no frontend)
-    if (projectStructure === 'express-api-only') {
+    // Skip for Express API only (no frontend) and React SPA (uses different structure)
+    if (projectStructure === 'express-api-only' || projectStructure === 'react-spa') {
       return files;
     }
 

@@ -4,12 +4,12 @@ import { ScaffoldConfigWithFramework } from '@/types';
  * Generate Express server entry point
  */
 export function generateExpressIndex(config: ScaffoldConfigWithFramework): string {
-  const hasDatabase = config.database !== 'none';
+  const isPrisma = config.database === 'prisma-postgres';
 
   return `import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-${hasDatabase ? "import { connectDatabase } from './lib/db';" : ''}
+${isPrisma ? "import { prisma } from './lib/prisma';" : ''}
 
 dotenv.config();
 
@@ -49,10 +49,13 @@ app.use((req, res) => {
 });
 
 // Start server
-${hasDatabase ? `
+${isPrisma ? `
 async function startServer() {
   try {
-    await connectDatabase();
+    // Test database connection
+    await prisma.$connect();
+    console.log('Database connected');
+    
     app.listen(PORT, () => {
       console.log(\`Server running on http://localhost:\${PORT}\`);
     });
@@ -63,6 +66,12 @@ async function startServer() {
 }
 
 startServer();
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
 ` : `
 app.listen(PORT, () => {
   console.log(\`Server running on http://localhost:\${PORT}\`);

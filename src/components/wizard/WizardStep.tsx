@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { StepConfig } from '@/lib/wizard/wizard-steps';
 import { ScaffoldConfig } from '@/types';
 import { PixelInput } from './PixelInput';
@@ -30,9 +30,6 @@ export function WizardStep({
   // Get compatibility checking functions - Requirements: 1.3, 8.4, 8.5
   const { getCompatibleOptions } = useCompatibility();
   
-  // Loading state for initial compatibility evaluation - Requirement: 8.4
-  const [isEvaluating, setIsEvaluating] = useState(false);
-  
   // Get the current value for this step's field
   const currentValue = config[step.field];
   
@@ -41,18 +38,12 @@ export function WizardStep({
   useEffect(() => {
     // Only evaluate for option-grid steps
     if (step.type === 'option-grid' && step.options) {
-      setIsEvaluating(true);
-      
       // Use requestAnimationFrame to ensure non-blocking evaluation
       // Requirement: 8.5 - non-blocking step transitions
       requestAnimationFrame(() => {
-        try {
-          // Trigger compatibility evaluation by calling getCompatibleOptions
-          // This will precompute compatibility for all options in this step
-          getCompatibleOptions(step.id, step.options || []);
-        } finally {
-          setIsEvaluating(false);
-        }
+        // Trigger compatibility evaluation by calling getCompatibleOptions
+        // This will precompute compatibility for all options in this step
+        getCompatibleOptions(step.id, step.options || []);
       });
     }
   }, [step.id, step.type, step.options, getCompatibleOptions]);
