@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface Option {
   value: string;
   label: string;
   icon?: string;
   description?: string;
+  // Compatibility state - Requirements: 1.1, 1.2
+  isDisabled?: boolean;
+  incompatibilityReason?: string;
 }
 
 interface OptionGridProps {
@@ -25,7 +28,9 @@ export function OptionGrid({
   multiSelect = false,
   label,
 }: OptionGridProps) {
-  const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+  const [showTooltip, setShowTooltip] = useState<string | null>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const isSelected = (value: string): boolean => {
     if (Array.isArray(selected)) {
@@ -34,7 +39,12 @@ export function OptionGrid({
     return selected === value;
   };
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value: string, isDisabled: boolean = false) => {
+    // Prevent selection of disabled options - Requirement: 1.2
+    if (isDisabled) {
+      return;
+    }
+    
     if (multiSelect && Array.isArray(selected)) {
       // Toggle selection in multi-select mode
       if (selected.includes(value)) {
@@ -48,7 +58,50 @@ export function OptionGrid({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, value: string, index: number) => {
+  // Tooltip management with debouncing - Requirements: 2.3, 8.3
+  const handleMouseEnter = (value: string) => {
+    // Clear any pending hide timeout
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
+
+    // Debounce tooltip showing by 100ms - Requirement: 8.3
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+
+    hoverTimeoutRef.current = setTimeout(() => {
+      setShowTooltip(value);
+    }, 100);
+  };
+
+  const handleMouseLeave = () => {
+    // Clear hover timeout
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+
+    // Hide tooltip after 200ms - Requirement: 2.3
+    hideTimeoutRef.current = setTimeout(() => {
+      setShowTooltip(null);
+    }, 200);
+  };
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent, value: string, index: number, isDisabled: boolean = false) => {
     const totalOptions = options.length;
     let nextIndex = index;
 
@@ -56,7 +109,10 @@ export function OptionGrid({
       case 'Enter':
       case ' ':
         e.preventDefault();
-        handleSelect(value);
+        // Prevent selection of disabled options on Enter/Space - Requirements: 1.2, 4.3
+        if (!isDisabled) {
+          handleSelect(value, isDisabled);
+        }
         break;
       case 'ArrowRight':
         e.preventDefault();
@@ -81,30 +137,54 @@ export function OptionGrid({
       >
         {options.map((option, index) => {
           const selected = isSelected(option.value);
-          const isHovered = hoveredOption === option.value;
+          const shouldShowTooltip = showTooltip === option.value;
+          const disabled = option.isDisabled || false;
+          // Generate unique ID for aria-describedby - Requirement: 4.2
+          const descriptionId = `option-desc-${option.value}`;
           
           return (
             <div key={option.value} className="relative flex flex-col items-center">
+              {/* Hidden description element for screen readers - Requirements: 4.2, 4.5 */}
+              {disabled && option.incompatibilityReason && (
+                <div 
+                  id={descriptionId} 
+                  className="sr-only"
+                  role="status"
+                  aria-live="polite"
+                >
+                  {option.incompatibilityReason}
+                </div>
+              )}
+              
               {/* Icon button */}
               <button
-                onClick={() => handleSelect(option.value)}
-                onKeyDown={(e) => handleKeyDown(e, option.value, index)}
-                onMouseEnter={() => setHoveredOption(option.value)}
-                onMouseLeave={() => setHoveredOption(null)}
+                onClick={() => handleSelect(option.value, disabled)}
+                onKeyDown={(e) => handleKeyDown(e, option.value, index, disabled)}
+                onMouseEnter={() => handleMouseEnter(option.value)}
+                onMouseLeave={handleMouseLeave}
                 className={`
                   wizard-option
                   relative
                   flex flex-col items-center justify-center
-                  cursor-pointer
-                  transition-all duration-200
-                  hover:scale-110
+                  transition-all duration-300 ease-in-out
                   outline-none border-none
-                  ${selected ? 'scale-110 selected' : ''}
+                  ${
+                    disabled
+                      ? 'opacity-40 cursor-not-allowed hover:opacity-40' // Requirement: 1.1, 1.5 - smooth opacity transition, disabled cursor
+                      : 'cursor-pointer hover:scale-110 hover:opacity-100' // Requirement: 1.1 - no hover effects for disabled
+                  }
+                  ${selected && !disabled ? 'scale-110 selected' : ''}
                 `}
+                style={{
+                  // Requirement: 1.5 - Smooth opacity transitions for disabled state changes
+                  transition: 'opacity 300ms ease-in-out, transform 200ms ease-in-out',
+                }}
                 role={multiSelect ? 'checkbox' : 'radio'}
                 aria-checked={selected}
                 aria-label={`${option.label}${option.description ? `, ${option.description}` : ''}`}
-                tabIndex={0}
+                aria-disabled={disabled} // Requirement: 4.1 - aria-disabled attribute
+                aria-describedby={disabled && option.incompatibilityReason ? descriptionId : undefined} // Requirement: 4.2 - link to description
+                tabIndex={0} // Requirement: 4.3 - disabled options remain focusable
               >
                 {/* Checkmark indicator for selected state */}
                 {selected && (
@@ -145,15 +225,38 @@ export function OptionGrid({
                 )}
               </button>
 
-              {/* Tooltip popup */}
-              {isHovered && option.description && (
-                <div className="absolute top-full mt-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="bg-gray-900 border-2 border-gray-700 rounded-lg px-4 py-3 shadow-xl max-w-xs">
+              {/* Tooltip popup - Requirements: 2.1, 2.2, 2.3, 2.5 */}
+              {shouldShowTooltip && (
+                <div 
+                  className="absolute top-full mt-2 z-50 tooltip-fade-in"
+                  style={{
+                    // Requirement: 2.3 - Tooltip fade-in animation (respects prefers-reduced-motion)
+                    animation: 'tooltipFadeIn 200ms ease-out',
+                  }}
+                >
+                  <div className={`
+                    border-2 rounded-lg px-4 py-3 shadow-xl max-w-xs
+                    ${disabled 
+                      ? 'bg-red-900 border-red-700' // Incompatibility tooltip styling
+                      : 'bg-gray-900 border-gray-700' // Description tooltip styling
+                    }
+                  `}>
                     <p className="text-sm text-gray-200 text-center leading-relaxed">
-                      {option.description}
+                      {/* Show incompatibility reason for disabled options, description for enabled - Requirement: 2.5 */}
+                      {disabled && option.incompatibilityReason 
+                        ? option.incompatibilityReason 
+                        : option.description
+                      }
                     </p>
                     {/* Arrow pointing up */}
-                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-900 border-l-2 border-t-2 border-gray-700 rotate-45" />
+                    <div className={`
+                      absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45
+                      border-l-2 border-t-2
+                      ${disabled 
+                        ? 'bg-red-900 border-red-700' 
+                        : 'bg-gray-900 border-gray-700'
+                      }
+                    `} />
                   </div>
                 </div>
               )}

@@ -27,7 +27,7 @@ export function CommandBlock({ command }: CommandBlockProps) {
       return <span>{command.command}</span>;
     }
 
-    let result = command.command;
+    const result = command.command;
     const parts: { text: string; isPlaceholder: boolean }[] = [];
     let lastIndex = 0;
 

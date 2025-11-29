@@ -40,30 +40,33 @@ function GuidesPageContent() {
     const urlConfigId = searchParams.get('configId');
     const urlRepoUrl = searchParams.get('repoUrl');
     
-    // Store repository URL if provided
-    if (urlRepoUrl) {
-      setRepositoryUrl(decodeURIComponent(urlRepoUrl));
-    }
+    // Compute new state values outside of setState calls
+    const newRepoUrl = urlRepoUrl ? decodeURIComponent(urlRepoUrl) : null;
+    let newConfig = storeConfig;
+    let newConfigId = null;
     
     if (urlConfigId) {
       // Try to load config from the configId
       const loadedConfig = getConfigById(urlConfigId);
       
       if (loadedConfig) {
-        setActiveConfig(loadedConfig);
-        setConfigId(urlConfigId);
+        newConfig = loadedConfig;
+        newConfigId = urlConfigId;
       } else {
         // If config not found, use store config and generate new ID
-        const newConfigId = generateConfigId(storeConfig);
-        setActiveConfig(storeConfig);
-        setConfigId(newConfigId);
+        newConfigId = generateConfigId(storeConfig);
       }
     } else {
       // No configId in URL, use store config and generate new ID
-      const newConfigId = generateConfigId(storeConfig);
-      setActiveConfig(storeConfig);
-      setConfigId(newConfigId);
+      newConfigId = generateConfigId(storeConfig);
     }
+    
+    // Use a microtask to batch state updates and avoid cascading renders
+    Promise.resolve().then(() => {
+      setRepositoryUrl(newRepoUrl);
+      setActiveConfig(newConfig);
+      setConfigId(newConfigId);
+    });
   }, [searchParams, storeConfig]);
 
   /**

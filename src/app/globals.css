@@ -2069,3 +2069,102 @@ a:hover .external-link-icon {
 .shine-effect:hover::after {
   left: 100%;
 }
+
+/* ============================================
+   COMPATIBILITY VALIDATION ANIMATIONS
+   ============================================ */
+
+/* Tooltip fade-in animation - Requirement: 2.3 */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tooltip-fade-in {
+  animation: tooltipFadeIn 200ms ease-out;
+}
+
+/* Tooltip fade-out animation - Requirement: 2.3 */
+@keyframes tooltipFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.tooltip-fade-out {
+  animation: tooltipFadeOut 200ms ease-in;
+}
+
+/* Disabled option hover feedback - Requirement: 1.1 */
+.wizard-option[aria-disabled="true"]:hover {
+  cursor: not-allowed;
+}
+
+/* High contrast mode support for disabled options - Requirement: 1.5 */
+@media (prefers-contrast: high) {
+  /* Ensure disabled options are clearly distinguishable */
+  .wizard-option[aria-disabled="true"] {
+    opacity: 0.5 !important;
+    border: 2px solid currentColor !important;
+    filter: grayscale(100%);
+  }
+  
+  /* Ensure tooltips have sufficient contrast */
+  .tooltip-fade-in > div {
+    border-width: 3px !important;
+    box-shadow: 0 0 0 2px currentColor !important;
+  }
+  
+  /* Increase focus indicator visibility */
+  .wizard-option:focus-visible {
+    outline-width: 4px !important;
+    outline-offset: 4px !important;
+  }
+}
+
+/* Respect prefers-reduced-motion for tooltip animations - Requirement: 2.3 */
+@media (prefers-reduced-motion: reduce) {
+  .tooltip-fade-in,
+  .tooltip-fade-out {
+    animation: none !important;
+  }
+  
+  /* Instant opacity transitions for disabled states */
+  .wizard-option {
+    transition: none !important;
+  }
+  
+  /* Keep functionality but remove motion */
+  .wizard-option[aria-disabled="true"] {
+    opacity: 0.4;
+  }
+}
+
+/* Smooth transitions for disabled state changes - Requirement: 1.5 */
+.wizard-option {
+  transition: opacity 300ms ease-in-out, transform 200ms ease-in-out;
+}
+
+/* Ensure disabled options maintain consistent styling - Requirement: 1.5 */
+.wizard-option[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: auto; /* Keep focusable for accessibility */
+}
+
+/* Visual feedback on hover for disabled options - subtle cursor change - Requirement: 1.1 */
+.wizard-option[aria-disabled="true"]:hover {
+  opacity: 0.4; /* No opacity change on hover */
+  transform: none; /* No scale change on hover */
+}

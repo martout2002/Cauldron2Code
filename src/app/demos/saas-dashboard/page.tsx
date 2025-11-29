@@ -169,7 +169,7 @@ export default function SaaSDashboardDemo() {
             Welcome back, {user?.name}!
           </h1>
           <p className="text-zinc-600 dark:text-zinc-400">
-            Here's what's happening with your projects today.
+            Here&apos;s what&apos;s happening with your projects today.
           </p>
         </div>
 

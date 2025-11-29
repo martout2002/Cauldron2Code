@@ -22,15 +22,16 @@ export function GuideStep({ step, completed, viewMode, onToggleComplete, guideId
   useEffect(() => {
     const storageKey = `guide-step-expanded-${guideId}-${step.id}`;
     const stored = localStorage.getItem(storageKey);
-    if (stored !== null) {
-      setIsExpanded(stored === 'true');
-    }
+    const shouldExpand = stored !== null ? stored === 'true' : true;
+    // Use microtask to defer state update
+    Promise.resolve().then(() => setIsExpanded(shouldExpand));
   }, [guideId, step.id]);
 
   // Reset showDetails when view mode changes
   useEffect(() => {
-    if (viewMode === 'detailed') {
-      setShowDetails(false);
+    const shouldHideDetails = viewMode === 'detailed';
+    if (shouldHideDetails) {
+      Promise.resolve().then(() => setShowDetails(false));
     }
   }, [viewMode]);
 

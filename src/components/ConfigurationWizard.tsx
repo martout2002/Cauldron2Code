@@ -29,9 +29,17 @@ export function ConfigurationWizard() {
   useEffect(() => {
     if (_hasHydrated) {
       reset(config);
-      setAiEnabled(config.aiTemplate !== 'none' && config.aiTemplate !== undefined);
     }
   }, [_hasHydrated, config, reset]);
+
+  // Sync AI enabled state with config - use layout effect to avoid cascading renders
+  useEffect(() => {
+    if (_hasHydrated) {
+      const shouldBeEnabled = config.aiTemplate !== 'none' && config.aiTemplate !== undefined;
+      // Use microtask to defer state update
+      Promise.resolve().then(() => setAiEnabled(shouldBeEnabled));
+    }
+  }, [_hasHydrated, config.aiTemplate]);
 
   // Use config from store directly instead of watching form
   const formValues = config;

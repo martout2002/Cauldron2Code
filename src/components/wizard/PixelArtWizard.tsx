@@ -43,11 +43,10 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
   const currentStepConfig = steps[currentStep];
 
   // Wait for hydration before rendering
+  const shouldBeReady = wizardHydrated && configHydrated;
   useEffect(() => {
-    if (wizardHydrated && configHydrated) {
-      setIsReady(true);
-    }
-  }, [wizardHydrated, configHydrated]);
+    setIsReady(shouldBeReady);
+  }, [shouldBeReady]);
 
   // Preload critical assets on mount
   useEffect(() => {
@@ -80,7 +79,8 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      setShowDebugInfo(params.get('debug') === 'true');
+      const debugMode = params.get('debug') === 'true';
+      setShowDebugInfo(debugMode);
     }
   }, []);
 

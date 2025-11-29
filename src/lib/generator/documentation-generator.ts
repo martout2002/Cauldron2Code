@@ -1592,7 +1592,7 @@ Render automatically deploys when you push to your main branch.
     };
   }
 
-  // @ts-ignore - EC2 deployment removed
+  // @ts-expect-error - EC2 deployment removed
   private getEC2DeploymentGuide(): DocumentationSection {
     return {
       title: 'EC2 Deployment',
@@ -2292,7 +2292,7 @@ For Google OAuth:
     return colorMap[tech] || 'gray';
   }
 
-  // @ts-ignore - EC2 deployment removed
+  // EC2 deployment removed but method kept for compatibility
   private getEC2EnvVarsList(): string {
     const vars: string[] = [];
 

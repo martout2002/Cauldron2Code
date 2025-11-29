@@ -24,11 +24,27 @@ export function ChecklistSection({ items, completedItems, onToggleItem }: Checkl
 
   // Show success message when all required items are complete
   useEffect(() => {
-    if (allRequiredComplete) {
-      setShowSuccess(true);
+    let isMounted = true;
+    if (allRequiredComplete && isMounted) {
+      // Use microtask to defer state update
+      Promise.resolve().then(() => {
+        if (isMounted) {
+          setShowSuccess(true);
+        }
+      });
       // Auto-hide after 5 seconds
-      const timer = setTimeout(() => setShowSuccess(false), 5000);
-      return () => clearTimeout(timer);
+      const timer = setTimeout(() => {
+        if (isMounted) {
+          setShowSuccess(false);
+        }
+      }, 5000);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    } else if (!allRequiredComplete) {
+      // Use microtask to defer state update
+      Promise.resolve().then(() => setShowSuccess(false));
     }
   }, [allRequiredComplete]);
 

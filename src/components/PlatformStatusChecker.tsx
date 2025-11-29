@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AlertTriangle, CheckCircle2, XCircle, ExternalLink, RefreshCw } from 'lucide-react';
 import type { PlatformType } from '@/lib/platforms/types';
 
@@ -37,36 +37,8 @@ export function PlatformStatusChecker({
   const [statuses, setStatuses] = useState<Map<PlatformType, PlatformStatus>>(new Map());
   const [isChecking, setIsChecking] = useState(false);
 
-  useEffect(() => {
-    checkPlatformStatuses();
-  }, [platforms]);
-
-  const checkPlatformStatuses = async () => {
-    setIsChecking(true);
-
-    const newStatuses = new Map<PlatformType, PlatformStatus>();
-
-    for (const platform of platforms) {
-      try {
-        // In a real implementation, this would check the platform's status API
-        // For now, we'll simulate by checking if we can reach the API
-        const status = await checkPlatformHealth(platform);
-        newStatuses.set(platform, status);
-      } catch (error) {
-        newStatuses.set(platform, {
-          platform,
-          status: 'unknown',
-          message: 'Unable to check status',
-          lastChecked: new Date(),
-        });
-      }
-    }
-
-    setStatuses(newStatuses);
-    setIsChecking(false);
-  };
-
-  const checkPlatformHealth = async (platform: PlatformType): Promise<PlatformStatus> => {
+  // Define checkPlatformHealth before it's used
+  const checkPlatformHealth = useCallback(async (platform: PlatformType): Promise<PlatformStatus> => {
     // Simulate health check - in production, this would call actual status APIs
     // or check if we can reach the platform's API endpoints
     try {
@@ -105,7 +77,37 @@ export function PlatformStatusChecker({
         lastChecked: new Date(),
       };
     }
-  };
+  }, []);
+
+  const checkPlatformStatuses = useCallback(async () => {
+    setIsChecking(true);
+
+    const newStatuses = new Map<PlatformType, PlatformStatus>();
+
+    for (const platform of platforms) {
+      try {
+        // In a real implementation, this would check the platform's status API
+        // For now, we'll simulate by checking if we can reach the API
+        const status = await checkPlatformHealth(platform);
+        newStatuses.set(platform, status);
+      } catch {
+        newStatuses.set(platform, {
+          platform,
+          status: 'unknown',
+          message: 'Unable to check status',
+          lastChecked: new Date(),
+        });
+      }
+    }
+
+    setStatuses(newStatuses);
+    setIsChecking(false);
+  }, [platforms, checkPlatformHealth]);
+
+  useEffect(() => {
+    // Use microtask to defer the async call
+    Promise.resolve().then(() => checkPlatformStatuses());
+  }, [checkPlatformStatuses]);
 
   const getStatusIcon = (status: PlatformStatus['status']) => {
     switch (status) {

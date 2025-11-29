@@ -37,3 +37,12 @@ export {
   exportState,
   importState,
 } from './wizard-persistence';
+export type { CompatibilityRule, CompatibilityResult } from './compatibility-rules';
+export { compatibilityRules } from './compatibility-rules';
+export {
+  evaluateCompatibility,
+  evaluateMultipleOptions,
+  hasIncompatibilities,
+} from './compatibility-evaluator';
+export { useCompatibility } from './useCompatibility';
+export type { UseCompatibilityResult, OptionWithCompatibility } from './useCompatibility';

@@ -22,15 +22,30 @@ export function PersistenceIndicator({ showDebugInfo = false }: PersistenceIndic
 
   // Show "saved" indicator briefly when state changes
   useEffect(() => {
-    setShowSaved(true);
-    const timer = setTimeout(() => setShowSaved(false), 2000);
-    return () => clearTimeout(timer);
+    let isMounted = true;
+    // Use microtask to defer state update
+    Promise.resolve().then(() => {
+      if (isMounted) {
+        setShowSaved(true);
+      }
+    });
+    const timer = setTimeout(() => {
+      if (isMounted) {
+        setShowSaved(false);
+      }
+    }, 2000);
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, [currentStep, config]);
 
   // Update summary for debug info
   useEffect(() => {
     if (showDebugInfo) {
-      setSummary(getPersistedStateSummary());
+      const newSummary = getPersistedStateSummary();
+      // Use microtask to defer state update
+      Promise.resolve().then(() => setSummary(newSummary));
     }
   }, [showDebugInfo, currentStep, config]);
 

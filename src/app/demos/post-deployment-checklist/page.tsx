@@ -96,7 +96,7 @@ export default function PostDeploymentChecklistDemo() {
             <li>✓ Check/uncheck items to mark them as complete</li>
             <li>✓ Copy commands with the hover button</li>
             <li>✓ Click links to open documentation</li>
-            <li>✓ Copy all instructions with the "Copy Instructions" button</li>
+            <li>✓ Copy all instructions with the &quot;Copy Instructions&quot; button</li>
             <li>
               ✓ Complete all required items to see the success message
             </li>

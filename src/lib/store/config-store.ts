@@ -121,7 +121,7 @@ export const useConfigStore = create<ConfigState>()(
           if (!hasChanges) return state;
           
           // Apply updates
-          let newConfig = { ...state.config, ...updates };
+          const newConfig = { ...state.config, ...updates };
           
           // Auto-adjust backend framework if frontend framework changed
           if (updates.frontendFramework !== undefined) {

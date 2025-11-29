@@ -1,10 +1,12 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { StepConfig } from '@/lib/wizard/wizard-steps';
 import { ScaffoldConfig } from '@/types';
 import { PixelInput } from './PixelInput';
 import { OptionGrid } from './OptionGrid';
 import { CheckboxGroup } from './CheckboxGroup';
+import { useCompatibility } from '@/lib/wizard/useCompatibility';
 
 interface WizardStepProps {
   step: StepConfig;
@@ -25,11 +27,38 @@ export function WizardStep({
   onUpdate,
   validationError,
 }: WizardStepProps) {
+  // Get compatibility checking functions - Requirements: 1.3, 8.4, 8.5
+  const { getCompatibleOptions } = useCompatibility();
+  
+  // Loading state for initial compatibility evaluation - Requirement: 8.4
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  
   // Get the current value for this step's field
   const currentValue = config[step.field];
+  
+  // Evaluate compatibility when step loads or config changes
+  // Requirements: 1.3, 8.4
+  useEffect(() => {
+    // Only evaluate for option-grid steps
+    if (step.type === 'option-grid' && step.options) {
+      setIsEvaluating(true);
+      
+      // Use requestAnimationFrame to ensure non-blocking evaluation
+      // Requirement: 8.5 - non-blocking step transitions
+      requestAnimationFrame(() => {
+        try {
+          // Trigger compatibility evaluation by calling getCompatibleOptions
+          // This will precompute compatibility for all options in this step
+          getCompatibleOptions(step.id, step.options || []);
+        } finally {
+          setIsEvaluating(false);
+        }
+      });
+    }
+  }, [step.id, step.type, step.options, getCompatibleOptions]);
 
   // Handle updates for different field types
-  const handleUpdate = (value: any) => {
+  const handleUpdate = (value: string | string[]) => {
     // Special handling for extras field (convert array to object)
     if (step.field === 'extras' && Array.isArray(value)) {
       const extrasObj = {
@@ -49,7 +78,7 @@ export function WizardStep({
   const getExtrasArray = (): string[] => {
     if (!config.extras || typeof config.extras !== 'object') return [];
     return Object.entries(config.extras)
-      .filter(([_, value]) => value === true)
+      .filter(([, value]) => value === true)
       .map(([key]) => key);
   };
 
@@ -78,14 +107,22 @@ export function WizardStep({
         )}
 
         {step.type === 'option-grid' && step.options && (
-          <OptionGrid
-            options={step.options}
-            selected={step.field === 'extras' ? getExtrasArray() : (currentValue as string | string[])}
-            onSelect={handleUpdate}
-            columns={step.columns || 3}
-            multiSelect={step.multiSelect || false}
-            label={step.title}
-          />
+          <>
+            {/* Show loading indicator during initial evaluation - Requirement: 8.4 */}
+            {isEvaluating && (
+              <div className="text-center text-gray-400 text-sm mb-4" role="status" aria-live="polite">
+                Evaluating compatibility...
+              </div>
+            )}
+            <OptionGrid
+              options={getCompatibleOptions(step.id, step.options)}
+              selected={step.field === 'extras' ? getExtrasArray() : (currentValue as string | string[])}
+              onSelect={handleUpdate}
+              columns={step.columns || 3}
+              multiSelect={step.multiSelect || false}
+              label={step.title}
+            />
+          </>
         )}
 
         {step.type === 'checkbox-group' && step.options && (

@@ -243,7 +243,7 @@ export class GuideGenerator {
    */
   estimateDeploymentTime(steps: DeploymentStep[]): string {
     // Base time for reading and understanding the guide
-    let baseMinutes = 5;
+    const baseMinutes = 5;
 
     // Add time per step
     // Simple steps: 2 minutes
