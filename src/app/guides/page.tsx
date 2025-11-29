@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { PlatformSelector } from '@/components/guides';
 import { useConfigStore } from '@/lib/store/config-store';
-import { createGuideUrl, cleanupOldConfigs, getConfigById, generateConfigId } from '@/lib/deployment';
+import { cleanupOldConfigs, getConfigById, generateConfigId } from '@/lib/deployment';
 import type { Platform } from '@/types/deployment-guides';
 import type { ScaffoldConfig } from '@/types';
 
