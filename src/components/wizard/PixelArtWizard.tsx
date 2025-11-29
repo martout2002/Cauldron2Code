@@ -11,6 +11,7 @@ import { WizardStep } from './WizardStep';
 import { NavigationControls } from './NavigationControls';
 import { PersistenceIndicator } from './PersistenceIndicator';
 import { CauldronAsset } from './CauldronAsset';
+import { PixelProgressBar } from './PixelProgressBar';
 
 interface PixelArtWizardProps {
   onGenerate?: () => void;
@@ -480,6 +481,9 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
 
       {/* Persistence indicator (shows "Saved" briefly after changes) */}
       <PersistenceIndicator showDebugInfo={showDebugInfo} />
+
+      {/* Progress bar - shows current step */}
+      <PixelProgressBar currentStep={currentStep} totalSteps={totalSteps} />
     </div>
   );
 }

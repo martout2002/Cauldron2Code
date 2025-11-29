@@ -143,7 +143,7 @@ export function OptionGrid({
           const descriptionId = `option-desc-${option.value}`;
           
           return (
-            <div key={option.value} className="relative flex flex-col items-center">
+            <div key={option.value} className="relative flex flex-col items-center" style={{ minHeight: '120px' }}>
               {/* Hidden description element for screen readers - Requirements: 4.2, 4.5 */}
               {disabled && option.incompatibilityReason && (
                 <div 
@@ -228,14 +228,14 @@ export function OptionGrid({
               {/* Tooltip popup - Requirements: 2.1, 2.2, 2.3, 2.5 */}
               {shouldShowTooltip && (
                 <div 
-                  className="absolute top-full mt-2 z-50 tooltip-fade-in"
+                  className="absolute top-full mt-2 left-1/2 -translate-x-1/2 z-50 tooltip-fade-in pointer-events-none"
                   style={{
                     // Requirement: 2.3 - Tooltip fade-in animation (respects prefers-reduced-motion)
                     animation: 'tooltipFadeIn 200ms ease-out',
                   }}
                 >
                   <div className={`
-                    border-2 rounded-lg px-4 py-3 shadow-xl max-w-xs
+                    border-2 rounded-lg px-4 py-3 shadow-xl max-w-xs whitespace-nowrap
                     ${disabled 
                       ? 'bg-red-900 border-red-700' // Incompatibility tooltip styling
                       : 'bg-gray-900 border-gray-700' // Description tooltip styling

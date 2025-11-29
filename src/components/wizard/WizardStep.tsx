@@ -107,22 +107,14 @@ export function WizardStep({
         )}
 
         {step.type === 'option-grid' && step.options && (
-          <>
-            {/* Show loading indicator during initial evaluation - Requirement: 8.4 */}
-            {isEvaluating && (
-              <div className="text-center text-gray-400 text-sm mb-4" role="status" aria-live="polite">
-                Evaluating compatibility...
-              </div>
-            )}
-            <OptionGrid
-              options={getCompatibleOptions(step.id, step.options)}
-              selected={step.field === 'extras' ? getExtrasArray() : (currentValue as string | string[])}
-              onSelect={handleUpdate}
-              columns={step.columns || 3}
-              multiSelect={step.multiSelect || false}
-              label={step.title}
-            />
-          </>
+          <OptionGrid
+            options={getCompatibleOptions(step.id, step.options)}
+            selected={step.field === 'extras' ? getExtrasArray() : (currentValue as string | string[])}
+            onSelect={handleUpdate}
+            columns={step.columns || 3}
+            multiSelect={step.multiSelect || false}
+            label={step.title}
+          />
         )}
 
         {step.type === 'checkbox-group' && step.options && (
