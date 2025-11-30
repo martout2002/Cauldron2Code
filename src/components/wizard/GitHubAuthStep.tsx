@@ -43,14 +43,14 @@ export function GitHubAuthStep({ onAuthenticate }: GitHubAuthStepProps) {
           <img 
             src="/github.png" 
             alt="GitHub" 
-            className="w-24 h-24 pixelated"
+            className="w-24 h-24 object-contain"
           />
         </div>
 
         {/* Success Message */}
         <div className="flex items-center gap-3 mb-6">
           <div className="w-8 h-8 border-2 border-black bg-green-500 flex items-center justify-center rounded">
-            <Check size={20} className="text-white stroke-[3]" />
+            <Check size={20} className="text-white stroke-3" />
           </div>
           <p className="text-white font-pixelify text-2xl">
             Signed in as {username}
