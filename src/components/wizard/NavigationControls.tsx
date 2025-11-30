@@ -6,6 +6,7 @@ interface NavigationControlsProps {
   canGoBack: boolean;
   canGoNext: boolean;
   isLastStep: boolean;
+  currentStepId?: string;
 }
 
 export function NavigationControls({
@@ -14,7 +15,11 @@ export function NavigationControls({
   canGoBack,
   canGoNext,
   isLastStep,
+  currentStepId,
 }: NavigationControlsProps) {
+  // On summary step, show "Next" instead of "Generate"
+  // On github-auth step, show "Generate" to proceed with OAuth
+  const showGenerate = isLastStep && currentStepId !== 'summary';
   return (
     <nav 
       className="fixed bottom-4 sm:bottom-6 md:bottom-8 left-0 right-0 flex justify-between px-4 sm:px-6 md:px-8 max-w-7xl mx-auto z-20"
@@ -48,13 +53,13 @@ export function NavigationControls({
         type="button"
       >
         <img
-          src={isLastStep ? '/cauldron.png' : '/ladle.png'}
+          src={showGenerate ? '/cauldron.png' : '/ladle.png'}
           alt=""
           className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16"
           aria-hidden="true"
         />
         <span className="pixel-button-text">
-          {isLastStep ? 'Generate' : 'Next'}
+          {showGenerate ? 'Generate' : 'Next'}
         </span>
       </button>
     </nav>

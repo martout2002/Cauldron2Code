@@ -54,6 +54,9 @@ export interface ScaffoldConfig {
     prettier: boolean;
     husky: boolean;
   };
+
+  // GitHub Authentication
+  githubAuth?: boolean;
 }
 
 // ============================================================================

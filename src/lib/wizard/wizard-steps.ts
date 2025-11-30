@@ -145,7 +145,37 @@ export function getWizardSteps(): StepConfig[] {
       ],
     },
     
-    // Step 5: Database
+    // Step 5: Build Tool
+    {
+      id: 'build-tool',
+      title: 'Enchanted Stirring Device',
+      subtitle: 'Select your stirring implement. It will help your potion reach perfection. [Build Tool]',
+      type: 'option-grid',
+      field: 'buildTool',
+      columns: 3,
+      options: [
+        { 
+          value: 'auto', 
+          label: 'Auto',
+          icon: '/icons/frameworks/auto.svg',
+          description: 'Automatically choose the best build tool'
+        },
+        { 
+          value: 'vite', 
+          label: 'Vite',
+          icon: '/icons/frameworks/vite.svg',
+          description: 'Lightning fast build tool'
+        },
+        { 
+          value: 'webpack', 
+          label: 'Webpack',
+          icon: '/icons/frameworks/webpack.svg',
+          description: 'Powerful and configurable bundler'
+        },
+      ],
+    },
+    
+    // Step 6: Database
     {
       id: 'database',
       title: 'Choose your Spell Book',
@@ -187,7 +217,7 @@ export function getWizardSteps(): StepConfig[] {
       ],
     },
     
-    // Step 6: Authentication
+    // Step 7: Authentication
     {
       id: 'auth',
       title: 'Guard your Potions',
@@ -223,7 +253,7 @@ export function getWizardSteps(): StepConfig[] {
       ],
     },
     
-    // Step 7: Styling
+    // Step 8: Styling
     {
       id: 'styling',
       title: 'Decorate your Workshop',
@@ -253,7 +283,7 @@ export function getWizardSteps(): StepConfig[] {
       ],
     },
     
-    // Step 8: Extras (using option-grid with multiple selections)
+    // Step 9: Extras (using option-grid with multiple selections)
     {
       id: 'extras',
       title: 'Final Ingredients',
@@ -296,7 +326,7 @@ export function getWizardSteps(): StepConfig[] {
       ],
     },
     
-    // Step 9: AI Templates (multi-select)
+    // Step 10: AI Templates (multi-select)
     {
       id: 'ai-templates',
       title: 'Enchant with AI Magic',
@@ -389,7 +419,7 @@ export function getWizardSteps(): StepConfig[] {
       ],
     },
     
-    // Step 10: AI Provider (conditional - only shown when aiTemplates.length > 0)
+    // Step 11: AI Provider (conditional - only shown when aiTemplates.length > 0)
     {
       id: 'ai-provider',
       title: 'Choose your AI Oracle',
@@ -424,6 +454,24 @@ export function getWizardSteps(): StepConfig[] {
         },
       ],
       conditional: (config) => config.aiTemplates.length > 0,
+    },
+    
+    // Step 12: Summary - Review all selections
+    {
+      id: 'summary',
+      title: 'Recipe',
+      subtitle: '',
+      type: 'custom',
+      field: 'projectName', // Dummy field, not actually used
+    },
+
+    // Step 13: GitHub Authentication
+    {
+      id: 'github-auth',
+      title: 'Sign in to GitHub',
+      subtitle: 'Connect your GitHub account to create your repository',
+      type: 'custom',
+      field: 'githubAuth', // Dummy field
     },
   ];
 }

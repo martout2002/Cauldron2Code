@@ -1,0 +1,17 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Vite logo inspired design -->
+  <defs>
+    <linearGradient id="viteGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#41D1FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BD34FE;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="viteGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFEA83;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFDD35;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Lightning bolt shape -->
+  <path d="M32 4 L38 28 L48 28 L28 60 L26 36 L16 36 Z" fill="url(#viteGradient1)"/>
+  <path d="M32 4 L36 28 L44 28 L28 56 L28 36 L20 36 Z" fill="url(#viteGradient2)"/>
+</svg>

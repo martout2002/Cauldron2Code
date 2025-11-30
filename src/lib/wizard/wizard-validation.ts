@@ -217,11 +217,21 @@ export function validateAITemplateStep(
   aiTemplates: ScaffoldConfig['aiTemplates']
 ): ValidationResult {
   // AI templates are optional - empty array is valid
+  if (!aiTemplates) {
+    // If undefined, treat as valid (will be initialized as empty array)
+    return { isValid: true };
+  }
+  
   if (!Array.isArray(aiTemplates)) {
     return {
       isValid: false,
       error: 'Invalid AI templates configuration',
     };
+  }
+
+  // Empty array is explicitly valid - user chose no AI templates
+  if (aiTemplates.length === 0) {
+    return { isValid: true };
   }
 
   // Validate each template is a valid option
@@ -323,6 +333,10 @@ export function validateStep(
         value as ScaffoldConfig['backendFramework']
       );
 
+    case 'build-tool':
+      // Build tool is always valid (auto is default)
+      return { isValid: true };
+
     case 'database':
       return validateDatabase(value as ScaffoldConfig['database']);
 
@@ -341,6 +355,14 @@ export function validateStep(
     case 'ai-provider':
       return validateAIProviderStep(config);
 
+    case 'summary':
+      // Summary step is always valid (just a review)
+      return { isValid: true };
+
+    case 'github-auth':
+      // GitHub auth step is always valid (OAuth happens on next)
+      return { isValid: true };
+
     default:
       return { isValid: true };
   }
@@ -351,7 +373,7 @@ export function validateStep(
  * Returns true if all steps are valid
  */
 export function validateAllSteps(config: ScaffoldConfig): ValidationResult {
-  const totalSteps = 10; // Updated to include AI templates and AI provider steps
+  const totalSteps = 13; // Updated to include AI templates, AI provider, summary, and github-auth steps
 
   for (let i = 0; i < totalSteps; i++) {
     const result = validateStep(i, config);

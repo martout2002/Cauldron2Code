@@ -1,0 +1,19 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Webpack logo inspired design -->
+  <defs>
+    <linearGradient id="webpackGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8DD6F9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1C78C0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Hexagon shape -->
+  <path d="M32 8 L52 20 L52 44 L32 56 L12 44 L12 20 Z" fill="url(#webpackGradient)" stroke="#1C78C0" stroke-width="2"/>
+  
+  <!-- Inner lines -->
+  <path d="M32 20 L32 44" stroke="white" stroke-width="2"/>
+  <path d="M20 26 L44 26" stroke="white" stroke-width="2"/>
+  <path d="M20 38 L44 38" stroke="white" stroke-width="2"/>
+  <path d="M26 20 L38 44" stroke="white" stroke-width="1.5" opacity="0.6"/>
+  <path d="M38 20 L26 44" stroke="white" stroke-width="1.5" opacity="0.6"/>
+</svg>

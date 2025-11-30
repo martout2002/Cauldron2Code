@@ -220,6 +220,7 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
 
     // Validate current step
     const result = validateStep(currentStep, config);
+    console.log('🔍 Validation result:', result, 'Current step:', currentStep);
     if (!result.isValid) {
       const errorMsg = result.error || 'Please complete this step';
       setValidationError(errorMsg);
@@ -232,9 +233,11 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
 
     // Get next visible step
     const nextStepIndex = getNextVisibleStepIndex(currentStep, config);
+    console.log('🔍 Next step index:', nextStepIndex, 'Current step:', currentStep);
     
     // Check if this is the last visible step
     if (nextStepIndex === -1) {
+      console.log('🔍 No next step found, triggering generation');
       // Trigger generation
       if (onGenerate) {
         onGenerate();
@@ -242,9 +245,13 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
       return;
     }
 
+    console.log('🔍 About to transition to step:', nextStepIndex);
+
     // Set transitioning state IMMEDIATELY to prevent spam clicking
     setIsTransitioning(true);
     setIsAnimating(true);
+    
+    console.log('🔍 Transition state set, starting animation');
 
     // Check if user prefers reduced motion
     const prefersReducedMotion = typeof window !== 'undefined' 
@@ -317,8 +324,10 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     // Wait for fade-out animation
     await new Promise((resolve) => setTimeout(resolve, 150));
 
+    console.log('🔍 Calling goToStep with index:', nextStepIndex);
     // Move to next visible step
     goToStep(nextStepIndex);
+    console.log('🔍 goToStep called successfully');
 
     // Wait a bit before fade-in
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -436,16 +445,25 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className={`relative ${currentStepConfig?.id === 'summary' || currentStepConfig?.id === 'github-auth' ? 'h-screen' : 'min-h-screen'} overflow-hidden`}>
       {/* Background layer */}
       <WizardBackground />
 
       {/* Fixed Cauldron - always visible, not affected by content */}
-      <CauldronAsset />
+      <CauldronAsset imageSrc={currentStepConfig?.id === 'summary' ? '/cauldron_stages.png' : '/cauldron.png'} />
+
+      {/* Project name overlay - only visible on summary step */}
+      {currentStepConfig?.id === 'summary' && (
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 translate-y-[25vh] z-20 pointer-events-none">
+          <p className="text-lime-500 text-3xl font-pixelify text-center">
+            {config.projectName || 'Your Project'}
+          </p>
+        </div>
+      )}
 
       {/* Main content */}
       <main 
-        className="relative z-10 min-h-screen px-2 sm:px-4 pt-8 sm:pt-12 pb-24 sm:pb-28"
+        className={`relative z-10 ${currentStepConfig?.id === 'summary' || currentStepConfig?.id === 'github-auth' ? 'h-screen' : 'min-h-screen'} px-2 sm:px-4 pt-8 sm:pt-12 pb-24 sm:pb-28`}
         role="main"
         aria-label="Configuration wizard"
       >
@@ -496,6 +514,7 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
           canGoBack={canGoBack}
           canGoNext={canGoNext}
           isLastStep={isLastStep}
+          currentStepId={currentStepConfig?.id}
         />
 
       </main>

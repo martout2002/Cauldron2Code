@@ -6,6 +6,8 @@ import { ScaffoldConfig } from '@/types';
 import { PixelInput } from './PixelInput';
 import { OptionGrid } from './OptionGrid';
 import { CheckboxGroup } from './CheckboxGroup';
+import { SummaryStep } from './SummaryStep';
+import { GitHubAuthStep } from './GitHubAuthStep';
 import { useCompatibility } from '@/lib/wizard/useCompatibility';
 
 interface WizardStepProps {
@@ -125,6 +127,19 @@ export function WizardStep({
             onChange={handleUpdate}
             columns={step.columns || 2}
             label={step.title}
+          />
+        )}
+
+        {step.type === 'custom' && step.id === 'summary' && (
+          <SummaryStep config={config} />
+        )}
+
+        {step.type === 'custom' && step.id === 'github-auth' && (
+          <GitHubAuthStep 
+            onAuthenticate={() => {
+              // Trigger OAuth flow
+              window.location.href = '/api/auth/github';
+            }}
           />
         )}
       </div>

@@ -44,7 +44,7 @@ interface WizardState {
   setHasHydrated: (state: boolean) => void;
 }
 
-const TOTAL_WIZARD_STEPS = 10; // Updated to include AI templates and AI provider steps
+const TOTAL_WIZARD_STEPS = 13; // Updated to include build tool, AI templates, AI provider, summary, and github-auth steps
 
 /**
  * Zustand store for wizard state management
