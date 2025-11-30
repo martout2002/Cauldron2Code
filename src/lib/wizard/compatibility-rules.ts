@@ -204,4 +204,101 @@ export const compatibilityRules: CompatibilityRule[] = [
     getIncompatibilityMessage: () => 
       `Redis requires a backend framework to be useful. Currently no backend is selected. Select a backend framework (Express, Fastify, NestJS, or Next.js API) to use Redis.`,
   },
+  
+  // ============================================================================
+  // AI Template Compatibility Rules (Requirements 1.5, 2.2, 4.2)
+  // ============================================================================
+  
+  {
+    id: 'ai-templates-require-nextjs-or-monorepo',
+    description: 'AI templates require Next.js frontend or fullstack monorepo structure',
+    targetStep: 'ai-templates',
+    targetOption: 'chatbot',
+    isIncompatible: (config) => !isAITemplateCompatible(config),
+    getIncompatibilityMessage: (config) => 
+      `AI templates require Next.js as the frontend framework or a fullstack monorepo structure. Currently selected: ${getOptionLabel(config.frontendFramework)} with ${getOptionLabel(config.projectStructure)} structure. Change your frontend to Next.js or select fullstack monorepo structure.`,
+  },
+  
+  {
+    id: 'ai-templates-document-analyzer-require-nextjs-or-monorepo',
+    description: 'AI templates require Next.js frontend or fullstack monorepo structure',
+    targetStep: 'ai-templates',
+    targetOption: 'document-analyzer',
+    isIncompatible: (config) => !isAITemplateCompatible(config),
+    getIncompatibilityMessage: (config) => 
+      `AI templates require Next.js as the frontend framework or a fullstack monorepo structure. Currently selected: ${getOptionLabel(config.frontendFramework)} with ${getOptionLabel(config.projectStructure)} structure. Change your frontend to Next.js or select fullstack monorepo structure.`,
+  },
+  
+  {
+    id: 'ai-templates-semantic-search-require-nextjs-or-monorepo',
+    description: 'AI templates require Next.js frontend or fullstack monorepo structure',
+    targetStep: 'ai-templates',
+    targetOption: 'semantic-search',
+    isIncompatible: (config) => !isAITemplateCompatible(config),
+    getIncompatibilityMessage: (config) => 
+      `AI templates require Next.js as the frontend framework or a fullstack monorepo structure. Currently selected: ${getOptionLabel(config.frontendFramework)} with ${getOptionLabel(config.projectStructure)} structure. Change your frontend to Next.js or select fullstack monorepo structure.`,
+  },
+  
+  {
+    id: 'ai-templates-code-assistant-require-nextjs-or-monorepo',
+    description: 'AI templates require Next.js frontend or fullstack monorepo structure',
+    targetStep: 'ai-templates',
+    targetOption: 'code-assistant',
+    isIncompatible: (config) => !isAITemplateCompatible(config),
+    getIncompatibilityMessage: (config) => 
+      `AI templates require Next.js as the frontend framework or a fullstack monorepo structure. Currently selected: ${getOptionLabel(config.frontendFramework)} with ${getOptionLabel(config.projectStructure)} structure. Change your frontend to Next.js or select fullstack monorepo structure.`,
+  },
+  
+  {
+    id: 'ai-templates-image-generator-require-nextjs-or-monorepo',
+    description: 'AI templates require Next.js frontend or fullstack monorepo structure',
+    targetStep: 'ai-templates',
+    targetOption: 'image-generator',
+    isIncompatible: (config) => !isAITemplateCompatible(config),
+    getIncompatibilityMessage: (config) => 
+      `AI templates require Next.js as the frontend framework or a fullstack monorepo structure. Currently selected: ${getOptionLabel(config.frontendFramework)} with ${getOptionLabel(config.projectStructure)} structure. Change your frontend to Next.js or select fullstack monorepo structure.`,
+  },
 ];
+
+// ============================================================================
+// AI Template Compatibility Helper Functions
+// ============================================================================
+
+/**
+ * Check if the current configuration is compatible with AI templates
+ * AI templates require Next.js frontend or fullstack monorepo structure
+ * 
+ * @param config - The current scaffold configuration
+ * @returns true if AI templates can be used, false otherwise
+ * 
+ * Requirements: 1.5, 4.2
+ */
+export function isAITemplateCompatible(config: ScaffoldConfig): boolean {
+  return (
+    config.frontendFramework === 'nextjs' ||
+    config.projectStructure === 'fullstack-monorepo'
+  );
+}
+
+/**
+ * Get compatible AI providers based on selected templates
+ * Currently all templates support all providers, but this function
+ * allows for future filtering if specific templates require specific providers
+ * 
+ * @param selectedTemplates - Array of selected AI template IDs
+ * @returns Array of compatible AI provider IDs
+ * 
+ * Requirements: 2.2
+ */
+export function getCompatibleAIProviders(
+  selectedTemplates: string[]
+): Array<'anthropic' | 'openai' | 'aws-bedrock' | 'gemini'> {
+  // If no templates selected, return empty array
+  if (selectedTemplates.length === 0) {
+    return [];
+  }
+  
+  // Currently all templates support all providers
+  // In the future, this could filter based on template-specific requirements
+  return ['anthropic', 'openai', 'aws-bedrock', 'gemini'];
+}

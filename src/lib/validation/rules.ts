@@ -81,8 +81,7 @@ export const VALIDATION_RULES: ValidationRule[] = [
       'AI templates require Next.js frontend. Please select Next.js to use AI features.',
     severity: 'error',
     check: (config) =>
-      config.aiTemplate !== 'none' &&
-      config.aiTemplate !== undefined &&
+      config.aiTemplates.length > 0 &&
       config.frontendFramework !== 'nextjs',
   },
   {
@@ -91,7 +90,7 @@ export const VALIDATION_RULES: ValidationRule[] = [
       "AI templates require an API key from your chosen AI provider. You'll need to add it to your environment after generation.",
     severity: 'warning',
     check: (config) =>
-      config.aiTemplate !== 'none' && config.aiTemplate !== undefined,
+      config.aiTemplates.length > 0,
   },
   {
     id: 'supabase-auth-db',
@@ -125,12 +124,13 @@ export const VALIDATION_RULES: ValidationRule[] = [
     severity: 'error',
     check: (config) => !config.description || config.description.length === 0,
   },
-  {
-    id: 'deployment-target-required',
-    message: 'At least one deployment target must be selected.',
-    severity: 'error',
-    check: (config) => config.deployment.length === 0,
-  },
+  // Deployment is now optional - users can choose to deploy later
+  // {
+  //   id: 'deployment-target-required',
+  //   message: 'At least one deployment target must be selected.',
+  //   severity: 'error',
+  //   check: (config) => config.deployment.length === 0,
+  // },
   {
     id: 'graphql-complexity',
     message:

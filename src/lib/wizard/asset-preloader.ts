@@ -81,6 +81,17 @@ export async function preloadCriticalAssets(): Promise<void> {
     '/ladle.png',
     '/cauldron.png',
     '/search_bar.png',
+    // AI template icons
+    '/icons/ai/chatbot.svg',
+    '/icons/ai/document-analyzer.svg',
+    '/icons/ai/semantic-search.svg',
+    '/icons/ai/code-assistant.svg',
+    '/icons/ai/image-generator.svg',
+    // AI provider icons
+    '/icons/ai/anthropic.svg',
+    '/icons/ai/openai.svg',
+    '/icons/ai/aws-bedrock.svg',
+    '/icons/ai/gemini.svg',
   ];
   
   await preloadImages(criticalAssets);

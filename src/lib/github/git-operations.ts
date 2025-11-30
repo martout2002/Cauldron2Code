@@ -147,19 +147,21 @@ export class GitOperationsService {
     }
 
     // AI Template
-    if (config.aiTemplate && config.aiTemplate !== 'none') {
+    if (config.aiTemplates.length > 0) {
       technologies.push('Anthropic Claude');
-      if (config.aiTemplate === 'chatbot') {
-        features.push('AI chatbot');
-      } else if (config.aiTemplate === 'document-analyzer') {
-        features.push('AI document analyzer');
-      } else if (config.aiTemplate === 'semantic-search') {
-        features.push('AI semantic search');
-      } else if (config.aiTemplate === 'code-assistant') {
-        features.push('AI code assistant');
-      } else if (config.aiTemplate === 'image-generator') {
-        features.push('AI image generator');
-      }
+      config.aiTemplates.forEach((template) => {
+        if (template === 'chatbot') {
+          features.push('AI chatbot');
+        } else if (template === 'document-analyzer') {
+          features.push('AI document analyzer');
+        } else if (template === 'semantic-search') {
+          features.push('AI semantic search');
+        } else if (template === 'code-assistant') {
+          features.push('AI code assistant');
+        } else if (template === 'image-generator') {
+          features.push('AI image generator');
+        }
+      });
     }
 
     // Extras

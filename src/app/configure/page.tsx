@@ -255,13 +255,13 @@ export default function ConfigurePage() {
               </div>
             </Link>
 
-            {/* Deploy Now Option */}
+            {/* Deploy Now Option - Optional */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-700"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-zinc-950 text-gray-500">or</span>
+                <span className="px-2 bg-zinc-950 text-gray-500">optional</span>
               </div>
             </div>
 
@@ -270,19 +270,13 @@ export default function ConfigurePage() {
               className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium text-base hover:bg-blue-700 active:bg-blue-800 transition-all"
             >
               <Rocket size={20} />
-              Deploy Now
+              <div className="flex flex-col items-start">
+                <span>Deploy Now (Optional)</span>
+                <span className="text-xs text-blue-200 font-normal">Deploy directly to Vercel, Railway, or Render</span>
+              </div>
             </button>
 
-            {/* GitHub Repository Option */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-zinc-950 text-gray-500">or</span>
-              </div>
-            </div>
-
+            {/* GitHub Repository Option - Optional */}
             <button
               onClick={() => setShowRepoModal(true)}
               disabled={!isAuthenticated}
@@ -293,7 +287,10 @@ export default function ConfigurePage() {
               }`}
             >
               <Github size={20} />
-              Create GitHub Repository
+              <div className="flex flex-col items-start">
+                <span>Create GitHub Repository (Optional)</span>
+                <span className="text-xs text-gray-400 font-normal">Push your code to GitHub</span>
+              </div>
             </button>
 
             {!isAuthenticated && (

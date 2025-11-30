@@ -13,6 +13,9 @@ export interface StepOption {
   label: string;
   icon?: string;
   description?: string;
+  // Extended details for AI templates
+  features?: string[];
+  generatedFiles?: string[];
 }
 
 /**
@@ -29,6 +32,7 @@ export interface StepConfig {
   columns?: number;
   multiSelect?: boolean;
   validation?: (value: any) => boolean | string;
+  conditional?: (config: ScaffoldConfig) => boolean;
 }
 
 /**
@@ -291,6 +295,136 @@ export function getWizardSteps(): StepConfig[] {
         },
       ],
     },
+    
+    // Step 9: AI Templates (multi-select)
+    {
+      id: 'ai-templates',
+      title: 'Enchant with AI Magic',
+      subtitle: 'Add intelligent powers to your creation',
+      type: 'option-grid',
+      field: 'aiTemplates',
+      multiSelect: true,
+      columns: 3,
+      options: [
+        { 
+          value: 'chatbot', 
+          label: 'AI Chatbot',
+          icon: '/icons/ai/chatbot.svg',
+          description: 'Conversational AI with streaming responses',
+          features: [
+            'Real-time streaming responses',
+            'Conversation history',
+            'Markdown rendering',
+            'Copy code blocks',
+          ],
+          generatedFiles: [
+            'src/app/api/chat/route.ts',
+            'src/app/chat/page.tsx',
+          ],
+        },
+        { 
+          value: 'document-analyzer', 
+          label: 'Document Analyzer',
+          icon: '/icons/ai/document-analyzer.svg',
+          description: 'Upload and analyze documents with AI',
+          features: [
+            'File upload support',
+            'Text extraction',
+            'AI-powered analysis',
+            'Summary generation',
+          ],
+          generatedFiles: [
+            'src/app/api/analyze/route.ts',
+            'src/app/analyze/page.tsx',
+          ],
+        },
+        { 
+          value: 'semantic-search', 
+          label: 'Semantic Search',
+          icon: '/icons/ai/semantic-search.svg',
+          description: 'AI-powered search with embeddings',
+          features: [
+            'Vector embeddings',
+            'Semantic similarity',
+            'Intelligent ranking',
+            'Context-aware results',
+          ],
+          generatedFiles: [
+            'src/app/api/search/route.ts',
+            'src/app/search/page.tsx',
+          ],
+        },
+        { 
+          value: 'code-assistant', 
+          label: 'Code Assistant',
+          icon: '/icons/ai/code-assistant.svg',
+          description: 'AI-powered code generation and explanation',
+          features: [
+            'Code generation',
+            'Code explanation',
+            'Syntax highlighting',
+            'Multiple languages',
+          ],
+          generatedFiles: [
+            'src/app/api/code-assistant/route.ts',
+            'src/app/code-assistant/page.tsx',
+          ],
+        },
+        { 
+          value: 'image-generator', 
+          label: 'Image Generator',
+          icon: '/icons/ai/image-generator.svg',
+          description: 'Generate images from text descriptions',
+          features: [
+            'Text-to-image generation',
+            'Style customization',
+            'Image preview',
+            'Download support',
+          ],
+          generatedFiles: [
+            'src/app/api/generate-image/route.ts',
+            'src/app/generate-image/page.tsx',
+          ],
+        },
+      ],
+    },
+    
+    // Step 10: AI Provider (conditional - only shown when aiTemplates.length > 0)
+    {
+      id: 'ai-provider',
+      title: 'Choose your AI Oracle',
+      subtitle: 'Select the source of your AI wisdom',
+      type: 'option-grid',
+      field: 'aiProvider',
+      columns: 2,
+      options: [
+        { 
+          value: 'anthropic', 
+          label: 'Anthropic Claude',
+          icon: '/icons/ai/anthropic.svg',
+          description: 'Claude 3.5 Sonnet and other models'
+        },
+        { 
+          value: 'openai', 
+          label: 'OpenAI',
+          icon: '/icons/ai/openai.svg',
+          description: 'GPT-4 and other OpenAI models'
+        },
+        { 
+          value: 'aws-bedrock', 
+          label: 'AWS Bedrock',
+          icon: '/icons/ai/aws-bedrock.svg',
+          description: 'Multiple AI models via AWS'
+        },
+        { 
+          value: 'gemini', 
+          label: 'Google Gemini',
+          icon: '/icons/ai/gemini.svg',
+          description: 'Gemini Pro and other Google models'
+        },
+      ],
+      conditional: (config) => config.aiTemplates.length > 0,
+    },
   ];
 }
 
@@ -315,4 +449,88 @@ export function getStepById(id: string): StepConfig | undefined {
  */
 export function getTotalSteps(): number {
   return getWizardSteps().length;
+}
+
+/**
+ * Get visible steps based on current configuration
+ * Filters out steps that have a conditional function that returns false
+ */
+export function getVisibleSteps(config: ScaffoldConfig): StepConfig[] {
+  const allSteps = getWizardSteps();
+  return allSteps.filter(step => {
+    // If step has no conditional, it's always visible
+    if (!step.conditional) return true;
+    // Otherwise, check the conditional function
+    return step.conditional(config);
+  });
+}
+
+/**
+ * Get the visible step index for a given absolute step index
+ * Returns the index in the visible steps array, or -1 if the step is not visible
+ */
+export function getVisibleStepIndex(absoluteIndex: number, config: ScaffoldConfig): number {
+  const allSteps = getWizardSteps();
+  const visibleSteps = getVisibleSteps(config);
+  const targetStep = allSteps[absoluteIndex];
+  
+  if (!targetStep) return -1;
+  
+  return visibleSteps.findIndex(step => step.id === targetStep.id);
+}
+
+/**
+ * Get the absolute step index for a given visible step index
+ * Returns the index in the all steps array
+ */
+export function getAbsoluteStepIndex(visibleIndex: number, config: ScaffoldConfig): number {
+  const allSteps = getWizardSteps();
+  const visibleSteps = getVisibleSteps(config);
+  const targetStep = visibleSteps[visibleIndex];
+  
+  if (!targetStep) return -1;
+  
+  return allSteps.findIndex(step => step.id === targetStep.id);
+}
+
+/**
+ * Get the next visible step index from the current absolute index
+ * Returns -1 if there are no more visible steps
+ */
+export function getNextVisibleStepIndex(currentAbsoluteIndex: number, config: ScaffoldConfig): number {
+  const allSteps = getWizardSteps();
+  
+  // Start from the next step
+  for (let i = currentAbsoluteIndex + 1; i < allSteps.length; i++) {
+    const step = allSteps[i];
+    if (!step) continue;
+    
+    // Check if this step is visible
+    if (!step.conditional || step.conditional(config)) {
+      return i;
+    }
+  }
+  
+  return -1; // No more visible steps
+}
+
+/**
+ * Get the previous visible step index from the current absolute index
+ * Returns -1 if there are no previous visible steps
+ */
+export function getPreviousVisibleStepIndex(currentAbsoluteIndex: number, config: ScaffoldConfig): number {
+  const allSteps = getWizardSteps();
+  
+  // Start from the previous step
+  for (let i = currentAbsoluteIndex - 1; i >= 0; i--) {
+    const step = allSteps[i];
+    if (!step) continue;
+    
+    // Check if this step is visible
+    if (!step.conditional || step.conditional(config)) {
+      return i;
+    }
+  }
+  
+  return -1; // No previous visible steps
 }

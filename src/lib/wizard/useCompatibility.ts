@@ -19,6 +19,10 @@ export interface OptionWithCompatibility extends StepOption {
   icon?: string;
   description?: string;
   
+  // Extended details for AI templates
+  features?: string[];
+  generatedFiles?: string[];
+  
   // Compatibility state
   isDisabled: boolean;
   incompatibilityReason?: string;

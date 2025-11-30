@@ -135,29 +135,32 @@ export function getDirectoryStructure(
   }
 
   // Add AI template directories (only for projects with frontend)
-  if (!isExpressOnly && config.aiTemplate && config.aiTemplate !== 'none') {
+  // Use aiTemplates if available (new format), otherwise fall back to aiTemplate (legacy)
+  const configWithFramework = config as ScaffoldConfigWithFramework;
+  const aiTemplate = configWithFramework.aiTemplate;
+  if (!isExpressOnly && aiTemplate && aiTemplate !== 'none') {
     // Add specific directories based on AI template
-    if (config.aiTemplate === 'chatbot') {
+    if (aiTemplate === 'chatbot') {
       dirs.push(
         { path: `${basePath}/app/api/chat` },
         { path: `${basePath}/app/chat` }
       );
-    } else if (config.aiTemplate === 'document-analyzer') {
+    } else if (aiTemplate === 'document-analyzer') {
       dirs.push(
         { path: `${basePath}/app/api/analyze` },
         { path: `${basePath}/app/analyze` }
       );
-    } else if (config.aiTemplate === 'semantic-search') {
+    } else if (aiTemplate === 'semantic-search') {
       dirs.push(
         { path: `${basePath}/app/api/search` },
         { path: `${basePath}/app/search` }
       );
-    } else if (config.aiTemplate === 'code-assistant') {
+    } else if (aiTemplate === 'code-assistant') {
       dirs.push(
         { path: `${basePath}/app/api/code-assistant` },
         { path: `${basePath}/app/code-assistant` }
       );
-    } else if (config.aiTemplate === 'image-generator') {
+    } else if (aiTemplate === 'image-generator') {
       dirs.push(
         { path: `${basePath}/app/api/generate-image` },
         { path: `${basePath}/app/generate-image` }

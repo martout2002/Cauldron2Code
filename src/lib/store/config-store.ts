@@ -26,8 +26,8 @@ const defaultConfig: ScaffoldConfig = {
   shadcn: true,
   colorScheme: 'purple',
   deployment: ['vercel'],
-  aiTemplate: 'none',
-  aiProvider: 'anthropic',
+  aiTemplates: [],
+  aiProvider: undefined,
   extras: {
     docker: false,
     githubActions: false,
@@ -148,6 +148,32 @@ export const useConfigStore = create<ConfigState>()(
             );
           }
           
+          // Clear AI templates if framework becomes incompatible (Requirement 4.3)
+          // Only clear if framework/structure changed AND it's now incompatible
+          if (updates.frontendFramework !== undefined || updates.projectStructure !== undefined) {
+            // Check if AI templates were compatible before
+            const wasCompatible = 
+              state.config.frontendFramework === 'nextjs' ||
+              state.config.projectStructure === 'fullstack-monorepo';
+            
+            // Check if AI templates are compatible now
+            const isCompatible = 
+              newConfig.frontendFramework === 'nextjs' ||
+              newConfig.projectStructure === 'fullstack-monorepo';
+            
+            // Only clear if we went from compatible to incompatible
+            if (wasCompatible && !isCompatible) {
+              // Clear templates if any exist
+              if (newConfig.aiTemplates.length > 0) {
+                newConfig.aiTemplates = [];
+              }
+              // Always clear provider when becoming incompatible
+              if (newConfig.aiProvider !== undefined) {
+                newConfig.aiProvider = undefined;
+              }
+            }
+          }
+          
           return {
             config: newConfig,
           };
@@ -156,7 +182,24 @@ export const useConfigStore = create<ConfigState>()(
     }),
     {
       name: 'cauldron2code-config',
-      version: 1,
+      version: 2,
+      migrate: (persistedState: any, version: number) => {
+        // Migration from version 1 to version 2: aiTemplate -> aiTemplates
+        if (version < 2) {
+          const state = persistedState as any;
+          if (state?.config) {
+            // Migrate singular aiTemplate to array aiTemplates
+            if (state.config.aiTemplate && state.config.aiTemplate !== 'none') {
+              state.config.aiTemplates = [state.config.aiTemplate];
+            } else {
+              state.config.aiTemplates = [];
+            }
+            // Remove old aiTemplate field
+            delete state.config.aiTemplate;
+          }
+        }
+        return persistedState;
+      },
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

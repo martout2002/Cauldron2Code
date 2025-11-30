@@ -43,13 +43,7 @@ export interface ScaffoldConfig {
   deployment: ('vercel' | 'railway' | 'render')[];
 
   // AI Templates
-  aiTemplate?:
-    | 'chatbot'
-    | 'document-analyzer'
-    | 'semantic-search'
-    | 'code-assistant'
-    | 'image-generator'
-    | 'none';
+  aiTemplates: Array<'chatbot' | 'document-analyzer' | 'semantic-search' | 'code-assistant' | 'image-generator'>;
   aiProvider?: 'anthropic' | 'openai' | 'aws-bedrock' | 'gemini';
 
   // Tooling extras
@@ -167,23 +161,24 @@ export const scaffoldConfigSchema = z.object({
     message: 'Invalid color scheme',
   }),
 
-  // Deployment
+  // Deployment (optional - users can deploy later)
   deployment: z
     .array(z.enum(['vercel', 'railway', 'render']))
-    .min(1, 'At least one deployment target is required')
-    .max(3, 'Maximum 3 deployment targets allowed'),
+    .max(3, 'Maximum 3 deployment targets allowed')
+    .default([]),
 
   // AI Templates
-  aiTemplate: z
-    .enum([
-      'chatbot',
-      'document-analyzer',
-      'semantic-search',
-      'code-assistant',
-      'image-generator',
-      'none',
-    ])
-    .optional(),
+  aiTemplates: z
+    .array(
+      z.enum([
+        'chatbot',
+        'document-analyzer',
+        'semantic-search',
+        'code-assistant',
+        'image-generator',
+      ])
+    )
+    .default([]),
   aiProvider: z
     .enum(['anthropic', 'openai', 'aws-bedrock', 'gemini'])
     .optional(),
@@ -260,6 +255,7 @@ export function getFrameworkType(config: ScaffoldConfig): 'next' | 'express' | '
  */
 export type ScaffoldConfigWithFramework = ScaffoldConfig & {
   framework: 'next' | 'express' | 'monorepo';
+  aiTemplate?: 'chatbot' | 'document-analyzer' | 'semantic-search' | 'code-assistant' | 'image-generator' | 'none';
 };
 
 /**
@@ -269,6 +265,26 @@ export function addFrameworkProperty(config: ScaffoldConfig): ScaffoldConfigWith
   return {
     ...config,
     framework: getFrameworkType(config),
+    aiTemplate: config.aiTemplates.length > 0 ? config.aiTemplates[0] : 'none',
+  };
+}
+
+/**
+ * Extended config type with legacy aiTemplate property for backward compatibility
+ * This allows existing generator code to work without changes
+ */
+export type ScaffoldConfigWithLegacyAI = ScaffoldConfig & {
+  aiTemplate?: 'chatbot' | 'document-analyzer' | 'semantic-search' | 'code-assistant' | 'image-generator' | 'none';
+};
+
+/**
+ * Add the legacy aiTemplate property to config for backward compatibility
+ * Converts aiTemplates array to singular aiTemplate field
+ */
+export function addLegacyAITemplate(config: ScaffoldConfig): ScaffoldConfigWithLegacyAI {
+  return {
+    ...config,
+    aiTemplate: config.aiTemplates.length > 0 ? config.aiTemplates[0] : 'none',
   };
 }
 

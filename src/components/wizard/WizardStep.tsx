@@ -33,11 +33,15 @@ export function WizardStep({
   // Get the current value for this step's field
   const currentValue = config[step.field];
   
+  // Check if this step should be rendered based on conditional
+  // Requirements: 2.1, 2.4 - conditional step rendering
+  const shouldRender = !step.conditional || step.conditional(config);
+  
   // Evaluate compatibility when step loads or config changes
   // Requirements: 1.3, 8.4
   useEffect(() => {
-    // Only evaluate for option-grid steps
-    if (step.type === 'option-grid' && step.options) {
+    // Only evaluate for option-grid steps that should be rendered
+    if (shouldRender && step.type === 'option-grid' && step.options) {
       // Use requestAnimationFrame to ensure non-blocking evaluation
       // Requirement: 8.5 - non-blocking step transitions
       requestAnimationFrame(() => {
@@ -46,7 +50,13 @@ export function WizardStep({
         getCompatibleOptions(step.id, step.options || []);
       });
     }
-  }, [step.id, step.type, step.options, getCompatibleOptions]);
+  }, [step.id, step.type, step.options, getCompatibleOptions, shouldRender]);
+  
+  // If step should not be rendered, return null
+  // This handles the case where a step becomes conditional after being displayed
+  if (!shouldRender) {
+    return null;
+  }
 
   // Handle updates for different field types
   const handleUpdate = (value: string | string[]) => {

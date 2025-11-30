@@ -218,7 +218,7 @@ function calculateBundleSize(config: ScaffoldConfig): string {
   if (config.database !== 'none') size += 0.4;
   if (config.api === 'trpc') size += 0.3;
   if (config.api === 'graphql') size += 0.6;
-  if (config.aiTemplate && config.aiTemplate !== 'none') size += 0.8;
+  if (config.aiTemplates.length > 0) size += 0.8;
   if (config.extras.redis) size += 0.2;
 
   return `~${size.toFixed(1)} MB`;
@@ -230,7 +230,7 @@ function calculateGenerationTime(config: ScaffoldConfig): string {
   if (config.projectStructure === 'fullstack-monorepo') time += 8; // Monorepo
   if (config.auth !== 'none') time += 3;
   if (config.database !== 'none') time += 4;
-  if (config.aiTemplate && config.aiTemplate !== 'none') time += 5;
+  if (config.aiTemplates.length > 0) time += 5;
   if (config.deployment.length > 1) time += config.deployment.length * 2;
   if (config.extras.docker) time += 3;
   if (config.extras.githubActions) time += 2;
@@ -270,8 +270,8 @@ function generateTechSummary(config: ScaffoldConfig): TechSummaryItemProps[] {
     });
   }
 
-  if (config.aiTemplate && config.aiTemplate !== 'none') {
-    summary.push({ category: 'AI Template', value: config.aiTemplate });
+  if (config.aiTemplates.length > 0) {
+    summary.push({ category: 'AI Templates', value: config.aiTemplates.join(', ') });
   }
 
   if (config.deployment.length > 0) {
@@ -390,29 +390,31 @@ function generateFileList(config: ScaffoldConfig): string[] {
   }
 
   // AI template files
-  if (config.aiTemplate && config.aiTemplate !== 'none') {
-    const aiTemplate = getAITemplateById(config.aiTemplate);
-    if (aiTemplate) {
-      // Add API routes (remove 'src/' prefix to match other file paths)
-      aiTemplate.generatedFiles.apiRoutes.forEach((route) => {
-        const normalizedPath = route.startsWith('src/') ? route.substring(4) : route;
-        files.push(normalizedPath);
-      });
-      
-      // Add pages (remove 'src/' prefix to match other file paths)
-      aiTemplate.generatedFiles.pages.forEach((page) => {
-        const normalizedPath = page.startsWith('src/') ? page.substring(4) : page;
-        files.push(normalizedPath);
-      });
-      
-      // Add components if any (remove 'src/' prefix to match other file paths)
-      if (aiTemplate.generatedFiles.components) {
-        aiTemplate.generatedFiles.components.forEach((component) => {
-          const normalizedPath = component.startsWith('src/') ? component.substring(4) : component;
+  if (config.aiTemplates.length > 0) {
+    config.aiTemplates.forEach((templateId) => {
+      const aiTemplate = getAITemplateById(templateId);
+      if (aiTemplate) {
+        // Add API routes (remove 'src/' prefix to match other file paths)
+        aiTemplate.generatedFiles.apiRoutes.forEach((route) => {
+          const normalizedPath = route.startsWith('src/') ? route.substring(4) : route;
           files.push(normalizedPath);
         });
+        
+        // Add pages (remove 'src/' prefix to match other file paths)
+        aiTemplate.generatedFiles.pages.forEach((page) => {
+          const normalizedPath = page.startsWith('src/') ? page.substring(4) : page;
+          files.push(normalizedPath);
+        });
+        
+        // Add components if any (remove 'src/' prefix to match other file paths)
+        if (aiTemplate.generatedFiles.components) {
+          aiTemplate.generatedFiles.components.forEach((component) => {
+            const normalizedPath = component.startsWith('src/') ? component.substring(4) : component;
+            files.push(normalizedPath);
+          });
+        }
       }
-    }
+    });
   }
 
   // Deployment files
@@ -449,7 +451,7 @@ function generateEnvVars(config: ScaffoldConfig): EnvVarItemProps[] {
   const envVars: EnvVarItemProps[] = [];
 
   // Add AI provider API key if AI template is selected
-  if (config.aiTemplate && config.aiTemplate !== 'none' && config.aiProvider) {
+  if (config.aiTemplates.length > 0 && config.aiProvider) {
     const provider = getAIProviderById(config.aiProvider);
     if (provider) {
       envVars.push({

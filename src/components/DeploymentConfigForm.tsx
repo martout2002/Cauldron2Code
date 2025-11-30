@@ -152,7 +152,7 @@ export function DeploymentConfigForm({
       }
 
       // AI template variables
-      if (scaffoldConfig.aiTemplate && scaffoldConfig.aiTemplate !== 'none') {
+      if (scaffoldConfig.aiTemplates.length > 0) {
         if (scaffoldConfig.aiProvider === 'anthropic') {
           detected.push({
             key: 'ANTHROPIC_API_KEY',

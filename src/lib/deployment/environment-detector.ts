@@ -268,7 +268,7 @@ export class EnvironmentVariableDetector {
   private detectAIVariables(config: ScaffoldConfig): EnvironmentVariable[] {
     const vars: EnvironmentVariable[] = [];
 
-    if (!config.aiTemplate || config.aiTemplate === 'none') {
+    if (config.aiTemplates.length === 0) {
       return vars;
     }
 

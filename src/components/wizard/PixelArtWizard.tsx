@@ -3,7 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWizardStore } from '@/lib/wizard/wizard-state';
 import { useConfigStore } from '@/lib/store/config-store';
-import { getWizardSteps } from '@/lib/wizard/wizard-steps';
+import { 
+  getWizardSteps, 
+  getVisibleSteps, 
+  getNextVisibleStepIndex, 
+  getPreviousVisibleStepIndex,
+  getVisibleStepIndex 
+} from '@/lib/wizard/wizard-steps';
 import { validateStep } from '@/lib/wizard/wizard-validation';
 import { preloadCriticalAssets, preloadNextStep } from '@/lib/wizard/asset-preloader';
 import { WizardBackground } from './WizardBackground';
@@ -21,9 +27,7 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
   // Wizard state
   const {
     currentStep,
-    totalSteps,
-    nextStep,
-    previousStep,
+    goToStep,
     isTransitioning,
     setIsTransitioning,
     markStepComplete,
@@ -41,7 +45,13 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
 
   // Get wizard steps configuration
   const steps = getWizardSteps();
+  const visibleSteps = getVisibleSteps(config);
   const currentStepConfig = steps[currentStep];
+  
+  // Calculate visible step number and total visible steps for display
+  const currentVisibleStepIndex = getVisibleStepIndex(currentStep, config);
+  const totalVisibleSteps = visibleSteps.length;
+  const displayStepNumber = currentVisibleStepIndex + 1;
 
   // Wait for hydration before rendering
   const shouldBeReady = wizardHydrated && configHydrated;
@@ -220,8 +230,11 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     // Mark step as complete
     markStepComplete(currentStep);
 
-    // Check if this is the last step
-    if (currentStep === totalSteps - 1) {
+    // Get next visible step
+    const nextStepIndex = getNextVisibleStepIndex(currentStep, config);
+    
+    // Check if this is the last visible step
+    if (nextStepIndex === -1) {
       // Trigger generation
       if (onGenerate) {
         onGenerate();
@@ -304,8 +317,8 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     // Wait for fade-out animation
     await new Promise((resolve) => setTimeout(resolve, 150));
 
-    // Move to next step
-    nextStep();
+    // Move to next visible step
+    goToStep(nextStepIndex);
 
     // Wait a bit before fade-in
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -318,22 +331,29 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     setValidationError(null);
 
     // Announce step change to screen readers
-    announceStepChange(currentStep + 2, totalSteps);
+    const nextVisibleIndex = getVisibleStepIndex(nextStepIndex, config);
+    announceStepChange(nextVisibleIndex + 1, totalVisibleSteps);
   }, [
     currentStep,
-    totalSteps,
     config,
     currentStepConfig,
     isTransitioning,
-    nextStep,
+    goToStep,
     markStepComplete,
     onGenerate,
     animateOptionToCauldron,
+    totalVisibleSteps,
   ]);
 
   // Handle back step navigation
   const handleBack = useCallback(async () => {
     if (isTransitioning || currentStep === 0) return;
+
+    // Get previous visible step
+    const prevStepIndex = getPreviousVisibleStepIndex(currentStep, config);
+    
+    // If no previous visible step, don't navigate
+    if (prevStepIndex === -1) return;
 
     // Animate transition
     setIsTransitioning(true);
@@ -342,8 +362,8 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     // Wait for fade-out animation
     await new Promise((resolve) => setTimeout(resolve, 150));
 
-    // Move to previous step
-    previousStep();
+    // Move to previous visible step
+    goToStep(prevStepIndex);
 
     // Wait a bit before fade-in
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -356,13 +376,14 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
     setValidationError(null);
 
     // Announce step change to screen readers
-    announceStepChange(currentStep, totalSteps);
-  }, [currentStep, totalSteps, isTransitioning, previousStep]);
+    const prevVisibleIndex = getVisibleStepIndex(prevStepIndex, config);
+    announceStepChange(prevVisibleIndex + 1, totalVisibleSteps);
+  }, [currentStep, config, isTransitioning, goToStep, totalVisibleSteps]);
 
   // Check if navigation is allowed
-  const canGoBack = currentStep > 0 && !isTransitioning;
+  const canGoBack = getPreviousVisibleStepIndex(currentStep, config) !== -1 && !isTransitioning;
   const canGoNext = !isTransitioning && !validationError;
-  const isLastStep = currentStep === totalSteps - 1;
+  const isLastStep = getNextVisibleStepIndex(currentStep, config) === -1;
 
   // Keyboard navigation
   useEffect(() => {
@@ -458,8 +479,8 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
           {currentStepConfig && (
             <WizardStep
               step={currentStepConfig}
-              stepNumber={currentStep + 1}
-              totalSteps={totalSteps}
+              stepNumber={displayStepNumber}
+              totalSteps={totalVisibleSteps}
               isAnimating={isAnimating}
               config={config}
               onUpdate={handleConfigUpdate}
@@ -483,7 +504,7 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
       <PersistenceIndicator showDebugInfo={showDebugInfo} />
 
       {/* Progress bar - shows current step */}
-      <PixelProgressBar currentStep={currentStep} totalSteps={totalSteps} />
+      <PixelProgressBar currentStep={currentVisibleStepIndex} totalSteps={totalVisibleSteps} />
     </div>
   );
 }

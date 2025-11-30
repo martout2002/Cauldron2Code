@@ -22,7 +22,7 @@ function getCacheKey(config: ScaffoldConfig): string {
     database: config.database,
     api: config.api,
     deployment: config.deployment,
-    aiTemplate: config.aiTemplate,
+    aiTemplates: config.aiTemplates,
   };
   return JSON.stringify(relevantFields);
 }

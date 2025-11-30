@@ -77,7 +77,7 @@ export class ConfigurationAnalyzer {
    * Detect if AI features are required
    */
   private detectAI(config: ScaffoldConfig): boolean {
-    return config.aiTemplate !== undefined && config.aiTemplate !== 'none';
+    return config.aiTemplates.length > 0;
   }
 
   /**
@@ -119,7 +119,7 @@ export class ConfigurationAnalyzer {
     }
 
     // AI environment variables
-    if (config.aiTemplate && config.aiTemplate !== 'none') {
+    if (config.aiTemplates.length > 0) {
       vars.push(...this.getAIEnvVars(config.aiProvider));
     }
 

@@ -209,6 +209,84 @@ export function validateExtras(
 }
 
 /**
+ * Validate AI template selection
+ * AI templates are optional, so no validation is required
+ * Requirements: 4.1, 4.4
+ */
+export function validateAITemplateStep(
+  aiTemplates: ScaffoldConfig['aiTemplates']
+): ValidationResult {
+  // AI templates are optional - empty array is valid
+  if (!Array.isArray(aiTemplates)) {
+    return {
+      isValid: false,
+      error: 'Invalid AI templates configuration',
+    };
+  }
+
+  // Validate each template is a valid option
+  const validTemplates = [
+    'chatbot',
+    'document-analyzer',
+    'semantic-search',
+    'code-assistant',
+    'image-generator',
+  ];
+
+  for (const template of aiTemplates) {
+    if (!validTemplates.includes(template)) {
+      return {
+        isValid: false,
+        error: `Invalid AI template: ${template}`,
+      };
+    }
+  }
+
+  return { isValid: true };
+}
+
+/**
+ * Validate AI provider selection
+ * Provider is required when AI templates are selected
+ * Requirements: 4.1, 4.4
+ */
+export function validateAIProviderStep(
+  config: ScaffoldConfig
+): ValidationResult {
+  const { aiTemplates, aiProvider } = config;
+
+  // If no templates selected, provider validation is not needed
+  if (!aiTemplates || aiTemplates.length === 0) {
+    return { isValid: true };
+  }
+
+  // If templates are selected, provider is required
+  if (!aiProvider) {
+    return {
+      isValid: false,
+      error: 'Please select an AI provider for your templates',
+    };
+  }
+
+  // Validate provider is a valid option
+  const validProviders: ScaffoldConfig['aiProvider'][] = [
+    'anthropic',
+    'openai',
+    'aws-bedrock',
+    'gemini',
+  ];
+
+  if (!validProviders.includes(aiProvider)) {
+    return {
+      isValid: false,
+      error: `Invalid AI provider: ${aiProvider}`,
+    };
+  }
+
+  return { isValid: true };
+}
+
+/**
  * Validate a specific wizard step based on its index
  */
 export function validateStep(
@@ -257,6 +335,12 @@ export function validateStep(
     case 'extras':
       return validateExtras(value as ScaffoldConfig['extras']);
 
+    case 'ai-templates':
+      return validateAITemplateStep(value as ScaffoldConfig['aiTemplates']);
+
+    case 'ai-provider':
+      return validateAIProviderStep(config);
+
     default:
       return { isValid: true };
   }
@@ -267,7 +351,7 @@ export function validateStep(
  * Returns true if all steps are valid
  */
 export function validateAllSteps(config: ScaffoldConfig): ValidationResult {
-  const totalSteps = 8;
+  const totalSteps = 10; // Updated to include AI templates and AI provider steps
 
   for (let i = 0; i < totalSteps; i++) {
     const result = validateStep(i, config);

@@ -10,6 +10,9 @@ interface Option {
   // Compatibility state - Requirements: 1.1, 1.2
   isDisabled?: boolean;
   incompatibilityReason?: string;
+  // Extended details for AI templates - Requirements: 1.2, 3.2
+  features?: string[];
+  generatedFiles?: string[];
 }
 
 interface OptionGridProps {
@@ -225,7 +228,7 @@ export function OptionGrid({
                 )}
               </button>
 
-              {/* Tooltip popup - Requirements: 2.1, 2.2, 2.3, 2.5 */}
+              {/* Tooltip popup - Requirements: 2.1, 2.2, 2.3, 2.5, AI Templates: 1.2, 3.2 */}
               {shouldShowTooltip && (
                 <div 
                   className="absolute top-full mt-2 left-1/2 -translate-x-1/2 z-50 tooltip-fade-in pointer-events-none"
@@ -235,19 +238,53 @@ export function OptionGrid({
                   }}
                 >
                   <div className={`
-                    border-2 rounded-lg px-4 py-3 shadow-xl max-w-xs whitespace-nowrap
+                    border-2 rounded-lg px-4 py-3 shadow-xl whitespace-normal
                     ${disabled 
-                      ? 'bg-red-900 border-red-700' // Incompatibility tooltip styling
-                      : 'bg-gray-900 border-gray-700' // Description tooltip styling
+                      ? 'bg-red-900 border-red-700 max-w-xs' // Incompatibility tooltip styling
+                      : option.features || option.generatedFiles 
+                        ? 'bg-gray-900 border-gray-700 max-w-sm' // Extended tooltip for AI templates
+                        : 'bg-gray-900 border-gray-700 max-w-xs' // Standard description tooltip
                     }
                   `}>
-                    <p className="text-sm text-gray-200 text-center leading-relaxed">
-                      {/* Show incompatibility reason for disabled options, description for enabled - Requirement: 2.5 */}
-                      {disabled && option.incompatibilityReason 
-                        ? option.incompatibilityReason 
-                        : option.description
-                      }
-                    </p>
+                    {/* Show incompatibility reason for disabled options - Requirement: 2.5 */}
+                    {disabled && option.incompatibilityReason ? (
+                      <p className="text-sm text-gray-200 text-center leading-relaxed">
+                        {option.incompatibilityReason}
+                      </p>
+                    ) : (
+                      <>
+                        {/* Description */}
+                        {option.description && (
+                          <p className="text-sm text-gray-200 text-center leading-relaxed mb-2">
+                            {option.description}
+                          </p>
+                        )}
+                        
+                        {/* Features list for AI templates - Requirements: 1.2, 3.2 */}
+                        {option.features && option.features.length > 0 && (
+                          <div className="mt-2 pt-2 border-t border-gray-700">
+                            <p className="text-xs font-semibold text-gray-300 mb-1">Features:</p>
+                            <ul className="text-xs text-gray-300 space-y-0.5 list-disc list-inside">
+                              {option.features.map((feature, idx) => (
+                                <li key={idx}>{feature}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        
+                        {/* Generated files for AI templates - Requirements: 1.2, 3.2 */}
+                        {option.generatedFiles && option.generatedFiles.length > 0 && (
+                          <div className="mt-2 pt-2 border-t border-gray-700">
+                            <p className="text-xs font-semibold text-gray-300 mb-1">Generated Files:</p>
+                            <ul className="text-xs text-gray-300 space-y-0.5 list-disc list-inside">
+                              {option.generatedFiles.map((file, idx) => (
+                                <li key={idx} className="font-mono">{file}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </>
+                    )}
                     {/* Arrow pointing up */}
                     <div className={`
                       absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45

@@ -288,7 +288,7 @@ export class GuideGenerator {
       scaffoldConfig.database,
       scaffoldConfig.auth,
       scaffoldConfig.projectStructure,
-      scaffoldConfig.aiTemplate || 'none',
+      scaffoldConfig.aiTemplates.length > 0 ? scaffoldConfig.aiTemplates.join(',') : 'none',
     ].join('-');
 
     // Add timestamp and counter for uniqueness
@@ -333,7 +333,7 @@ export class GuideGenerator {
         husky: false,
         redis: requirements.requiresRedis,
       },
-      aiTemplate: requirements.requiresAI ? 'chatbot' : undefined,
+      aiTemplates: requirements.requiresAI ? ['chatbot'] : [],
       aiProvider: requirements.requiresAI ? 'anthropic' : undefined,
     };
 

@@ -26,7 +26,7 @@ export default function PostDeploymentChecklistDemo() {
     shadcn: true,
     colorScheme: 'purple',
     deployment: ['vercel'],
-    aiTemplate: 'chatbot',
+    aiTemplates: ['chatbot'],
     aiProvider: 'anthropic',
     extras: {
       docker: false,
