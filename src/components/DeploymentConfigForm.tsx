@@ -212,7 +212,7 @@ export function DeploymentConfigForm({
   const checkProjectNameAvailability = async (name: string) => {
     setIsCheckingName(true);
     setErrors((prev) => {
-      const { projectName, ...rest } = prev;
+      const { projectName: _projectName, ...rest } = prev;
       return rest;
     });
 
@@ -244,7 +244,7 @@ export function DeploymentConfigForm({
 
     // Clear error for this field
     setErrors((prev) => {
-      const { [key]: _, ...rest } = prev;
+      const { [key]: _removed, ...rest } = prev;
       return rest;
     });
   };

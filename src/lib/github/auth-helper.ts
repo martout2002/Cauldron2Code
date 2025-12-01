@@ -17,6 +17,7 @@ export class GitHubAuthHelper {
 
   /**
    * Get current authenticated user
+   * Handles token expiration gracefully by clearing invalid tokens
    */
   static async getCurrentUser(): Promise<GitHubUser | null> {
     const encryptedToken = await CookieManager.getAuthToken();
@@ -31,6 +32,7 @@ export class GitHubAuthHelper {
       return user;
     } catch (error) {
       // Token is invalid or expired, clear cookies
+      console.warn('GitHub token validation failed, clearing session:', error);
       await CookieManager.clearAll();
       return null;
     }
@@ -38,6 +40,7 @@ export class GitHubAuthHelper {
 
   /**
    * Get decrypted access token for API calls
+   * Handles token expiration gracefully by clearing invalid tokens
    */
   static async getAccessToken(): Promise<string | null> {
     const encryptedToken = await CookieManager.getAuthToken();
@@ -50,6 +53,7 @@ export class GitHubAuthHelper {
       return githubOAuthService.decryptToken(encryptedToken);
     } catch (error) {
       // Token decryption failed, clear cookies
+      console.warn('GitHub token decryption failed, clearing session:', error);
       await CookieManager.clearAll();
       return null;
     }

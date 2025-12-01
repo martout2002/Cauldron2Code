@@ -55,8 +55,9 @@ export interface ScaffoldConfig {
     husky: boolean;
   };
 
-  // GitHub Authentication
-  githubAuth?: boolean;
+  // GitHub Integration Settings
+  githubEnabled?: boolean;
+  githubRepoPrivate?: boolean;
 }
 
 // ============================================================================
@@ -194,6 +195,10 @@ export const scaffoldConfigSchema = z.object({
     prettier: z.boolean(),
     husky: z.boolean(),
   }),
+
+  // GitHub Integration Settings (optional with defaults)
+  githubEnabled: z.boolean().optional().default(false),
+  githubRepoPrivate: z.boolean().optional().default(false),
 });
 
 // ============================================================================

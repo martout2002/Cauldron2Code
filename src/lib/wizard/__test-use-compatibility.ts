@@ -61,8 +61,8 @@ console.log('Sample option:', testOption);
 
 console.log('\n=== Test 2: Verify UseCompatibilityResult interface ===');
 // This is a type-level check - if it compiles, the interface is correct
-const mockResult: UseCompatibilityResult = {
-  isOptionCompatible: (stepId: string, optionValue: string) => {
+const _mockResult: UseCompatibilityResult = {
+  isOptionCompatible: (_stepId: string, _optionValue: string) => {
     return { isCompatible: true };
   },
   getCompatibleOptions: (stepId: string, options: StepOption[]) => {

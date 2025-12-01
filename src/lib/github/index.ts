@@ -16,3 +16,5 @@ export { GitOperationsService } from './git-operations';
 export type { GeneratedFile, GitAuthor, GitTree, GitBlob, GitCommit, GitReference } from './git-operations';
 
 export { GitHubRateLimiter } from './rate-limiter';
+
+export { sanitizeRepoName, isValidRepoName, generateUniqueRepoName } from './repo-name-sanitizer';

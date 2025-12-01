@@ -135,12 +135,7 @@ export function WizardStep({
         )}
 
         {step.type === 'custom' && step.id === 'github-auth' && (
-          <GitHubAuthStep 
-            onAuthenticate={() => {
-              // Trigger OAuth flow
-              window.location.href = '/api/auth/github';
-            }}
-          />
+          <GitHubAuthStep />
         )}
       </div>
     </section>

@@ -3,7 +3,7 @@
  * Verifies that the wizard correctly skips conditional steps during navigation
  */
 
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import { 
   getWizardSteps, 
   getVisibleSteps, 
@@ -100,7 +100,6 @@ describe('Wizard Conditional Navigation Integration', () => {
     it('should navigate backward skipping AI provider when no templates', () => {
       const config = createConfig({ aiTemplates: [] });
       const allSteps = getWizardSteps();
-      const visibleSteps = getVisibleSteps(config);
       
       // Start from the last VISIBLE step (not the absolute last step)
       // Find the AI templates step and start from there

@@ -109,7 +109,7 @@ export class GitHubRepositoryService {
     try {
       // Validate name format first
       this.validateRepositoryName(repoName);
-    } catch (error) {
+    } catch (_error) {
       return {
         available: false,
         suggestions: this.generateNameSuggestions(repoName),

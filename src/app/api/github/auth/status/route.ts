@@ -3,7 +3,8 @@ import { GitHubAuthHelper } from '@/lib/github/auth-helper';
 
 /**
  * GET /api/github/auth/status
- * Checks GitHub authentication status
+ * Checks GitHub authentication status and validates token
+ * Handles token expiration gracefully by clearing invalid sessions
  */
 export async function GET() {
   try {
@@ -13,6 +14,19 @@ export async function GET() {
       return NextResponse.json({
         authenticated: false,
         user: null,
+      });
+    }
+
+    // Validate token by attempting to get current user
+    // This will clear the session if the token is expired or invalid
+    const currentUser = await GitHubAuthHelper.getCurrentUser();
+    
+    if (!currentUser) {
+      // Token was invalid or expired, session has been cleared
+      return NextResponse.json({
+        authenticated: false,
+        user: null,
+        expired: true,
       });
     }
 

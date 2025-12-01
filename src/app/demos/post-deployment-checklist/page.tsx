@@ -35,6 +35,8 @@ export default function PostDeploymentChecklistDemo() {
       prettier: true,
       husky: false,
     },
+    githubEnabled: false,
+    githubRepoPrivate: false,
   };
 
   const sampleDeployment: Deployment = {

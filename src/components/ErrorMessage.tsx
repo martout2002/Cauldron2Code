@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertCircle, ExternalLink, RefreshCw, HelpCircle } from 'lucide-react';
+import { AlertCircle, ExternalLink, RefreshCw, HelpCircle, Download } from 'lucide-react';
 
 interface ErrorMessageProps {
   title: string;
@@ -8,6 +8,8 @@ interface ErrorMessageProps {
   suggestions?: string[];
   documentationLink?: string;
   onRetry?: () => void;
+  onFallback?: () => void;
+  fallbackLabel?: string;
   className?: string;
 }
 
@@ -17,30 +19,36 @@ export function ErrorMessage({
   suggestions = [],
   documentationLink,
   onRetry,
+  onFallback,
+  fallbackLabel = 'Download ZIP Instead',
   className = '',
 }: ErrorMessageProps) {
   return (
     <div
-      className={`bg-red-50 border-2 border-red-200 rounded-lg p-4 md:p-6 ${className}`}
+      className={`bg-red-900/20 border-3 border-red-500 rounded-lg p-6 md:p-8 shadow-pixel-glow animate-in fade-in slide-in-from-bottom-4 duration-500 ${className}`}
       role="alert"
       aria-live="assertive"
     >
-      <div className="flex items-start gap-3">
-        <AlertCircle className="text-red-600 shrink-0 mt-0.5" size={24} />
+      <div className="flex items-start gap-4">
+        <AlertCircle className="text-red-400 shrink-0 mt-1" size={32} />
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-red-900 mb-2">{title}</h3>
-          <p className="text-sm text-red-800 mb-4">{message}</p>
+          <h3 className="font-pixelify text-xl md:text-2xl font-bold text-red-400 mb-3" style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}>
+            {title}
+          </h3>
+          <p className="font-pixelify text-base md:text-lg text-red-200 mb-5 leading-relaxed">
+            {message}
+          </p>
 
           {suggestions.length > 0 && (
-            <div className="mb-4">
-              <h4 className="text-sm font-semibold text-red-900 mb-2 flex items-center gap-2">
-                <HelpCircle size={16} />
+            <div className="mb-6 bg-red-950/40 border-2 border-red-700/50 rounded-lg p-4">
+              <h4 className="font-pixelify text-base font-semibold text-red-300 mb-3 flex items-center gap-2">
+                <HelpCircle size={20} />
                 How to fix this:
               </h4>
               <ul className="space-y-2">
                 {suggestions.map((suggestion, index) => (
-                  <li key={index} className="text-sm text-red-800 flex items-start gap-2">
-                    <span className="text-red-600 font-bold shrink-0">•</span>
+                  <li key={index} className="font-pixelify text-sm text-red-200 flex items-start gap-3">
+                    <span className="text-red-400 font-bold shrink-0 text-lg">•</span>
                     <span>{suggestion}</span>
                   </li>
                 ))}
@@ -52,10 +60,19 @@ export function ErrorMessage({
             {onRetry && (
               <button
                 onClick={onRetry}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 active:bg-red-800 transition-all duration-200 font-pixelify text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
               >
-                <RefreshCw size={16} />
+                <RefreshCw size={20} />
                 Try Again
+              </button>
+            )}
+            {onFallback && (
+              <button
+                onClick={onFallback}
+                className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all duration-200 font-pixelify text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+              >
+                <Download size={20} />
+                {fallbackLabel}
               </button>
             )}
             {documentationLink && (
@@ -63,10 +80,10 @@ export function ErrorMessage({
                 href={documentationLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-gray-800 border-2 border-gray-600 text-gray-200 rounded-lg hover:bg-gray-700 hover:border-gray-500 transition-all duration-200 font-pixelify text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
               >
                 View Documentation
-                <ExternalLink size={16} />
+                <ExternalLink size={20} />
               </a>
             )}
           </div>
@@ -176,6 +193,55 @@ export const ERROR_MESSAGES = {
       'Reset your configuration and start over',
       'Clear your browser cache and reload the page',
       'Ensure you\'re using a supported browser (Chrome, Firefox, Safari)',
+    ],
+  },
+  GITHUB_AUTH_ERROR: {
+    title: 'GitHub Authentication Failed',
+    message: 'Your GitHub authentication has expired or is invalid.',
+    suggestions: [
+      'Sign in to GitHub again to refresh your authentication',
+      'Check that you have granted the necessary permissions',
+      'Ensure you\'re not blocking third-party cookies',
+      'Alternatively, download the ZIP file and push to GitHub manually',
+    ],
+  },
+  GITHUB_CONFLICT_ERROR: {
+    title: 'Repository Name Already Exists',
+    message: 'A repository with this name already exists in your GitHub account.',
+    suggestions: [
+      'Choose a different project name and try again',
+      'Delete the existing repository if you no longer need it',
+      'Add a suffix or prefix to make the name unique',
+      'Alternatively, download the ZIP file and push to an existing repository',
+    ],
+  },
+  GITHUB_RATE_LIMIT_ERROR: {
+    title: 'GitHub Rate Limit Exceeded',
+    message: 'You have exceeded GitHub\'s rate limit for API requests.',
+    suggestions: [
+      'Wait a few minutes before trying again',
+      'GitHub rate limits typically reset within an hour',
+      'Check your GitHub account for any unusual activity',
+      'Alternatively, download the ZIP file and push to GitHub manually later',
+    ],
+  },
+  GITHUB_FAILED: {
+    title: 'GitHub Repository Creation Failed',
+    message: 'We encountered an error while creating your GitHub repository.',
+    suggestions: [
+      'Check your internet connection and try again',
+      'Verify that you have permission to create repositories',
+      'Ensure your GitHub account is in good standing',
+      'Alternatively, download the ZIP file and push to GitHub manually',
+    ],
+  },
+  SERVER_ERROR: {
+    title: 'Server Error',
+    message: 'The server encountered an error while processing your request.',
+    suggestions: [
+      'Try again in a few minutes',
+      'The server might be experiencing high load',
+      'If the problem persists, please contact support',
     ],
   },
 };

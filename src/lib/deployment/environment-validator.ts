@@ -110,7 +110,7 @@ export class EnvironmentVariableValidator {
         };
       }
       return { isValid: true };
-    } catch (error) {
+    } catch (_error) {
       // Invalid regex pattern
       return { isValid: true }; // Don't fail validation due to bad pattern
     }
@@ -240,7 +240,7 @@ export class EnvironmentVariableValidator {
       }
 
       return { isValid: true };
-    } catch (error) {
+    } catch (_error) {
       return {
         isValid: false,
         error: 'Invalid URL format',
@@ -318,7 +318,7 @@ export class EnvironmentVariableValidator {
       }
 
       return { isValid: true };
-    } catch (error) {
+    } catch (_error) {
       return {
         isValid: false,
         error: 'Invalid PostgreSQL URL format',
@@ -341,7 +341,7 @@ export class EnvironmentVariableValidator {
       }
 
       return { isValid: true };
-    } catch (error) {
+    } catch (_error) {
       return {
         isValid: false,
         error: 'Invalid MongoDB URL format',
@@ -364,7 +364,7 @@ export class EnvironmentVariableValidator {
       }
 
       return { isValid: true };
-    } catch (error) {
+    } catch (_error) {
       return {
         isValid: false,
         error: 'Invalid Redis URL format',

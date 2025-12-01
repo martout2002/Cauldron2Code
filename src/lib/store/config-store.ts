@@ -6,6 +6,8 @@ interface ConfigState {
   config: ScaffoldConfig;
   updateConfig: (updates: Partial<ScaffoldConfig>) => void;
   resetConfig: () => void;
+  setGithubEnabled: (enabled: boolean) => void;
+  setGithubRepoPrivate: (isPrivate: boolean) => void;
   _hasHydrated: boolean;
   setHasHydrated: (state: boolean) => void;
 }
@@ -35,6 +37,9 @@ const defaultConfig: ScaffoldConfig = {
     prettier: true,
     husky: false,
   },
+  // GitHub Integration Settings
+  githubEnabled: false,
+  githubRepoPrivate: false,
 };
 
 /**
@@ -179,6 +184,14 @@ export const useConfigStore = create<ConfigState>()(
           };
         }),
       resetConfig: () => set({ config: defaultConfig }),
+      setGithubEnabled: (enabled) =>
+        set((state) => ({
+          config: { ...state.config, githubEnabled: enabled ?? false },
+        })),
+      setGithubRepoPrivate: (isPrivate) =>
+        set((state) => ({
+          config: { ...state.config, githubRepoPrivate: isPrivate ?? false },
+        })),
     }),
     {
       name: 'cauldron2code-config',

@@ -465,13 +465,14 @@ export function getWizardSteps(): StepConfig[] {
       field: 'projectName', // Dummy field, not actually used
     },
 
-    // Step 13: GitHub Authentication
+    // Step 13: GitHub Authentication (conditional - skip if already authenticated)
     {
       id: 'github-auth',
       title: 'Sign in to GitHub',
       subtitle: 'Connect your GitHub account to create your repository',
       type: 'custom',
-      field: 'githubAuth', // Dummy field
+      field: 'githubEnabled', // GitHub integration field
+      conditional: (config) => !config.githubEnabled, // Only show if not authenticated
     },
   ];
 }

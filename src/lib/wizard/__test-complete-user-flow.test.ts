@@ -18,8 +18,7 @@ import {
   getWizardSteps, 
   getVisibleSteps, 
   getNextVisibleStepIndex, 
-  getPreviousVisibleStepIndex,
-  getVisibleStepIndex 
+  getPreviousVisibleStepIndex
 } from '@/lib/wizard/wizard-steps';
 import { validateStep } from '@/lib/wizard/wizard-validation';
 import { isAITemplateCompatible } from '@/lib/wizard/compatibility-rules';
@@ -618,7 +617,7 @@ describe('Complete AI Template User Flow Integration', () => {
 
     it('should handle provider selection without templates (edge case)', () => {
       const allSteps = getWizardSteps();
-      const aiProviderIndex = allSteps.findIndex(s => s.id === 'ai-provider');
+      const _aiProviderIndex = allSteps.findIndex(s => s.id === 'ai-provider');
       
       // This shouldn't happen in normal flow, but test it anyway
       const config = createConfig({
