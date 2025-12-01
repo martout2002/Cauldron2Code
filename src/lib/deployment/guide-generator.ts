@@ -243,7 +243,7 @@ export class GuideGenerator {
    */
   estimateDeploymentTime(steps: DeploymentStep[]): string {
     // Base time for reading and understanding the guide
-    const baseMinutes = 5;
+    let baseMinutes = 5;
 
     // Add time per step
     // Simple steps: 2 minutes
@@ -288,7 +288,7 @@ export class GuideGenerator {
       scaffoldConfig.database,
       scaffoldConfig.auth,
       scaffoldConfig.projectStructure,
-      scaffoldConfig.aiTemplates.length > 0 ? scaffoldConfig.aiTemplates.join(',') : 'none',
+      scaffoldConfig.aiTemplates?.join(',') || 'none',
     ].join('-');
 
     // Add timestamp and counter for uniqueness

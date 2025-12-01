@@ -1,10 +1,11 @@
 /**
  * Deployment Library
  * 
- * Provides environment variable detection, validation, and management
- * for automated deployment to hosting platforms.
+ * Provides deployment guide generation and configuration management
+ * for the deployment guides feature.
  */
 
+// Environment variable utilities
 export {
   EnvironmentVariableDetector,
   type EnvironmentVariable,
@@ -16,73 +17,26 @@ export {
 } from './environment-validator';
 
 export {
-  DeploymentOrchestrator,
-  getDeploymentOrchestrator,
-} from './deployment-orchestrator';
-
-export {
-  DeploymentErrorHandler,
-  getDeploymentErrorHandler,
-  type RecoveryAction,
-} from './error-handler';
-
-export {
-  ProgressTracker,
-  getProgressTracker,
-  type ProgressUpdate,
-} from './progress-tracker';
-
-export {
-  DeploymentStore,
-  getDeploymentStore,
-} from './deployment-store';
-
-export {
-  MonorepoDeploymentStrategy,
-  getMonorepoDeploymentStrategy,
-} from './monorepo-strategy';
-
-export {
-  FileFilter,
-  createFileFilter,
-  filterFilesForService,
-  type FileFilterConfig,
-  type FileFilterStats,
-  type FileValidationResult,
-} from './file-filter';
-
-export {
-  DeploymentCache,
-  getDeploymentCache,
-  CacheKeys,
-  CacheTTL,
-  type CacheEntry,
-} from './deployment-cache';
-
-export type { ServiceProgress } from './progress-tracker';
-
-export {
   getEnvVarHelp,
   getAllEnvVarHelp,
   type EnvVarHelpInfo,
 } from './environment-variable-help';
 
+// Guide generation
 export { ConfigurationAnalyzer } from './configuration-analyzer';
-
 export { StepBuilder } from './step-builder';
-
 export { ChecklistGenerator } from './checklist-generator';
-
 export { TroubleshootingBuilder } from './troubleshooting-builder';
-
 export { GuideGenerator } from './guide-generator';
 
+// Platform utilities
 export { PLATFORMS, getPlatformById, getRecommendedPlatforms } from './platforms';
 
+// Guide management
 export { GuideProgressManager, getGuideProgressManager } from './guide-progress-manager';
-
 export { GuideExporter, getGuideExporter } from './guide-exporter';
 
+// Config URL management
 export {
   generateConfigId,
   storeConfig,
@@ -94,6 +48,7 @@ export {
   decodeConfigFromUrl,
 } from './guide-url-generator';
 
+// Architecture diagrams
 export {
   getDeploymentWorkflowDiagram,
   getMonorepoArchitectureDiagram,
@@ -107,6 +62,7 @@ export {
   exportDiagramAsMarkdown,
 } from './architecture-diagrams';
 
+// Error handling
 export {
   GuideErrorHandler,
   getGuideErrorHandler,

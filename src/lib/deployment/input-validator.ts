@@ -412,7 +412,7 @@ export class InputValidator {
         isValid: true,
         sanitized: url.trim(),
       };
-    } catch (_error) {
+    } catch (error) {
       return {
         isValid: false,
         error: 'Invalid URL format',

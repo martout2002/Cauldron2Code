@@ -10,7 +10,8 @@ import { useToast } from '@/lib/hooks/useToast';
 import { GenerationLoadingScreen } from '@/components/GenerationLoadingScreen';
 import { ErrorMessage, ERROR_MESSAGES } from '@/components/ErrorMessage';
 import { sanitizeRepoName } from '@/lib/github/repo-name-sanitizer';
-import { ExternalLink, CheckCircle2, Settings, BookOpen } from 'lucide-react';
+import { ExternalLink, Settings, BookOpen } from 'lucide-react';
+import { WizardBackground } from '@/components/wizard/WizardBackground';
 
 export default function ConfigurePage() {
   const { config, setGithubRepoUrl } = useConfigStore();
@@ -221,51 +222,162 @@ export default function ConfigurePage() {
 
       {/* GitHub Success State */}
       {repositoryUrl && !isGenerating && !showLoadingScreen && (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4 py-20">
-          <div className="w-full max-w-2xl space-y-6">
+        <div className="relative h-screen flex items-center justify-center px-4 overflow-hidden">
+          {/* Dark Wizard Background */}
+          <WizardBackground />
+          
+          {/* Fixed Cauldron & Sparkles in Background - Matches wizard alignment */}
+          <div className="fixed inset-x-0 bottom-[5vh] flex justify-center pointer-events-none z-0">
+            <div className="relative mr-4">
+              {/* Completed Cauldron - NOT transparent */}
+              <img
+                src="/cauldron_stages.png"
+                alt=""
+                className="w-64"
+                style={{ imageRendering: 'pixelated' }}
+                aria-hidden="true"
+              />
+              
+              {/* Sparkle Effects at Corners */}
+              <img
+                src="/sparkles.png"
+                alt=""
+                className="absolute -top-4 -left-4 w-10 h-10 md:w-12 md:h-12"
+                style={{ 
+                  imageRendering: 'pixelated',
+                  animation: 'sparkle-pulse 1.5s ease-in-out infinite',
+                  animationDelay: '0s'
+                }}
+                aria-hidden="true"
+              />
+              <img
+                src="/sparkles.png"
+                alt=""
+                className="absolute -top-4 -right-4 w-10 h-10 md:w-12 md:h-12"
+                style={{ 
+                  imageRendering: 'pixelated',
+                  animation: 'sparkle-pulse 1.5s ease-in-out infinite',
+                  animationDelay: '0.5s'
+                }}
+                aria-hidden="true"
+              />
+              <img
+                src="/sparkles.png"
+                alt=""
+                className="absolute -bottom-4 -left-4 w-10 h-10 md:w-12 md:h-12"
+                style={{ 
+                  imageRendering: 'pixelated',
+                  animation: 'sparkle-pulse 1.5s ease-in-out infinite',
+                  animationDelay: '1s'
+                }}
+                aria-hidden="true"
+              />
+              <img
+                src="/sparkles.png"
+                alt=""
+                className="absolute -bottom-4 -right-4 w-10 h-10 md:w-12 md:h-12"
+                style={{ 
+                  imageRendering: 'pixelated',
+                  animation: 'sparkle-pulse 1.5s ease-in-out infinite',
+                  animationDelay: '0.25s'
+                }}
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+          
+          {/* Content Container */}
+          <div className="relative z-10 w-full max-w-2xl space-y-4">
+
             {/* Success Header */}
-            <div className="text-center mb-8">
-              <h1 className="pixel-title text-white mb-2">Repository Created!</h1>
-              <p className="pixel-subtitle text-gray-300">Your scaffold has been pushed to GitHub</p>
+            <div className="text-center space-y-1 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
+              <h2 
+                className="font-(family-name:--font-pixelify) text-xl md:text-2xl font-bold text-white"
+                style={{ textShadow: '3px 3px 0px rgba(0, 0, 0, 0.8)' }}
+              >
+                Repository Created!
+              </h2>
+              <p 
+                className="font-(family-name:--font-pixelify) text-sm text-gray-300"
+                style={{ textShadow: '3px 3px 0px rgba(0, 0, 0, 0.8)' }}
+              >
+                Your scaffold has been pushed to GitHub
+              </p>
             </div>
 
-            {/* GitHub Repository Details */}
-            <div className="p-6 bg-green-900/20 border-2 border-green-500 rounded-lg space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 size={32} className="text-green-500 shrink-0 mt-1 animate-in zoom-in duration-300" />
-                <div className="flex-1">
-                  <p className="text-xl text-green-400 font-bold pixel-title mb-3">
-                    🎉 Success!
+            {/* GitHub Repository Details - Pixel Art Panel */}
+            <div 
+              className="p-4 space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200"
+              style={{ 
+                background: 'rgba(20, 20, 20, 0.9)',
+                border: '4px solid #4a5568',
+                borderRadius: '0'
+              }}
+            >
+              {/* Repository Name */}
+              {repositoryName && (
+                <div>
+                  <p 
+                    className="font-(family-name:--font-pixelify) text-xs text-gray-300 mb-1"
+                    style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}
+                  >
+                    Repository Name
                   </p>
-                  
-                  {/* Repository Name */}
-                  {repositoryName && (
-                    <div className="mb-3">
-                      <p className="text-sm text-green-300/70 mb-1">Repository Name</p>
-                      <p className="text-lg text-white font-semibold font-mono bg-green-950/30 px-3 py-2 rounded border border-green-700/50">
-                        {repositoryName}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Repository Description */}
-                  {repositoryDescription && (
-                    <div className="mb-3">
-                      <p className="text-sm text-green-300/70 mb-1">Description</p>
-                      <p className="text-base text-green-100 bg-green-950/30 px-3 py-2 rounded border border-green-700/50">
-                        {repositoryDescription}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Repository URL */}
-                  <div>
-                    <p className="text-sm text-green-300/70 mb-1">Repository URL</p>
-                    <p className="text-sm text-green-200 font-mono bg-green-950/30 px-3 py-2 rounded border border-green-700/50 break-all">
-                      {repositoryUrl}
-                    </p>
-                  </div>
+                  <p 
+                    className="font-(family-name:--font-pixelify) text-base text-white font-semibold px-3 py-1.5"
+                    style={{ 
+                      background: 'rgba(10, 10, 10, 0.5)',
+                      border: '2px solid #4a5568',
+                      borderRadius: '0',
+                      textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)'
+                    }}
+                  >
+                    {repositoryName}
+                  </p>
                 </div>
+              )}
+              
+              {/* Repository Description */}
+              {repositoryDescription && (
+                <div>
+                  <p 
+                    className="font-(family-name:--font-pixelify) text-xs text-gray-300 mb-1"
+                    style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}
+                  >
+                    Description
+                  </p>
+                  <p 
+                    className="font-(family-name:--font-pixelify) text-sm text-white px-3 py-1.5"
+                    style={{ 
+                      background: 'rgba(10, 10, 10, 0.5)',
+                      border: '2px solid #4a5568',
+                      borderRadius: '0',
+                      textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)'
+                    }}
+                  >
+                    {repositoryDescription}
+                  </p>
+                </div>
+              )}
+              
+              {/* Repository URL */}
+              <div>
+                <p 
+                  className="font-(family-name:--font-pixelify) text-xs text-gray-300 mb-1"
+                  style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}
+                >
+                  Repository URL
+                </p>
+                <p 
+                  className="text-xs text-white font-mono px-3 py-1.5 break-all"
+                  style={{ 
+                    background: 'rgba(10, 10, 10, 0.5)',
+                    border: '2px solid #4a5568',
+                    borderRadius: '0'
+                  }}
+                >
+                  {repositoryUrl}
+                </p>
               </div>
 
               {/* View Repository Button */}
@@ -273,33 +385,36 @@ export default function ConfigurePage() {
                 href={repositoryUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold text-base hover:bg-green-700 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                className="font-(family-name:--font-pixelify) flex items-center justify-center gap-2 w-full px-4 py-3 text-white font-semibold text-base transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                style={{ 
+                  background: '#10b981',
+                  border: '3px solid #000',
+                  borderRadius: '0',
+                  textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#059669'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#10b981'}
               >
-                <ExternalLink size={20} />
+                <ExternalLink size={18} />
                 View Repository on GitHub
               </a>
-            </div>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-zinc-950 text-gray-500">next steps</span>
-              </div>
             </div>
 
             {/* View Deployment Guides */}
             <Link
               href={`/guides?repoUrl=${encodeURIComponent(repositoryUrl)}`}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium text-base hover:bg-purple-700 active:bg-purple-800 transition-all"
+              className="font-(family-name:--font-pixelify) w-full flex items-center justify-center gap-2 px-4 py-3 text-white font-semibold text-sm transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+              style={{ 
+                background: '#9333ea',
+                border: '3px solid #000',
+                borderRadius: '0',
+                textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#7e22ce'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#9333ea'}
             >
-              <BookOpen size={20} />
-              <div className="flex flex-col items-start">
-                <span>View Deployment Guides</span>
-                <span className="text-xs text-purple-200 font-normal">Step-by-step instructions for any platform</span>
-              </div>
+              <BookOpen size={18} />
+              <span>View Deployment Guides</span>
             </Link>
 
             {/* Error Display */}
@@ -348,11 +463,33 @@ export default function ConfigurePage() {
                 setError(null);
                 setGithubRepoUrl(undefined);
               }}
-              className="w-full px-6 py-3 bg-gray-800 text-white rounded-lg font-medium text-base hover:bg-gray-700 active:bg-gray-900 transition-all border border-gray-700"
+              className="font-(family-name:--font-pixelify) w-full px-4 py-2.5 text-white font-medium text-sm transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+              style={{ 
+                background: '#374151',
+                border: '3px solid #000',
+                borderRadius: '0',
+                textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#4b5563'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#374151'}
             >
               Create Another
             </button>
           </div>
+          
+          {/* Sparkle animation styles */}
+          <style jsx>{`
+            @keyframes sparkle-pulse {
+              0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+              }
+              50% {
+                transform: scale(1.1);
+                opacity: 1;
+              }
+            }
+          `}</style>
         </div>
       )}
 

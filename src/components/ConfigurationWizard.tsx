@@ -20,7 +20,7 @@ export function ConfigurationWizard() {
     formState: { errors },
     reset,
   } = useForm<ScaffoldConfig>({
-    // @ts-ignore - Type mismatch between Zod schema and ScaffoldConfig, but functionally compatible
+    // @ts-expect-error - Type mismatch between Zod schema and ScaffoldConfig, but functionally compatible
     resolver: zodResolver(scaffoldConfigSchema),
     defaultValues: config,
     mode: 'onChange',
