@@ -7,16 +7,13 @@ import { ToastContainer } from '@/components/Toast';
 import { useConfigStore } from '@/lib/store/config-store';
 import { useValidation } from '@/lib/validation/useValidation';
 import { useToast } from '@/lib/hooks/useToast';
-import { GenerationProgress } from '@/components/GenerationProgress';
 import { GenerationLoadingScreen } from '@/components/GenerationLoadingScreen';
-import { DownloadButton } from '@/components/DownloadButton';
-import { DeploymentModal } from '@/components/DeploymentModal';
 import { ErrorMessage, ERROR_MESSAGES } from '@/components/ErrorMessage';
 import { sanitizeRepoName } from '@/lib/github/repo-name-sanitizer';
-import { Rocket, ExternalLink, CheckCircle2, Settings, BookOpen } from 'lucide-react';
+import { ExternalLink, CheckCircle2, Settings, BookOpen } from 'lucide-react';
 
 export default function ConfigurePage() {
-  const { config } = useConfigStore();
+  const { config, setGithubRepoUrl } = useConfigStore();
   
   // Wire validation engine to configuration changes
   const { validationResult } = useValidation(config);
@@ -27,7 +24,6 @@ export default function ConfigurePage() {
   // Generation state
   const [isGenerating, setIsGenerating] = useState(false);
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
-  const [downloadId, setDownloadId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // GitHub repository state
@@ -35,9 +31,6 @@ export default function ConfigurePage() {
   const [repositoryUrl, setRepositoryUrl] = useState<string | null>(null);
   const [repositoryName, setRepositoryName] = useState<string | null>(null);
   const [repositoryDescription, setRepositoryDescription] = useState<string | null>(null);
-
-  // Deployment modal state
-  const [showDeployModal, setShowDeployModal] = useState(false);
 
   // Check GitHub authentication status on mount
   useEffect(() => {
@@ -54,75 +47,21 @@ export default function ConfigurePage() {
     checkAuth();
   }, []);
 
-  // Handle fallback to ZIP generation when GitHub fails
-  // Requirements: 5.5
-  const handleFallbackToZip = async () => {
-    console.log('Falling back to ZIP generation after GitHub error');
-    
-    // Reset error state and show loading
-    setError(null);
-    setIsGenerating(true);
-    setShowLoadingScreen(true);
 
-    try {
-      // Generate ZIP file as fallback
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(config),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Handle ZIP generation errors
-        if (response.status === 408 || response.status === 504) {
-          throw new Error('timeout');
-        } else if (response.status >= 500) {
-          throw new Error('server');
-        } else if (response.status === 400) {
-          throw new Error('invalid_config');
-        }
-        throw new Error(data.error || 'generation_failed');
-      }
-
-      // Success: Set download ID
-      setDownloadId(data.downloadId);
-      setShowLoadingScreen(false);
-      setIsGenerating(false);
-      toast.success('Scaffold Generated!', 'Your project is ready to download');
-    } catch (err) {
-      // Log fallback error
-      console.error('Fallback ZIP generation failed:', err);
-      
-      let errorType = 'generation_failed';
-      
-      if (err instanceof TypeError && err.message.includes('fetch')) {
-        errorType = 'network';
-        console.error('Network error details:', {
-          message: err.message,
-          stack: err.stack,
-        });
-      } else if (err instanceof Error) {
-        errorType = err.message;
-        console.error('Error details:', {
-          type: errorType,
-          message: err.message,
-          stack: err.stack,
-        });
-      }
-      
-      setError(errorType);
-      setShowLoadingScreen(false);
-      setIsGenerating(false);
-      toast.error('Generation Failed', 'Unable to generate ZIP file');
-    }
-  };
 
   // Handle generation trigger from wizard
   const handleGenerate = async () => {
+    // Check if repository already exists for GitHub-enabled configs
+    // Only reuse if GitHub is enabled and authenticated
+    const githubEnabled = (config.githubEnabled ?? false) && isAuthenticated;
+    if (githubEnabled && config.githubRepoUrl) {
+      console.log('Repository already exists, using existing URL:', config.githubRepoUrl);
+      setRepositoryUrl(config.githubRepoUrl);
+      setRepositoryName(config.projectName);
+      setRepositoryDescription(config.description);
+      return;
+    }
+
     // Prevent multiple simultaneous generation requests
     // Requirements: 2.5
     if (isGenerating || showLoadingScreen) {
@@ -137,97 +76,87 @@ export default function ConfigurePage() {
     }
 
     // Set states to show loading screen and prevent duplicate requests
-    // Requirements: 1.1, 4.2
     setIsGenerating(true);
     setShowLoadingScreen(true);
     setError(null);
-    setDownloadId(null);
     setRepositoryUrl(null);
 
     try {
-      // Determine workflow based on GitHub authentication state
-      // Requirements: 8.1, 8.2, 8.3
-      const githubEnabled = (config.githubEnabled ?? false) && isAuthenticated;
+      // GitHub workflow: Create repository and push scaffold
+      // Sanitize repository name to comply with GitHub naming rules
+      const sanitizedRepoName = sanitizeRepoName(config.projectName);
+      
+      const response = await fetch('/api/github/repos/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: sanitizedRepoName,
+          description: config.description,
+          private: config.githubRepoPrivate ?? false,
+          config: config,
+        }),
+      });
 
-      if (githubEnabled) {
-        // GitHub workflow: Create repository and push scaffold
-        // Requirements: 8.2
-        // Sanitize repository name to comply with GitHub naming rules
-        // Requirements: 7.1, 7.4
-        const sanitizedRepoName = sanitizeRepoName(config.projectName);
-        
-        const response = await fetch('/api/github/repos/create', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: sanitizedRepoName,
-            description: config.description,
-            private: config.githubRepoPrivate ?? false,
-            config: config,
-          }),
-        });
+      const data = await response.json();
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          // Handle GitHub-specific errors
-          // Requirements: 5.1, 5.2, 5.3, 5.4
-          if (response.status === 401 || response.status === 403) {
-            throw new Error('github_auth');
-          } else if (response.status === 409 || response.status === 422) {
-            throw new Error('github_conflict');
-          } else if (response.status === 429) {
-            throw new Error('github_rate_limit');
-          } else if (response.status === 408 || response.status === 504) {
-            throw new Error('timeout');
-          } else if (response.status >= 500) {
-            throw new Error('server');
+      if (!response.ok) {
+        // Handle GitHub-specific errors
+        if (response.status === 401 || response.status === 403) {
+          throw new Error('github_auth');
+        } else if (response.status === 409 || response.status === 422) {
+          // Repository already exists - try to use stored URL or construct it
+          if (config.githubRepoUrl) {
+            console.log('Repository conflict, using stored URL:', config.githubRepoUrl);
+            setRepositoryUrl(config.githubRepoUrl);
+            setRepositoryName(config.projectName);
+            setRepositoryDescription(config.description);
+            setShowLoadingScreen(false);
+            setIsGenerating(false);
+            toast.success('Using Existing Repository', 'Repository already exists');
+            return;
+          } else {
+            // Try to get GitHub username and construct URL
+            try {
+              const userResponse = await fetch('/api/github/auth/status');
+              const userData = await userResponse.json();
+              if (userData.authenticated && userData.user?.login) {
+                const constructedUrl = `https://github.com/${userData.user.login}/${sanitizedRepoName}`;
+                console.log('Repository conflict, constructed URL:', constructedUrl);
+                setRepositoryUrl(constructedUrl);
+                setRepositoryName(config.projectName);
+                setRepositoryDescription(config.description);
+                setGithubRepoUrl(constructedUrl); // Store for future use
+                setShowLoadingScreen(false);
+                setIsGenerating(false);
+                toast.success('Using Existing Repository', 'Repository already exists');
+                return;
+              }
+            } catch (err) {
+              console.error('Failed to construct repository URL:', err);
+            }
           }
-          throw new Error(data.error || 'github_failed');
+          throw new Error('github_conflict');
+        } else if (response.status === 429) {
+          throw new Error('github_rate_limit');
+        } else if (response.status === 408 || response.status === 504) {
+          throw new Error('timeout');
+        } else if (response.status >= 500) {
+          throw new Error('server');
         }
-
-        // Success: Set repository URL and details
-        // Requirements: 3.1, 3.2, 8.4
-        setRepositoryUrl(data.repository.htmlUrl);
-        setRepositoryName(data.repository.name);
-        setRepositoryDescription(config.description);
-        setShowLoadingScreen(false);
-        setIsGenerating(false);
-        toast.success('Repository Created!', 'Your scaffold has been pushed to GitHub');
-      } else {
-        // ZIP workflow: Generate and download
-        // Requirements: 8.3
-        const response = await fetch('/api/generate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(config),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          // Provide specific error messages based on status
-          if (response.status === 408 || response.status === 504) {
-            throw new Error('timeout');
-          } else if (response.status >= 500) {
-            throw new Error('server');
-          } else if (response.status === 400) {
-            throw new Error('invalid_config');
-          }
-          throw new Error(data.error || 'generation_failed');
-        }
-
-        // Set download ID directly from response
-        // Requirements: 1.4, 4.3, 8.4
-        setDownloadId(data.downloadId);
-        setShowLoadingScreen(false);
-        setIsGenerating(false);
-        toast.success('Scaffold Generated!', 'Your project is ready to download');
+        throw new Error(data.error || 'github_failed');
       }
+
+      // Success: Set repository URL and details
+      setRepositoryUrl(data.repository.htmlUrl);
+      setRepositoryName(data.repository.name);
+      setRepositoryDescription(config.description);
+      // Store the repo URL in config for future use
+      setGithubRepoUrl(data.repository.htmlUrl);
+      setShowLoadingScreen(false);
+      setIsGenerating(false);
+      toast.success('Repository Created!', 'Your scaffold has been pushed to GitHub');
     } catch (err) {
       // Log error details for debugging
       // Requirements: 5.5
@@ -267,7 +196,7 @@ export default function ConfigurePage() {
       <ToastContainer toasts={toast.toasts} onDismiss={toast.dismissToast} />
       
       {/* UI Switcher Link - Only show during wizard phase */}
-      {!downloadId && !repositoryUrl && !isGenerating && !showLoadingScreen && (
+      {!repositoryUrl && !isGenerating && !showLoadingScreen && (
         <Link
           href="/configure-old"
           className="fixed top-4 left-4 z-50 flex items-center gap-2 px-3 py-2 bg-zinc-900/80 hover:bg-zinc-800/90 text-white text-sm rounded-lg border border-zinc-700 transition-all duration-200 backdrop-blur-sm hover:shadow-lg group"
@@ -279,7 +208,7 @@ export default function ConfigurePage() {
       )}
       
       {/* Main Wizard */}
-      {!downloadId && !repositoryUrl && !isGenerating && !showLoadingScreen && (
+      {!repositoryUrl && !isGenerating && !showLoadingScreen && (
         <PixelArtWizard onGenerate={handleGenerate} />
       )}
 
@@ -288,54 +217,82 @@ export default function ConfigurePage() {
         <GenerationLoadingScreen projectName={config.projectName} />
       )}
 
-      {/* Generation Progress */}
-      {isGenerating && downloadId && !showLoadingScreen && (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
-          <div className="w-full max-w-2xl">
-            <GenerationProgress
-              generationId={downloadId}
-              onComplete={(completedDownloadId) => {
-                setIsGenerating(false);
-                setDownloadId(completedDownloadId);
-              }}
-              onError={(errorMessage) => {
-                setIsGenerating(false);
-                setError(errorMessage);
-              }}
-            />
-          </div>
-        </div>
-      )}
 
-      {/* Success State - Download Options */}
-      {downloadId && !isGenerating && !repositoryUrl && (
+
+      {/* GitHub Success State */}
+      {repositoryUrl && !isGenerating && !showLoadingScreen && (
         <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4 py-20">
-          <div className="w-full max-w-2xl space-y-4">
+          <div className="w-full max-w-2xl space-y-6">
+            {/* Success Header */}
             <div className="text-center mb-8">
-              <h1 className="pixel-title text-white mb-2">Your Spell is Ready!</h1>
-              <p className="pixel-subtitle text-gray-300">Choose how to proceed with your magical creation</p>
+              <h1 className="pixel-title text-white mb-2">Repository Created!</h1>
+              <p className="pixel-subtitle text-gray-300">Your scaffold has been pushed to GitHub</p>
             </div>
 
-            {/* Download ZIP Option */}
-            <DownloadButton
-              downloadId={downloadId}
-              onRetryExhausted={() => {
-                setError('Download failed after multiple attempts. Please regenerate your scaffold.');
-              }}
-            />
+            {/* GitHub Repository Details */}
+            <div className="p-6 bg-green-900/20 border-2 border-green-500 rounded-lg space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 size={32} className="text-green-500 shrink-0 mt-1 animate-in zoom-in duration-300" />
+                <div className="flex-1">
+                  <p className="text-xl text-green-400 font-bold pixel-title mb-3">
+                    🎉 Success!
+                  </p>
+                  
+                  {/* Repository Name */}
+                  {repositoryName && (
+                    <div className="mb-3">
+                      <p className="text-sm text-green-300/70 mb-1">Repository Name</p>
+                      <p className="text-lg text-white font-semibold font-mono bg-green-950/30 px-3 py-2 rounded border border-green-700/50">
+                        {repositoryName}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Repository Description */}
+                  {repositoryDescription && (
+                    <div className="mb-3">
+                      <p className="text-sm text-green-300/70 mb-1">Description</p>
+                      <p className="text-base text-green-100 bg-green-950/30 px-3 py-2 rounded border border-green-700/50">
+                        {repositoryDescription}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Repository URL */}
+                  <div>
+                    <p className="text-sm text-green-300/70 mb-1">Repository URL</p>
+                    <p className="text-sm text-green-200 font-mono bg-green-950/30 px-3 py-2 rounded border border-green-700/50 break-all">
+                      {repositoryUrl}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            {/* View Deployment Guides Option */}
+              {/* View Repository Button */}
+              <a
+                href={repositoryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold text-base hover:bg-green-700 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <ExternalLink size={20} />
+                View Repository on GitHub
+              </a>
+            </div>
+
+            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-700"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-zinc-950 text-gray-500">or</span>
+                <span className="px-2 bg-zinc-950 text-gray-500">next steps</span>
               </div>
             </div>
 
+            {/* View Deployment Guides */}
             <Link
-              href={`/guides?configId=${downloadId}${repositoryUrl ? `&repoUrl=${encodeURIComponent(repositoryUrl)}` : ''}`}
+              href={`/guides?repoUrl=${encodeURIComponent(repositoryUrl)}`}
               className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium text-base hover:bg-purple-700 active:bg-purple-800 transition-all"
             >
               <BookOpen size={20} />
@@ -344,27 +301,6 @@ export default function ConfigurePage() {
                 <span className="text-xs text-purple-200 font-normal">Step-by-step instructions for any platform</span>
               </div>
             </Link>
-
-            {/* Deploy Now Option - Optional */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-zinc-950 text-gray-500">optional</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setShowDeployModal(true)}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium text-base hover:bg-blue-700 active:bg-blue-800 transition-all"
-            >
-              <Rocket size={20} />
-              <div className="flex flex-col items-start">
-                <span>Deploy Now (Optional)</span>
-                <span className="text-xs text-blue-200 font-normal">Deploy directly to Vercel, Railway, or Render</span>
-              </div>
-            </button>
 
             {/* Error Display */}
             {error && (
@@ -403,22 +339,25 @@ export default function ConfigurePage() {
               />
             )}
 
+            {/* Create Another Button */}
             <button
               onClick={() => {
-                setDownloadId(null);
+                setRepositoryUrl(null);
+                setRepositoryName(null);
+                setRepositoryDescription(null);
                 setError(null);
+                setGithubRepoUrl(undefined);
               }}
-              className="w-full px-6 py-2 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+              className="w-full px-6 py-3 bg-gray-800 text-white rounded-lg font-medium text-base hover:bg-gray-700 active:bg-gray-900 transition-all border border-gray-700"
             >
-              Generate Another
+              Create Another
             </button>
           </div>
         </div>
       )}
 
       {/* Error State - Show when generation fails */}
-      {/* Requirements: 4.4, 5.1, 5.2, 5.3, 5.4, 5.5 */}
-      {error && !downloadId && !repositoryUrl && !isGenerating && !showLoadingScreen && (
+      {error && !repositoryUrl && !isGenerating && !showLoadingScreen && (
         <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4 py-20">
           <div className="w-full max-w-2xl">
             <ErrorMessage
@@ -483,17 +422,6 @@ export default function ConfigurePage() {
                 setError(null);
                 handleGenerate();
               }}
-              onFallback={
-                // Show fallback button for all GitHub errors
-                // Requirements: 5.5
-                error === 'github_auth' ||
-                error === 'github_conflict' ||
-                error === 'github_rate_limit' ||
-                error === 'github_failed'
-                  ? handleFallbackToZip
-                  : undefined
-              }
-              fallbackLabel="Download ZIP Instead"
             />
 
             <button
@@ -508,94 +436,9 @@ export default function ConfigurePage() {
         </div>
       )}
 
-      {/* GitHub Success State */}
-      {/* Requirements: 3.1, 3.2, 3.3, 3.5 */}
-      {repositoryUrl && (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4 py-20">
-          <div className="w-full max-w-2xl space-y-6">
-            {/* Success Header */}
-            <div className="text-center mb-8">
-              <h1 className="pixel-title text-white mb-2">Repository Created!</h1>
-              <p className="pixel-subtitle text-gray-300">Your scaffold has been pushed to GitHub</p>
-            </div>
 
-            {/* Repository Details Card */}
-            <div className="p-6 bg-green-900/20 border-2 border-green-500 rounded-lg space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 size={32} className="text-green-500 shrink-0 mt-1 animate-in zoom-in duration-300" />
-                <div className="flex-1">
-                  <p className="text-xl text-green-400 font-bold pixel-title mb-3">
-                    🎉 Success!
-                  </p>
-                  
-                  {/* Repository Name - Requirements: 3.1 */}
-                  {repositoryName && (
-                    <div className="mb-3">
-                      <p className="text-sm text-green-300/70 mb-1">Repository Name</p>
-                      <p className="text-lg text-white font-semibold font-mono bg-green-950/30 px-3 py-2 rounded border border-green-700/50">
-                        {repositoryName}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Repository Description - Requirements: 3.1 */}
-                  {repositoryDescription && (
-                    <div className="mb-3">
-                      <p className="text-sm text-green-300/70 mb-1">Description</p>
-                      <p className="text-base text-green-100 bg-green-950/30 px-3 py-2 rounded border border-green-700/50">
-                        {repositoryDescription}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Repository URL - Requirements: 3.1 */}
-                  <div>
-                    <p className="text-sm text-green-300/70 mb-1">Repository URL</p>
-                    <p className="text-sm text-green-200 font-mono bg-green-950/30 px-3 py-2 rounded border border-green-700/50 break-all">
-                      {repositoryUrl}
-                    </p>
-                  </div>
-                </div>
-              </div>
 
-              {/* View Repository Button - Requirements: 3.2, 3.3 */}
-              <a
-                href={repositoryUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold text-base hover:bg-green-700 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <ExternalLink size={20} />
-                View Repository
-              </a>
-            </div>
 
-            {/* Create Another Button - Requirements: 3.5 */}
-            <button
-              onClick={() => {
-                setRepositoryUrl(null);
-                setRepositoryName(null);
-                setRepositoryDescription(null);
-                setDownloadId(null);
-                setError(null);
-              }}
-              className="w-full px-6 py-3 bg-gray-800 text-white rounded-lg font-medium text-base hover:bg-gray-700 active:bg-gray-900 transition-all border border-gray-700"
-            >
-              Create Another
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Deployment Modal */}
-      {showDeployModal && downloadId && (
-        <DeploymentModal
-          isOpen={showDeployModal}
-          onClose={() => setShowDeployModal(false)}
-          downloadId={downloadId}
-          scaffoldConfig={config}
-        />
-      )}
     </>
   );
 }

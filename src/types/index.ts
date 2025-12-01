@@ -58,6 +58,7 @@ export interface ScaffoldConfig {
   // GitHub Integration Settings
   githubEnabled?: boolean;
   githubRepoPrivate?: boolean;
+  githubRepoUrl?: string; // Store the generated repository URL
 }
 
 // ============================================================================
@@ -199,6 +200,7 @@ export const scaffoldConfigSchema = z.object({
   // GitHub Integration Settings (optional with defaults)
   githubEnabled: z.boolean().optional().default(false),
   githubRepoPrivate: z.boolean().optional().default(false),
+  githubRepoUrl: z.string().optional(), // Store the generated repository URL
 });
 
 // ============================================================================

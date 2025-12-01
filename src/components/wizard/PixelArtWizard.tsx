@@ -452,15 +452,6 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
       {/* Fixed Cauldron - always visible, not affected by content */}
       <CauldronAsset imageSrc={currentStepConfig?.id === 'summary' ? '/cauldron_stages.png' : '/cauldron.png'} />
 
-      {/* Project name overlay - only visible on summary step */}
-      {currentStepConfig?.id === 'summary' && (
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 translate-y-[25vh] z-20 pointer-events-none">
-          <p className="text-lime-500 text-3xl font-pixelify text-center">
-            {config.projectName || 'Your Project'}
-          </p>
-        </div>
-      )}
-
       {/* Main content */}
       <main 
         className={`relative z-10 ${currentStepConfig?.id === 'summary' || currentStepConfig?.id === 'github-auth' ? 'h-screen' : 'min-h-screen'} px-2 sm:px-4 pt-8 sm:pt-12 pb-24 sm:pb-28`}

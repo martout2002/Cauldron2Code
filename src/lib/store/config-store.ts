@@ -8,6 +8,7 @@ interface ConfigState {
   resetConfig: () => void;
   setGithubEnabled: (enabled: boolean) => void;
   setGithubRepoPrivate: (isPrivate: boolean) => void;
+  setGithubRepoUrl: (url: string | undefined) => void;
   _hasHydrated: boolean;
   setHasHydrated: (state: boolean) => void;
 }
@@ -40,6 +41,7 @@ const defaultConfig: ScaffoldConfig = {
   // GitHub Integration Settings
   githubEnabled: false,
   githubRepoPrivate: false,
+  githubRepoUrl: undefined,
 };
 
 /**
@@ -191,6 +193,10 @@ export const useConfigStore = create<ConfigState>()(
       setGithubRepoPrivate: (isPrivate) =>
         set((state) => ({
           config: { ...state.config, githubRepoPrivate: isPrivate ?? false },
+        })),
+      setGithubRepoUrl: (url) =>
+        set((state) => ({
+          config: { ...state.config, githubRepoUrl: url },
         })),
     }),
     {
