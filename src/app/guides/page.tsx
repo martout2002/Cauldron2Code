@@ -91,7 +91,7 @@ function GuidesPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-gradient-to-b from-[#0a0e1a] via-[#1a1e2a] to-[#0a0e1a]">
       {/* Page Title and Description */}
       <div className="sr-only">
         <h1>Deployment Guides</h1>
@@ -111,7 +111,7 @@ function GuidesPageContent() {
 
 export default function GuidesPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-zinc-950" />}>
+    <Suspense fallback={<div className="min-h-screen bg-gradient-to-b from-[#0a0e1a] via-[#1a1e2a] to-[#0a0e1a]" />}>
       <GuidesPageContent />
     </Suspense>
   );

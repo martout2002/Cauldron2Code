@@ -112,13 +112,13 @@ export default function DeploymentGuidePage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#0a0e1a] via-[#1a1e2a] to-[#0a0e1a] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 dark:border-blue-400 mx-auto mb-6"></div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#b4ff64] mx-auto mb-6"></div>
+          <h2 className="text-xl font-semibold font-[family-name:var(--font-pixelify)] text-white mb-2">
             Generating Your Deployment Guide
           </h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="font-[family-name:var(--font-pixelify)] text-gray-300">
             Analyzing your configuration and preparing step-by-step instructions...
           </p>
         </div>
@@ -133,31 +133,31 @@ export default function DeploymentGuidePage() {
     const fallbackAction = error ? errorHandler.getFallbackAction(error) : 'selector';
 
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-[#0a0e1a] via-[#1a1e2a] to-[#0a0e1a] flex items-center justify-center p-4">
         <div className="max-w-md w-full">
-          <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-8 border border-red-200 dark:border-red-800">
+          <div className="bg-[rgba(20,20,30,0.8)] rounded-xl shadow-[0_0_20px_rgba(239,68,68,0.3)] p-8 border-3 border-[#ef4444]">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+              <div className="p-2 bg-[rgba(239,68,68,0.2)] rounded-lg border-2 border-[#ef4444]">
+                <AlertCircle className="w-6 h-6 text-[#ef4444]" />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-bold font-[family-name:var(--font-pixelify)] text-white">
                 Unable to Load Guide
               </h2>
             </div>
             
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
+            <p className="font-[family-name:var(--font-pixelify)] text-gray-300 mb-4">
               {errorMessage}
             </p>
 
             {suggestions.length > 0 && (
-              <div className="mb-6 p-4 bg-gray-50 dark:bg-zinc-800 rounded-lg">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              <div className="mb-6 p-4 bg-[rgba(40,40,50,0.8)] rounded-lg border border-[#8b5cf6]">
+                <h3 className="text-sm font-semibold font-[family-name:var(--font-pixelify)] text-[#b4ff64] mb-2">
                   Suggestions:
                 </h3>
-                <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <ul className="text-sm font-[family-name:var(--font-pixelify)] text-gray-300 space-y-1">
                   {suggestions.map((suggestion, index) => (
                     <li key={index} className="flex items-start gap-2">
-                      <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
+                      <span className="text-[#b4ff64] mt-0.5">✦</span>
                       <span>{suggestion}</span>
                     </li>
                   ))}
@@ -169,7 +169,7 @@ export default function DeploymentGuidePage() {
               {fallbackAction === 'selector' && (
                 <Link
                   href="/guides"
-                  className="block w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-center transition-colors"
+                  className="block w-full px-4 py-3 bg-[#b4ff64] hover:bg-[#c8ff82] text-[#0a0e1a] font-[family-name:var(--font-pixelify)] font-semibold rounded-lg text-center transition-all duration-200 border-3 border-[#8fcc4f] shadow-[0_4px_0_#6a9938] hover:-translate-y-0.5 hover:shadow-[0_6px_0_#6a9938]"
                 >
                   Back to Platform Selector
                 </Link>
@@ -178,7 +178,7 @@ export default function DeploymentGuidePage() {
               {(fallbackAction === 'download' || fallbackAction === 'github') && (
                 <Link
                   href="/configure"
-                  className="block w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-center transition-colors"
+                  className="block w-full px-4 py-3 bg-[#b4ff64] hover:bg-[#c8ff82] text-[#0a0e1a] font-[family-name:var(--font-pixelify)] font-semibold rounded-lg text-center transition-all duration-200 border-3 border-[#8fcc4f] shadow-[0_4px_0_#6a9938] hover:-translate-y-0.5 hover:shadow-[0_6px_0_#6a9938]"
                 >
                   Generate New Scaffold
                 </Link>
@@ -186,7 +186,7 @@ export default function DeploymentGuidePage() {
               
               <Link
                 href="/configure"
-                className="block w-full px-4 py-3 bg-gray-200 dark:bg-zinc-800 hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-900 dark:text-white font-semibold rounded-lg text-center transition-colors"
+                className="block w-full px-4 py-3 bg-[rgba(40,40,50,0.8)] hover:bg-[rgba(50,50,60,0.8)] text-white font-[family-name:var(--font-pixelify)] font-semibold rounded-lg text-center transition-all duration-200 border-2 border-[#8b5cf6]"
               >
                 Start Over
               </Link>
@@ -199,16 +199,16 @@ export default function DeploymentGuidePage() {
 
   // Success state - render the guide
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-gradient-to-b from-[#0a0e1a] via-[#1a1e2a] to-[#0a0e1a]">
       {/* Back Navigation */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800">
+      <div className="bg-[rgba(20,20,30,0.8)] border-b-2 border-[#8b5cf6]">
         <div className="max-w-5xl mx-auto px-4 py-4">
           <Link
             href="/guides"
-            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#b4ff64] text-[#0a0e1a] font-[family-name:var(--font-pixelify)] font-semibold rounded-lg border-3 border-[#8fcc4f] shadow-[0_4px_0_#6a9938] hover:bg-[#c8ff82] hover:-translate-y-0.5 hover:shadow-[0_6px_0_#6a9938] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b4ff64] focus:ring-offset-2"
           >
             <ArrowLeft size={20} />
-            <span className="font-medium">Back to Platform Selector</span>
+            <span>Back to Platform Selector</span>
           </Link>
         </div>
       </div>

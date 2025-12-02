@@ -109,21 +109,9 @@ export const VALIDATION_RULES: ValidationRule[] = [
       config.frontendFramework === 'nextjs' &&
       !config.nextjsRouter,
   },
-  {
-    id: 'project-name-required',
-    message: 'Project name is required and must be valid.',
-    severity: 'error',
-    check: (config) =>
-      !config.projectName ||
-      config.projectName.length === 0 ||
-      !/^[a-z0-9-]+$/.test(config.projectName),
-  },
-  {
-    id: 'description-required',
-    message: 'Project description is required.',
-    severity: 'error',
-    check: (config) => !config.description || config.description.length === 0,
-  },
+  // Note: project-name-required and description-required are removed because
+  // they are already validated at their respective wizard steps.
+  // The wizard prevents users from proceeding without valid values.
   // Deployment is now optional - users can choose to deploy later
   // {
   //   id: 'deployment-target-required',

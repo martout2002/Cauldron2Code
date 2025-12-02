@@ -28,16 +28,16 @@ export function TroubleshootingSection({ troubleshooting }: TroubleshootingSecti
   }
 
   return (
-    <div className="mt-8 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden">
+    <div className="mt-8 rounded-xl border-3 border-[#f97316] bg-[rgba(20,20,30,0.8)] overflow-hidden shadow-[0_0_20px_rgba(249,115,22,0.3)]">
       {/* Section Header */}
-      <div className="px-6 py-4 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 border-b border-gray-300 dark:border-zinc-700">
+      <div className="px-6 py-4 bg-[rgba(40,40,50,0.9)] border-b-2 border-[#f97316]">
         <div className="flex items-center gap-3 mb-2">
-          <AlertCircle size={28} className="text-orange-600 dark:text-orange-400 shrink-0" aria-hidden="true" />
-          <h2 id="troubleshooting-heading" className="text-2xl font-bold text-gray-900 dark:text-white">
+          <AlertCircle size={28} className="text-[#f97316] shrink-0" aria-hidden="true" />
+          <h2 id="troubleshooting-heading" className="text-2xl font-bold font-[family-name:var(--font-pixelify)] text-white">
             Common Issues & Troubleshooting
           </h2>
         </div>
-        <p className="text-sm text-gray-700 dark:text-gray-300">
+        <p className="text-sm font-[family-name:var(--font-pixelify)] text-gray-300">
           Having trouble? Check these common issues and solutions before reaching out for help.
         </p>
       </div>
@@ -52,7 +52,7 @@ export function TroubleshootingSection({ troubleshooting }: TroubleshootingSecti
               {/* Issue Header - Clickable */}
               <button
                 onClick={() => toggleIssue(index)}
-                className="w-full px-6 py-4 flex items-center justify-between gap-4 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full px-6 py-4 flex items-center justify-between gap-4 hover:bg-[rgba(249,115,22,0.1)] transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#b4ff64] focus:ring-offset-2"
                 aria-expanded={isExpanded}
                 aria-controls={`issue-${index}-content`}
                 aria-label={`${isExpanded ? 'Collapse' : 'Expand'} troubleshooting for: ${issue.title}`}
@@ -60,10 +60,10 @@ export function TroubleshootingSection({ troubleshooting }: TroubleshootingSecti
                 <div className="flex items-center gap-3 flex-1 text-left">
                   <AlertCircle
                     size={20}
-                    className="shrink-0 text-orange-600 dark:text-orange-400"
+                    className="shrink-0 text-[#f97316]"
                     aria-hidden="true"
                   />
-                  <h3 id={`issue-${index}-title`} className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 id={`issue-${index}-title`} className="text-lg font-bold font-[family-name:var(--font-pixelify)] text-white">
                     {issue.title}
                   </h3>
                 </div>
@@ -87,16 +87,16 @@ export function TroubleshootingSection({ troubleshooting }: TroubleshootingSecti
                   {/* Symptoms */}
                   {issue.symptoms && issue.symptoms.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                      <h4 className="text-sm font-bold font-[family-name:var(--font-pixelify)] text-[#f97316] mb-2">
                         Symptoms
                       </h4>
                       <ul className="space-y-1">
                         {issue.symptoms.map((symptom, idx) => (
                           <li
                             key={idx}
-                            className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2"
+                            className="text-sm text-white flex items-start gap-2"
                           >
-                            <span className="text-orange-500 dark:text-orange-400 mt-1">•</span>
+                            <span className="text-[#f97316] mt-1">•</span>
                             <span>{symptom}</span>
                           </li>
                         ))}
@@ -107,16 +107,16 @@ export function TroubleshootingSection({ troubleshooting }: TroubleshootingSecti
                   {/* Causes */}
                   {issue.causes && issue.causes.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                      <h4 className="text-sm font-bold font-[family-name:var(--font-pixelify)] text-[#f97316] mb-2">
                         Possible Causes
                       </h4>
                       <ul className="space-y-1">
                         {issue.causes.map((cause, idx) => (
                           <li
                             key={idx}
-                            className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2"
+                            className="text-sm text-white flex items-start gap-2"
                           >
-                            <span className="text-red-500 dark:text-red-400 mt-1">•</span>
+                            <span className="text-[#f97316] mt-1">•</span>
                             <span>{cause}</span>
                           </li>
                         ))}
@@ -126,15 +126,15 @@ export function TroubleshootingSection({ troubleshooting }: TroubleshootingSecti
 
                   {/* Solutions */}
                   {issue.solutions && issue.solutions.length > 0 && (
-                    <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                      <h4 className="text-sm font-semibold text-green-900 dark:text-green-200 mb-2">
+                    <div className="p-4 bg-[rgba(180,255,100,0.1)] border-2 border-[#b4ff64] rounded-lg">
+                      <h4 className="text-sm font-bold font-[family-name:var(--font-pixelify)] text-[#b4ff64] mb-2">
                         Solutions
                       </h4>
                       <ol className="space-y-2">
                         {issue.solutions.map((solution, idx) => (
                           <li
                             key={idx}
-                            className="text-sm text-green-800 dark:text-green-300 flex items-start gap-2"
+                            className="text-sm font-[family-name:var(--font-pixelify)] text-gray-300 flex items-start gap-2"
                           >
                             <span className="font-semibold shrink-0">{idx + 1}.</span>
                             <span>{solution}</span>
@@ -147,7 +147,7 @@ export function TroubleshootingSection({ troubleshooting }: TroubleshootingSecti
                   {/* Related Links */}
                   {issue.relatedLinks && issue.relatedLinks.length > 0 && (
                     <nav aria-label="Related documentation for this issue">
-                      <h4 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase mb-2">
+                      <h4 className="text-xs font-semibold text-[#b4ff64] uppercase mb-2">
                         Related Documentation
                       </h4>
                       <div className="flex flex-wrap gap-3">

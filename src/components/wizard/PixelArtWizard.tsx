@@ -397,15 +397,23 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't interfere with input fields
-      if (
+      // For Enter key, allow it in input fields (it will trigger next)
+      // For other keys, don't interfere with input fields
+      if (e.key !== 'Enter' && (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement
-      ) {
+      )) {
         return;
       }
 
       switch (e.key) {
+        case 'Enter':
+          // Enter key triggers next step
+          if (canGoNext) {
+            e.preventDefault();
+            handleNext();
+          }
+          break;
         case 'ArrowRight':
           if (canGoNext) {
             e.preventDefault();

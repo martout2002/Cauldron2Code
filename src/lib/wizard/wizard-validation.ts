@@ -1,5 +1,6 @@
 import { ScaffoldConfig } from '@/types';
 import { getStepByIndex } from './wizard-steps';
+import { VALIDATION_RULES } from '@/lib/validation/rules';
 
 /**
  * Validation result type
@@ -297,6 +298,51 @@ export function validateAIProviderStep(
 }
 
 /**
+ * Check compatibility rules that affect the current configuration
+ * Returns the first error found, or null if all checks pass
+ * 
+ * Note: We only check rules that are relevant to fields that have been set.
+ * This prevents blocking navigation on steps where the user hasn't made choices yet.
+ */
+function checkCompatibilityRules(config: ScaffoldConfig): string | null {
+  // Run all error-level validation rules, but skip rules that check
+  // fields that haven't been set yet (still have default values)
+  const errorRules = VALIDATION_RULES.filter(rule => rule.severity === 'error');
+  
+  for (const rule of errorRules) {
+    // Skip rules that would fail due to unset fields
+    // These rules will be checked when the user reaches those steps
+    
+    // Skip nextjs-router-required if we haven't selected Next.js yet
+    if (rule.id === 'nextjs-router-required' && config.frontendFramework !== 'nextjs') {
+      continue;
+    }
+    
+    // Skip auth-database if auth is still 'none' (default)
+    if (rule.id === 'auth-database' && config.auth === 'none') {
+      continue;
+    }
+    
+    // Skip vercel-express if deployment hasn't been set yet
+    if (rule.id === 'vercel-express' && config.deployment.length === 0) {
+      continue;
+    }
+    
+    // Skip ai-framework-compatibility if no AI templates selected yet
+    if (rule.id === 'ai-framework-compatibility' && config.aiTemplates.length === 0) {
+      continue;
+    }
+    
+    const isViolated = rule.check(config);
+    if (isViolated) {
+      return rule.message;
+    }
+  }
+  
+  return null;
+}
+
+/**
  * Validate a specific wizard step based on its index
  */
 export function validateStep(
@@ -316,56 +362,87 @@ export function validateStep(
   const value = config[step.field];
 
   // Apply step-specific validation
+  let stepValidation: ValidationResult;
+  
   switch (step.id) {
     case 'project-name':
-      return validateProjectName(value as string);
+      stepValidation = validateProjectName(value as string);
+      break;
 
     case 'description':
-      return validateDescription(value as string);
+      stepValidation = validateDescription(value as string);
+      break;
 
     case 'frontend':
-      return validateFrontendFramework(
+      stepValidation = validateFrontendFramework(
         value as ScaffoldConfig['frontendFramework']
       );
+      break;
 
     case 'backend':
-      return validateBackendFramework(
+      stepValidation = validateBackendFramework(
         value as ScaffoldConfig['backendFramework']
       );
+      break;
 
     case 'build-tool':
       // Build tool is always valid (auto is default)
-      return { isValid: true };
+      stepValidation = { isValid: true };
+      break;
 
     case 'database':
-      return validateDatabase(value as ScaffoldConfig['database']);
+      stepValidation = validateDatabase(value as ScaffoldConfig['database']);
+      break;
 
     case 'auth':
-      return validateAuth(value as ScaffoldConfig['auth']);
+      stepValidation = validateAuth(value as ScaffoldConfig['auth']);
+      break;
 
     case 'styling':
-      return validateStyling(value as ScaffoldConfig['styling']);
+      stepValidation = validateStyling(value as ScaffoldConfig['styling']);
+      break;
 
     case 'extras':
-      return validateExtras(value as ScaffoldConfig['extras']);
+      stepValidation = validateExtras(value as ScaffoldConfig['extras']);
+      break;
 
     case 'ai-templates':
-      return validateAITemplateStep(value as ScaffoldConfig['aiTemplates']);
+      stepValidation = validateAITemplateStep(value as ScaffoldConfig['aiTemplates']);
+      break;
 
     case 'ai-provider':
-      return validateAIProviderStep(config);
+      stepValidation = validateAIProviderStep(config);
+      break;
 
     case 'summary':
       // Summary step is always valid (just a review)
-      return { isValid: true };
+      stepValidation = { isValid: true };
+      break;
 
     case 'github-auth':
       // GitHub auth step is always valid (OAuth happens on next)
-      return { isValid: true };
+      stepValidation = { isValid: true };
+      break;
 
     default:
-      return { isValid: true };
+      stepValidation = { isValid: true };
   }
+  
+  // If step-specific validation failed, return that error
+  if (!stepValidation.isValid) {
+    return stepValidation;
+  }
+  
+  // Check compatibility rules across the entire configuration
+  const compatibilityError = checkCompatibilityRules(config);
+  if (compatibilityError) {
+    return {
+      isValid: false,
+      error: compatibilityError,
+    };
+  }
+  
+  return { isValid: true };
 }
 
 /**

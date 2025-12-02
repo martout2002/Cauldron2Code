@@ -258,6 +258,20 @@ export const compatibilityRules: CompatibilityRule[] = [
     getIncompatibilityMessage: (config) => 
       `AI templates require Next.js as the frontend framework or a fullstack monorepo structure. Currently selected: ${getOptionLabel(config.frontendFramework)} with ${getOptionLabel(config.projectStructure)} structure. Change your frontend to Next.js or select fullstack monorepo structure.`,
   },
+  
+  // ============================================================================
+  // Deployment Compatibility Rules
+  // ============================================================================
+  
+  {
+    id: 'deployment-vercel-incompatible-with-express-api-only',
+    description: 'Vercel deployment is incompatible with Express API only structure',
+    targetStep: 'deployment',
+    targetOption: 'vercel',
+    isIncompatible: (config) => config.projectStructure === 'express-api-only',
+    getIncompatibilityMessage: () => 
+      `Vercel cannot deploy standalone Express apps. Consider using Render or Railway for Express API deployments, or change your project structure to include Next.js.`,
+  },
 ];
 
 // ============================================================================

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { PixelArtWizard } from '@/components/wizard/PixelArtWizard';
 import { ToastContainer } from '@/components/Toast';
 import { useConfigStore } from '@/lib/store/config-store';
+import { useWizardStore } from '@/lib/wizard/wizard-state';
 import { useValidation } from '@/lib/validation/useValidation';
 import { useToast } from '@/lib/hooks/useToast';
 import { GenerationLoadingScreen } from '@/components/GenerationLoadingScreen';
@@ -14,7 +15,8 @@ import { ExternalLink, Settings, BookOpen } from 'lucide-react';
 import { WizardBackground } from '@/components/wizard/WizardBackground';
 
 export default function ConfigurePage() {
-  const { config, setGithubRepoUrl } = useConfigStore();
+  const { config, setGithubRepoUrl, resetConfig } = useConfigStore();
+  const { resetWizard } = useWizardStore();
   
   // Wire validation engine to configuration changes
   const { validationResult } = useValidation(config);
@@ -72,7 +74,9 @@ export default function ConfigurePage() {
 
     // Validate configuration
     if (validationResult.errors.length > 0) {
-      toast.error('Configuration Invalid', 'Please fix all errors before generating');
+      console.error('❌ Configuration validation failed:', validationResult.errors);
+      console.log('📋 Current config:', config);
+      toast.error('Configuration Invalid', `Please fix all errors before generating: ${validationResult.errors.map(e => e.message).join(', ')}`);
       return;
     }
 
@@ -457,11 +461,15 @@ export default function ConfigurePage() {
             {/* Create Another Button */}
             <button
               onClick={() => {
+                // Reset all local state
                 setRepositoryUrl(null);
                 setRepositoryName(null);
                 setRepositoryDescription(null);
                 setError(null);
-                setGithubRepoUrl(undefined);
+                // Reset all persisted configuration data
+                resetConfig();
+                // Reset wizard to first step
+                resetWizard();
               }}
               className="font-(family-name:--font-pixelify) w-full px-4 py-2.5 text-white font-medium text-sm transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
               style={{ 

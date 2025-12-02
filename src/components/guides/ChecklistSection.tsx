@@ -53,21 +53,21 @@ export function ChecklistSection({ items, completedItems, onToggleItem }: Checkl
   }
 
   return (
-    <div className="mt-8 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden">
+    <div className="mt-8 rounded-xl border-3 border-[#b4ff64] bg-[rgba(20,20,30,0.8)] overflow-hidden shadow-[0_0_20px_rgba(180,255,100,0.3)]">
       {/* Section Header */}
-      <div className="px-6 py-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-gray-300 dark:border-zinc-700">
-        <h2 id="checklist-heading" className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="px-6 py-4 bg-[rgba(40,40,50,0.9)] border-b-2 border-[#b4ff64]">
+        <h2 id="checklist-heading" className="text-2xl font-bold font-[family-name:var(--font-pixelify)] text-white mb-2">
           Post-Deployment Checklist
         </h2>
-        <p className="text-sm text-gray-700 dark:text-gray-300">
+        <p className="text-sm font-[family-name:var(--font-pixelify)] text-gray-300">
           Complete these tasks to ensure your application is fully configured and production-ready.
         </p>
-        <div className="mt-3 flex items-center gap-4 text-sm">
-          <span className="text-gray-600 dark:text-gray-400">
+        <div className="mt-3 flex items-center gap-4 text-sm font-[family-name:var(--font-pixelify)]">
+          <span className="text-gray-300">
             {completedRequiredItems.length} of {requiredItems.length} required items complete
           </span>
           {items.filter((item) => !item.required).length > 0 && (
-            <span className="text-gray-500 dark:text-gray-500">
+            <span className="text-gray-400">
               {items.filter((item) => !item.required && completedItems.includes(item.id)).length} of{' '}
               {items.filter((item) => !item.required).length} optional items complete
             </span>
@@ -115,16 +115,16 @@ export function ChecklistSection({ items, completedItems, onToggleItem }: Checkl
                 {/* Checkbox */}
                 <button
                   onClick={() => onToggleItem(item.id)}
-                  className="mt-1 shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md p-1 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                  className="mt-1 shrink-0 focus:outline-none focus:ring-2 focus:ring-[#b4ff64] focus:ring-offset-2 rounded-md p-1 hover:bg-[rgba(180,255,100,0.2)] transition-colors"
                   aria-label={isCompleted ? `Mark "${item.title}" as incomplete` : `Mark "${item.title}" as complete`}
                   aria-pressed={isCompleted}
                   role="checkbox"
                   aria-checked={isCompleted}
                 >
                   {isCompleted ? (
-                    <CheckCircle2 size={24} className="text-green-600 dark:text-green-400" aria-hidden="true" />
+                    <CheckCircle2 size={24} className="text-[#b4ff64]" aria-hidden="true" />
                   ) : (
-                    <Circle size={24} className="text-gray-400 dark:text-gray-600" aria-hidden="true" />
+                    <Circle size={24} className="text-gray-500" aria-hidden="true" />
                   )}
                 </button>
 
@@ -133,10 +133,10 @@ export function ChecklistSection({ items, completedItems, onToggleItem }: Checkl
                   {/* Title and Badge */}
                   <div className="flex items-center gap-2 mb-2">
                     <h3
-                      className={`text-lg font-semibold ${
+                      className={`text-lg font-bold font-[family-name:var(--font-pixelify)] ${
                         isCompleted
-                          ? 'text-gray-500 dark:text-gray-500 line-through'
-                          : 'text-gray-900 dark:text-white'
+                          ? 'text-gray-500 line-through'
+                          : 'text-white'
                       }`}
                     >
                       {item.title}
@@ -162,10 +162,10 @@ export function ChecklistSection({ items, completedItems, onToggleItem }: Checkl
 
                   {/* Description */}
                   <p
-                    className={`text-sm mb-4 ${
+                    className={`text-sm font-[family-name:var(--font-pixelify)] mb-4 ${
                       isCompleted
-                        ? 'text-gray-500 dark:text-gray-500'
-                        : 'text-gray-700 dark:text-gray-300'
+                        ? 'text-gray-500'
+                        : 'text-gray-300'
                     }`}
                   >
                     {item.description}

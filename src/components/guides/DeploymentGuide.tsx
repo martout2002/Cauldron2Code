@@ -9,7 +9,6 @@ import { ViewModeToggle } from './ViewModeToggle';
 import { ChecklistSection } from './ChecklistSection';
 import { TroubleshootingSection } from './TroubleshootingSection';
 import { GuideExport } from './GuideExport';
-import { DiagramSection } from './ArchitectureDiagram';
 import { SkipLink } from './SkipLink';
 import { getGuideProgressManager } from '@/lib/deployment/guide-progress-manager';
 import type { DeploymentGuide as DeploymentGuideType } from '@/types/deployment-guides';
@@ -79,8 +78,8 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading deployment guide...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#b4ff64] mx-auto mb-4"></div>
+          <p className="font-[family-name:var(--font-pixelify)] text-gray-300">Loading deployment guide...</p>
         </div>
       </div>
     );
@@ -98,7 +97,7 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
         <header className="mb-8" role="banner">
         {/* Platform Logo and Name */}
         <div className="flex items-center gap-4 mb-6">
-          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 flex items-center justify-center">
+          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[rgba(20,20,30,0.8)] border-3 border-[#8fcc4f] flex items-center justify-center">
             <Image
               src={guide.platform.logo}
               alt={`${guide.platform.name} logo`}
@@ -108,10 +107,10 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
             />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold font-[family-name:var(--font-pixelify)] text-white text-shadow-[4px_4px_0px_rgba(0,0,0,0.8)]">
               Deploy to {guide.platform.name}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="font-[family-name:var(--font-pixelify)] text-gray-300 mt-1">
               {guide.platform.description}
             </p>
           </div>
@@ -124,9 +123,9 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
             <ViewModeToggle mode={viewMode} onChange={handleViewModeChange} />
 
             {/* Estimated Time */}
-            <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-              <Clock size={18} className="text-blue-600 dark:text-blue-400" />
-              <span className="text-sm font-semibold text-blue-900 dark:text-blue-200">
+            <div className="flex items-center gap-2 px-4 py-2 bg-[rgba(139,92,246,0.2)] border-2 border-[#8b5cf6] rounded-lg shadow-[0_0_12px_rgba(139,92,246,0.3)]">
+              <Clock size={18} className="text-[#8b5cf6]" />
+              <span className="text-sm font-semibold font-[family-name:var(--font-pixelify)] text-white">
                 Estimated time: {guide.estimatedTime}
               </span>
             </div>
@@ -146,14 +145,14 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
       </header>
 
       {/* Introduction */}
-      <div className="mb-8 p-6 bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+      <div className="mb-8 p-6 bg-[rgba(20,20,30,0.8)] border-3 border-[#b4ff64] rounded-xl shadow-[0_0_20px_rgba(180,255,100,0.3)]">
         <div className="flex items-start gap-3">
-          <Rocket size={24} className="text-blue-600 dark:text-blue-400 shrink-0 mt-1" />
+          <Rocket size={24} className="text-[#b4ff64] shrink-0 mt-1" />
           <div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-lg font-bold font-[family-name:var(--font-pixelify)] text-white mb-2">
               Let's get your project deployed!
             </h2>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-[family-name:var(--font-pixelify)] text-gray-300">
               Follow these step-by-step instructions to deploy your application to {guide.platform.name}.
               {viewMode === 'quick-start' 
                 ? ' Quick Start mode shows only essential commands. Click "Learn more" on any step to see detailed explanations.'
@@ -163,15 +162,6 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
         </div>
       </div>
 
-      {/* Architecture Diagrams */}
-      {guide.diagrams && guide.diagrams.length > 0 && (
-        <DiagramSection
-          diagrams={guide.diagrams}
-          title="Architecture Overview"
-          description="Visual diagrams to help you understand the deployment process and system architecture."
-        />
-      )}
-
       {/* Deployment Steps */}
       <section 
         id="deployment-steps" 
@@ -179,12 +169,15 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
         aria-labelledby="deployment-steps-heading"
         tabIndex={-1}
       >
-        <h2 
-          id="deployment-steps-heading" 
-          className="text-2xl font-bold text-gray-900 dark:text-white mb-6"
-        >
-          Deployment Steps
-        </h2>
+        <div className="flex items-center gap-2 mb-6">
+          <div className="h-1 w-12 bg-gradient-to-r from-[#8b5cf6] via-[#b4ff64] to-[#f97316] rounded-full" aria-hidden="true" />
+          <h2 
+            id="deployment-steps-heading" 
+            className="text-2xl font-bold font-[family-name:var(--font-pixelify)] text-white"
+          >
+            Deployment Steps
+          </h2>
+        </div>
         <div className="space-y-4" role="list" aria-label="Deployment steps">
           {guide.steps.map((step) => (
             <GuideStep
@@ -228,15 +221,15 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
       )}
 
       {/* Footer */}
-      <footer className="mt-12 pt-8 border-t border-gray-300 dark:border-zinc-700" role="contentinfo">
+      <footer className="mt-12 pt-8 border-t-2 border-[#8b5cf6]" role="contentinfo">
         <div className="text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm font-[family-name:var(--font-pixelify)] text-gray-300 mb-4">
             Need more help? Check out the{' '}
             <a
               href={guide.platform.documentationUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+              className="text-[#8b5cf6] hover:text-[#b4ff64] transition-colors focus:outline-none focus:ring-2 focus:ring-[#b4ff64] focus:ring-offset-2 rounded"
               aria-label={`Open ${guide.platform.name} documentation in new tab`}
             >
               {guide.platform.name} documentation
@@ -246,14 +239,14 @@ export function DeploymentGuide({ guide }: DeploymentGuideProps) {
               href={guide.troubleshooting.platformStatusUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+              className="text-[#8b5cf6] hover:text-[#b4ff64] transition-colors focus:outline-none focus:ring-2 focus:ring-[#b4ff64] focus:ring-offset-2 rounded"
               aria-label="Check platform status in new tab"
             >
               status page
             </a>
             .
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-500">
+          <p className="text-xs font-[family-name:var(--font-pixelify)] text-gray-400">
             Your progress is automatically saved in your browser.
           </p>
         </div>
