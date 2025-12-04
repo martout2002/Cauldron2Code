@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Github, Loader2, LogOut, AlertCircle, Check, X } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useConfigStore } from '@/lib/store/config-store';
-import { WizardBackground } from './WizardBackground';
 
 interface GitHubUser {
   login: string;
@@ -143,16 +142,13 @@ export function GitHubAuthStep() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="relative h-screen overflow-hidden">
-        <WizardBackground />
-        <div className="relative z-10 h-full flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mx-auto" 
-                 style={{ imageRendering: 'pixelated' }} />
-            <p className="font-pixelify text-lg text-white" style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}>
-              Checking your magical credentials...
-            </p>
-          </div>
+      <div className="flex items-center justify-center pb-16">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mx-auto" 
+               style={{ imageRendering: 'pixelated' }} />
+          <p className="font-pixelify text-lg text-white" style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}>
+            Checking your magical credentials...
+          </p>
         </div>
       </div>
     );
@@ -161,10 +157,8 @@ export function GitHubAuthStep() {
   // Authenticated state
   if (authStatus.authenticated && authStatus.user) {
     return (
-      <div className="relative h-screen overflow-hidden">
-        <WizardBackground />
-        <div className="relative z-10 h-full flex items-center justify-center px-4">
-          <div className="w-full max-w-md space-y-6">
+      <div className="flex items-center justify-center px-4 pb-16">
+        <div className="w-full max-w-md space-y-6">
           {/* Success card with pixel art styling */}
           <div 
             className="bg-[#2a2a2a] border-4 border-lime-500 rounded-lg p-6 space-y-4"
@@ -245,7 +239,6 @@ export function GitHubAuthStep() {
               <span className="font-pixelify text-red-100 text-sm">{error}</span>
             </div>
           )}
-          </div>
         </div>
       </div>
     );
@@ -253,10 +246,8 @@ export function GitHubAuthStep() {
 
   // Not authenticated state - Sign in or skip
   return (
-    <div className="relative h-screen overflow-hidden">
-      <WizardBackground />
-      <div className="relative z-10 h-full flex items-center justify-center px-4">
-        <div className="w-full max-w-md space-y-6">
+    <div className="flex items-center justify-center px-4 pb-16">
+      <div className="w-full max-w-md space-y-6">
         {/* Main card with pixel art styling */}
         <div 
           className="bg-[#2a2a2a] border-4 border-white rounded-lg p-6 space-y-6"
@@ -346,8 +337,6 @@ export function GitHubAuthStep() {
             You can always download the ZIP file later
           </p>
         </div>
-        </div>
       </div>
     </div>
-  );
-}
+)}
