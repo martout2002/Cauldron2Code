@@ -22,11 +22,11 @@ This feature integrates GitHub repository creation directly into the scaffold ge
 
 #### Acceptance Criteria
 
-1. WHEN a user reaches the GitHub auth step in the wizard THEN the system SHALL display a GitHub sign-in interface
-2. WHEN a user successfully authenticates with GitHub THEN the system SHALL store the authentication state and allow progression to the next step
-3. WHEN a user skips the GitHub auth step THEN the system SHALL allow progression but mark GitHub integration as disabled
-4. WHEN a user returns to the GitHub auth step THEN the system SHALL display their current authentication status
-5. WHEN an authenticated user signs out during the wizard THEN the system SHALL update the authentication state immediately
+1. WHEN a user reaches the GitHub auth step in the wizard THEN the system SHALL always display the GitHub auth step interface
+2. WHEN a user is not authenticated THEN the system SHALL display an active sign-in button
+3. WHEN a user is already authenticated THEN the system SHALL display a "signed in" status with a disabled sign-in button
+4. WHEN a user successfully authenticates with GitHub THEN the system SHALL store the authentication state and display the authenticated state
+5. WHEN an authenticated user signs out during the wizard THEN the system SHALL update the authentication state immediately and show the unauthenticated state
 
 ### Requirement 2
 

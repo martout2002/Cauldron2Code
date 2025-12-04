@@ -521,8 +521,10 @@ export function PixelArtWizard({ onGenerate }: PixelArtWizardProps) {
       {/* Persistence indicator (shows "Saved" briefly after changes) */}
       <PersistenceIndicator showDebugInfo={showDebugInfo} />
 
-      {/* Progress bar - shows current step */}
-      <PixelProgressBar currentStep={currentVisibleStepIndex} totalSteps={totalVisibleSteps} />
+      {/* Progress bar - shows current step (hidden on github-auth step) */}
+      {currentStepConfig?.id !== 'github-auth' && (
+        <PixelProgressBar currentStep={currentVisibleStepIndex} totalSteps={totalVisibleSteps} />
+      )}
     </div>
   );
 }

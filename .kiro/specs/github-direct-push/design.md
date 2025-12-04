@@ -78,11 +78,12 @@ interface GitHubAuthStepProps {
 ```
 
 **Responsibilities**:
-- Display GitHub sign-in button
-- Show current authentication status
+- Always display the GitHub auth step (never skip)
+- Display GitHub sign-in button (active when not authenticated, disabled when authenticated)
+- Show current authentication status prominently
 - Handle OAuth redirect flow
-- Provide skip option
 - Display user information when authenticated
+- Show "signed in" state with disabled button when already authenticated
 
 ### 2. Modified ConfigurePage Component
 
@@ -256,9 +257,15 @@ type GenerationResult =
 
 ### Property 6: Authentication persistence
 
-*For any* user session, if GitHub authentication is completed, then returning to the wizard should preserve the authentication state until explicit sign-out or token expiration.
+*For any* user session, if GitHub authentication is completed, then returning to the wizard should preserve the authentication state and display the authenticated state with a disabled button until explicit sign-out or token expiration.
 
 **Validates: Requirements 6.1, 6.2, 6.3, 6.4**
+
+### Property 9: GitHub auth step always visible
+
+*For any* wizard session, the GitHub auth step should always be displayed, showing either an active sign-in button (when not authenticated) or a disabled button with "signed in" status (when authenticated).
+
+**Validates: Requirements 1.1, 1.2, 1.3**
 
 ### Property 7: Duplicate request prevention
 
@@ -426,8 +433,13 @@ The GitHub auth step should appear after the summary step but before the final g
 10. AI Templates (if selected)
 11. AI Provider (if AI templates selected)
 12. Summary
-13. **GitHub Authentication** ← New position
+13. **GitHub Authentication** ← Always shown, never skipped
 14. Generate (button on GitHub auth step or summary)
+
+**Important UX Pattern**: The GitHub auth step is always displayed in the wizard flow, regardless of authentication status. This provides consistency and clarity:
+- **Not Authenticated**: Shows active "Sign in with GitHub" button
+- **Already Authenticated**: Shows "signed in" status with disabled button and user information
+- This prevents confusion about whether the step was skipped or if authentication is active
 
 ### Authentication Flow
 

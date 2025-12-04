@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Github, Loader2, LogOut, AlertCircle, Check, X } from 'lucide-react';
+import { Github as GithubIcon, Loader2, LogOut, AlertCircle, Check } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useConfigStore } from '@/lib/store/config-store';
 
@@ -154,127 +154,81 @@ export function GitHubAuthStep() {
     );
   }
 
-  // Authenticated state
-  if (authStatus.authenticated && authStatus.user) {
-    return (
-      <div className="flex items-center justify-center px-4 pb-16">
-        <div className="w-full max-w-md space-y-6">
-          {/* Success card with pixel art styling */}
-          <div 
-            className="bg-[#2a2a2a] border-4 border-lime-500 rounded-lg p-6 space-y-4"
-            style={{ 
-              boxShadow: '8px 8px 0px rgba(0, 0, 0, 0.8)',
-              imageRendering: 'pixelated'
-            }}
-          >
-            {/* Success icon */}
-            <div className="flex justify-center">
-              <div className="w-16 h-16 bg-lime-500 border-4 border-black rounded-full flex items-center justify-center">
-                <Check size={32} className="text-black stroke-3" />
-              </div>
-            </div>
+  const isAuthenticated = authStatus.authenticated && authStatus.user !== null;
 
-            {/* User info */}
-            <div className="flex items-center gap-4 p-4 bg-[#1a1a1a] border-2 border-lime-500 rounded">
-              <img
-                src={authStatus.user.avatar_url}
-                alt={authStatus.user.name}
-                className="w-12 h-12 rounded-full border-2 border-lime-500"
-                style={{ imageRendering: 'pixelated' }}
-              />
-              <div className="flex-1 min-w-0">
-                <p className="font-pixelify text-white text-lg font-bold truncate">
-                  {authStatus.user.name}
-                </p>
-                <p className="font-pixelify text-lime-500 text-sm truncate">
-                  @{authStatus.user.login}
-                </p>
-              </div>
-            </div>
-
-            {/* Success message */}
-            <div className="text-center space-y-2">
-              <p className="font-pixelify text-white text-lg" style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}>
-                Connected to GitHub!
-              </p>
-              <p className="font-pixelify text-gray-400 text-sm">
-                Your repository will be created automatically
-              </p>
-            </div>
-
-            {/* Sign out button */}
-            <button
-              onClick={handleSignOut}
-              disabled={isSigningOut}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-pixelify text-sm border-4 border-black rounded transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ 
-                boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.8)',
-                imageRendering: 'pixelated'
-              }}
-            >
-              {isSigningOut ? (
-                <>
-                  <Loader2 size={18} className="animate-spin" />
-                  Disconnecting...
-                </>
-              ) : (
-                <>
-                  <LogOut size={18} />
-                  Sign Out
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Error message */}
-          {error && (
-            <div 
-              className="flex items-start gap-3 p-4 bg-red-900 border-4 border-red-500 rounded"
-              style={{ 
-                boxShadow: '4px 4px 0px rgba(0, 0, 0, 0.8)',
-                imageRendering: 'pixelated'
-              }}
-            >
-              <AlertCircle size={20} className="shrink-0 mt-0.5 text-red-300" />
-              <span className="font-pixelify text-red-100 text-sm">{error}</span>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // Not authenticated state - Sign in or skip
+  // Always show the same layout, but with different states
   return (
     <div className="flex items-center justify-center px-4 pb-16">
       <div className="w-full max-w-md space-y-6">
         {/* Main card with pixel art styling */}
         <div 
-          className="bg-[#2a2a2a] border-4 border-white rounded-lg p-6 space-y-6"
+          className={`bg-[#2a2a2a] border-4 rounded-lg p-6 space-y-6 ${
+            isAuthenticated ? 'border-lime-500' : 'border-white'
+          }`}
           style={{ 
             boxShadow: '8px 8px 0px rgba(0, 0, 0, 0.8)',
             imageRendering: 'pixelated'
           }}
         >
-          {/* GitHub icon */}
+          {/* Icon - GitHub or Success */}
           <div className="flex justify-center">
-            <div className="w-20 h-20 bg-white border-4 border-black rounded-full flex items-center justify-center">
-              <Github size={40} className="text-black" />
+            {isAuthenticated ? (
+              <div className="w-16 h-16 bg-lime-500 border-4 border-black rounded-full flex items-center justify-center">
+                <Check size={32} className="text-black stroke-3" />
+              </div>
+            ) : (
+              <div className="w-20 h-20 bg-white border-4 border-black rounded-full flex items-center justify-center">
+                <GithubIcon size={40} className="text-black" />
+              </div>
+            )}
+          </div>
+
+          {/* User info or description */}
+          {isAuthenticated ? (
+            <>
+              <div className="flex items-center gap-4 p-4 bg-[#1a1a1a] border-2 border-lime-500 rounded">
+                <img
+                  src={authStatus.user!.avatar_url}
+                  alt={authStatus.user!.name}
+                  className="w-12 h-12 rounded-full border-2 border-lime-500"
+                  style={{ imageRendering: 'pixelated' }}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-pixelify text-white text-lg font-bold truncate">
+                    {authStatus.user!.name}
+                  </p>
+                  <p className="font-pixelify text-lime-500 text-sm truncate">
+                    @{authStatus.user!.login}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-center space-y-2">
+                <p className="font-pixelify text-white text-xl font-bold" style={{ textShadow: '2px 2px 0px rgba(0, 0, 0, 0.8)' }}>
+                  ✓ Signed In Successfully!
+                </p>
+                <p className="font-pixelify text-gray-400 text-sm">
+                  Your repository will be created automatically
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className="text-center space-y-2">
+              <p className="font-pixelify text-white text-base leading-relaxed">
+                Connect your GitHub account to automatically create and push your project to a new repository
+              </p>
             </div>
-          </div>
+          )}
 
-          {/* Description */}
-          <div className="text-center space-y-2">
-            <p className="font-pixelify text-white text-base leading-relaxed">
-              Connect your GitHub account to automatically create and push your project to a new repository
-            </p>
-          </div>
-
-          {/* Sign in button */}
+          {/* Sign in button - always present, disabled when authenticated */}
           <button
             onClick={handleSignIn}
-            disabled={isAuthenticating}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-lime-500 hover:bg-lime-600 text-black font-pixelify text-lg font-bold border-4 border-black rounded transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isAuthenticated || isAuthenticating}
+            className={`w-full flex items-center justify-center gap-3 px-6 py-4 font-pixelify text-lg font-bold border-4 border-black rounded transition-all duration-200 ${
+              isAuthenticated
+                ? 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-60'
+                : 'bg-lime-500 hover:bg-lime-600 text-black disabled:opacity-50 disabled:cursor-not-allowed'
+            }`}
             style={{ 
               boxShadow: '6px 6px 0px rgba(0, 0, 0, 0.8)',
               imageRendering: 'pixelated'
@@ -285,37 +239,68 @@ export function GitHubAuthStep() {
                 <Loader2 size={24} className="animate-spin" />
                 Connecting...
               </>
+            ) : isAuthenticated ? (
+              <>
+                <Check size={24} />
+                Signed In
+              </>
             ) : (
               <>
-                <Github size={24} />
+                <GithubIcon size={24} />
                 Sign in with GitHub
               </>
             )}
           </button>
 
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t-2 border-gray-600"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="px-4 bg-[#2a2a2a] font-pixelify text-gray-400 text-sm">
-                OR
-              </span>
-            </div>
-          </div>
-
-          {/* Skip info */}
-          <div className="text-center space-y-3">
-            <p className="font-pixelify text-gray-400 text-sm">
-              Skip this step to download a ZIP file instead
-            </p>
-            <div className="flex items-center justify-center gap-2 text-gray-500 text-xs font-pixelify">
-              <X size={14} />
-              <span>No repository will be created</span>
-            </div>
-          </div>
+          {/* Sign out button - only show when authenticated */}
+          {isAuthenticated && (
+            <>
+              <div className="border-t-2 border-lime-500/30" />
+              <button
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 font-pixelify text-xs border-2 border-gray-600 rounded transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ 
+                  boxShadow: '2px 2px 0px rgba(0, 0, 0, 0.6)',
+                  imageRendering: 'pixelated'
+                }}
+              >
+                {isSigningOut ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    Disconnecting...
+                  </>
+                ) : (
+                  <>
+                    <LogOut size={14} />
+                    Sign Out
+                  </>
+                )}
+              </button>
+            </>
+          )}
         </div>
+
+        {/* Instruction card - only show when authenticated */}
+        {isAuthenticated && (
+          <div 
+            className="bg-linear-to-r from-lime-500 to-green-500 border-4 border-black rounded-lg p-6 text-center space-y-3"
+            style={{ 
+              boxShadow: '8px 8px 0px rgba(0, 0, 0, 0.8)',
+              imageRendering: 'pixelated'
+            }}
+          >
+            <p className="font-pixelify text-black text-lg font-bold" style={{ textShadow: '1px 1px 0px rgba(255, 255, 255, 0.3)' }}>
+              Ready to Generate!
+            </p>
+            <p className="font-pixelify text-black text-sm">
+              Click the <span className="font-bold">"Generate"</span> button below to create your boilerplate
+            </p>
+            <div className="flex justify-center pt-2">
+              <div className="text-4xl animate-bounce">↓</div>
+            </div>
+          </div>
+        )}
 
         {/* Error message */}
         {error && (
@@ -330,13 +315,7 @@ export function GitHubAuthStep() {
             <span className="font-pixelify text-red-100 text-sm">{error}</span>
           </div>
         )}
-
-        {/* Additional info */}
-        <div className="text-center">
-          <p className="font-pixelify text-gray-500 text-xs">
-            You can always download the ZIP file later
-          </p>
-        </div>
       </div>
     </div>
-)}
+  );
+}
