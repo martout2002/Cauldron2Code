@@ -22,7 +22,7 @@ export function NavigationControls({
   const showGenerate = isLastStep && currentStepId !== 'summary';
   return (
     <nav 
-      className="fixed bottom-4 sm:bottom-6 md:bottom-8 left-0 right-0 flex justify-between px-4 sm:px-6 md:px-8 max-w-7xl mx-auto z-20"
+      className="fixed bottom-4 left-0 right-0 flex justify-between px-4 max-w-7xl mx-auto z-20"
       aria-label="Wizard navigation"
     >
       {/* Back Button */}
@@ -30,17 +30,18 @@ export function NavigationControls({
         onClick={onBack}
         disabled={!canGoBack}
         className="pixel-nav-button touch-target focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+        style={{ gap: '0' }}
         aria-label="Go back to previous step"
         aria-disabled={!canGoBack}
         type="button"
       >
+        <span className="pixel-button-text" style={{ fontSize: '1.25rem', color: '#CD853F' }}>Back</span>
         <img
           src="/broom_stick.png"
           alt=""
-          className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16"
+          style={{ width: 'auto', height: '64px', objectFit: 'contain' }}
           aria-hidden="true"
         />
-        <span className="pixel-button-text">Back</span>
       </button>
 
       {/* Next/Generate Button */}
@@ -48,19 +49,20 @@ export function NavigationControls({
         onClick={onNext}
         disabled={!canGoNext}
         className="pixel-nav-button touch-target focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+        style={{ gap: '0' }}
         aria-label={isLastStep ? 'Generate project' : 'Go to next step'}
         aria-disabled={!canGoNext}
         type="button"
       >
+        <span className="pixel-button-text" style={{ fontSize: '1.25rem', color: '#CD853F' }}>
+          {showGenerate ? 'Generate' : 'Next'}
+        </span>
         <img
           src={showGenerate ? '/cauldron.png' : '/ladle.png'}
           alt=""
-          className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16"
+          style={{ width: '64px', height: '64px' }}
           aria-hidden="true"
         />
-        <span className="pixel-button-text">
-          {showGenerate ? 'Generate' : 'Next'}
-        </span>
       </button>
     </nav>
   );
